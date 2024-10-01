@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import shareIcon from "../../assets/Share.png";
-import locationIcon from "../../assets/mappoint.png";
+import locationIcon from "../../assets/Mappoint.png";
 
 export default function EventDetails() {
   return (

@@ -11,7 +11,7 @@ import sos from "../assets/sos.png";
 import bloodGroupImg from "../assets/bloodimage.png";
 import profPicImg from "../assets/profpic.png";
 import shareIcon from "../assets/Share.png";
-import locationIcon from "../assets/mappoint.png";
+import locationIcon from "../assets/Mappoint.png";
 import { Link, useNavigate } from "react-router-dom";
 import { dashboardData, setLoader } from "../redux/product";
 import { toast } from "react-toastify";

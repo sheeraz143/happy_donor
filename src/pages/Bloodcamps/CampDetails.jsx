@@ -1,6 +1,6 @@
 import BloodCamps from "../../assets/BloodCamps.png";
 import shareIcon from "../../assets/Share.png";
-import locationIcon from "../../assets/mappoint.png";
+import locationIcon from "../../assets/Mappoint.png";
 import { Link, useLocation } from "react-router-dom";
 import MapComponent from "../../components/map/MapComponent";
 

@@ -77,7 +77,7 @@ import bloodGroupImg from "../../assets/bloodimage.png";
 import MapComponent from "../MapComponent";
 // import profPicImg from "../../assets/profpic.png";
 import shareIcon from "../../assets/Share.png";
-import locationIcon from "../../assets/mappoint.png";
+import locationIcon from "../../assets/Mappoint.png";
 
 const RequestDetail = () => {
   // const { id } = useParams();

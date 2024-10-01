@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import BloodCamps from "../../assets/BloodCamps.png";
 import profPicImg from "../../assets/profpic.png";
 import shareIcon from "../../assets/Share.png";
-import locationIcon from "../../assets/mappoint.png";
+import locationIcon from "../../assets/Mappoint.png";
 import { Link, useNavigate } from "react-router-dom";
 
 const BloodMedicalCamps = () => {

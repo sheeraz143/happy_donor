@@ -1,6 +1,6 @@
 import bloodGroupImg from "../../assets/bloodimage.png";
 import profPicImg from "../../assets/profpic.png";
-import User from "../../assets/user.png";
+import User from "../../assets/User.png";
 import SuccessIcon from "../../assets/success icon.png";
 import Myrequest from "../../assets/myrequest.png";
 import Language from "../../assets/language.png";
