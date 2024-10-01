@@ -47,7 +47,7 @@
 // export default GratitudePage;
 
 // import { useState } from "react";
-// import uploadIcon from "../../assets/image-upload.png";
+// import uploadIcon from "../../assets/Image-upload.png";
 // import micIcon from "../../assets/Microphone.png";
 // import calendarIcon from "../../assets/Clapperboard.png";
 import "../../css/Gratitude.css";
