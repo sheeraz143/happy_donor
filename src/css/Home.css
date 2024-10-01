@@ -1,0 +1,131 @@
+.home-container {
+  padding: 20px;
+}
+
+.banner-slider .banner-image {
+  width: 100%;
+  max-height: 450px;
+  object-fit: contain;
+}
+
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.card img {
+  /* max-width: 60px; */
+  margin-bottom: 10px;
+}
+
+.card p {
+  margin: 0;
+}
+
+.recent-requests {
+  margin-top: 20px;
+}
+
+.recent-requests h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card {
+  border-radius: 0.75rem !important;
+}
+
+.slick-dots li button:before {
+  font-size: 12px !important;
+}
+
+.seeall {
+  text-decoration: none;
+}
+
+.recent-request-card {
+  /* display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 15px;
+  margin-top: 20px; */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+}
+.recent-card {
+  position: relative;
+  /* display: flex; */
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+}
+
+/* .Contribution-card {
+  margin: 0 auto;
+  max-width: 700px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.Contribution-card-header {
+  color: green;
+}
+.Contribution-count {
+  background-color: #bfb8b8;
+  height: 30px;
+  width: 30px;
+  border-radius: 7px;
+} */
+.Contribution-card {
+  margin: 0 auto;
+  max-width: 700px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.Contribution-card-header {
+  color: green;
+  text-align: center;
+}
+
+.Contribution-text {
+  margin: 0;
+  flex: 1;
+  text-align: left;
+}
+
+.Contribution-count {
+  background-color: #bfb8b8;
+  height: 30px;
+  width: 30px;
+  border-radius: 7px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.card-text {
+  color: green;
+}

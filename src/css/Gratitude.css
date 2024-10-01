@@ -1,0 +1,13 @@
+.icon {
+  width: 30px; /* Set icon width */
+  height: 30px; /* Set icon height */
+  cursor: pointer; /* Custom cursor for icons */
+}
+
+.cursor-pointer {
+  cursor: pointer; /* Class for pointer cursor */
+}
+
+/* .graditudebox {
+  border-radius: 20px !important;
+} */

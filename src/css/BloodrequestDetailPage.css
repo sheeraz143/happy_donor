@@ -1,0 +1,14 @@
+:where(.css-dev-only-do-not-override-vn1oyg).ant-steps
+  .ant-steps-item-finish
+  .ant-steps-item-icon
+  > .ant-steps-icon
+  .ant-steps-icon-dot {
+  background: red !important;
+}
+:where(.css-dev-only-do-not-override-vn1oyg).ant-steps
+  .ant-steps-item-process
+  .ant-steps-item-icon
+  > .ant-steps-icon
+  .ant-steps-icon-dot {
+  background: red !important;
+}

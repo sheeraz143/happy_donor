@@ -1,0 +1,55 @@
+/* LoginComponent.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #ffffff;
+}
+
+.donar-logo {
+  margin-bottom: 20px;
+  /* width: 100px; */
+  /* height: 100px; */
+}
+
+.welcomeText {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  color: #000000;
+  margin-bottom: 20px;
+}
+
+.inputContainer {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+  outline: none;
+}
+
+.icon {
+  margin-right: 10px;
+  font-size: 18px;
+  color: #4caf50; /* Green color for the phone icon */
+}
+
+.input {
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.button {
+  background-color: #1976d2; /* Blue color for the button */
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}

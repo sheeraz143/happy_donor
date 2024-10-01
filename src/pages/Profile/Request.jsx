@@ -1,0 +1,310 @@
+import { useForm } from "react-hook-form";
+import "../../css/ProfilePage.css"; // Import the CSS file
+import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { requestBlood, setLoader } from "../../redux/product";
+import { toast } from "react-toastify";
+import { useEffect } from "react";
+
+function Request() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  // const onSubmit = (data) => {
+  //   console.log(data);
+  //   // navigate("/bloodrequest");
+  // };
+
+  const onSubmit = (data) => {
+    console.log(data);
+    dispatch(setLoader(true));
+    try {
+      const payload = {
+        title: data?.title,
+        patient_first_name: data?.firstName,
+        patient_last_name: data?.lastName,
+        blood_group: data?.bloodGroup,
+        blood_component: data?.bloodComponent,
+        quantity_units: data?.Quantity,
+        required_date: data?.requiredDate,
+        location: data?.location,
+        lat: "40.712776",
+        lon: "-74.005974",
+        is_critical: Boolean(data?.critical),
+        attender_first_name: data?.attenderFirstName,
+        attender_last_name: data?.attenderLasttName,
+        mobile_number: data?.mobileNumber,
+        willing_to_arrange_transport: Boolean(data?.willing),
+        terms_agreed: data?.terms,
+      };
+
+      dispatch(
+        requestBlood(payload, (res) => {
+          console.log("res: ", res);
+          if (res.errors) {
+            toast.error(res.errors);
+          } else {
+            // Handle success
+            toast.success(res.message);
+            navigate("/bloodrequest");
+          }
+          dispatch(setLoader(false));
+        })
+      );
+    } catch (error) {
+      // Handle unexpected errors
+      toast.error(error);
+      dispatch(setLoader(false));
+    }
+    navigate("/bloodrequest");
+  };
+  return (
+    <form className="form-container mb-4" onSubmit={handleSubmit(onSubmit)}>
+      {/* Title */}
+      <h3>Request for blood</h3>
+      <div className="form-group">
+        <label>Title</label>
+        <select
+          className="form-input"
+          {...register("title", { required: true })}
+        >
+          <option value="">Select</option>
+          <option value="Mr">Mr</option>
+          <option value="Ms">Ms</option>
+          <option value="Mrs">Mrs</option>
+        </select>
+        {errors.title && <p className="error-message">Title is required</p>}
+      </div>
+
+      {/* First Name */}
+      <div className="form-group">
+        <label>Patient First Name</label>
+        <input
+          className="form-input"
+          type="text"
+          // placeholder="Enter Patient First Name"
+          {...register("firstName", { required: true })}
+        />
+        {errors.firstName && (
+          <p className="error-message">First Name is required</p>
+        )}
+      </div>
+
+      {/* Last Name */}
+      <div className="form-group">
+        <label>Patient Last Name</label>
+        <input
+          className="form-input"
+          type="text"
+          // placeholder="Enter Patient Last Name"
+          {...register("lastName", { required: true })}
+        />
+        {errors.lastName && (
+          <p className="error-message">Last Name is required</p>
+        )}
+      </div>
+
+      {/* Blood Group */}
+      <div className="form-group">
+        <label>Blood Group</label>
+        <select
+          className="form-input"
+          {...register("bloodGroup", { required: true })}
+        >
+          <option value="">Select</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+        </select>
+        {errors.bloodGroup && (
+          <p className="error-message">Blood Group is required</p>
+        )}
+      </div>
+
+      {/* Blood Component */}
+      <div className="form-group">
+        <label>Blood Component</label>
+        <select
+          className="form-input"
+          {...register("bloodComponent", { required: true })}
+        >
+          <option value="">Select</option>
+          <option value="WholeBlood">Whole Blood</option>
+        </select>
+        {errors.bloodComponent && (
+          <p className="error-message">Blood Component is required</p>
+        )}
+      </div>
+
+      {/* Quantity*/}
+      <div className="form-group">
+        <label>Quantity (Units)</label>
+        <select
+          className="form-input"
+          {...register("Quantity", { required: true })}
+        >
+          <option value="">Select</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+        {errors.Quantity && (
+          <p className="error-message">Quantity is required</p>
+        )}
+      </div>
+
+      {/* Required Date */}
+      <div className="form-group">
+        <label>Required Date</label>
+        <input
+          className="form-input"
+          type="date"
+          {...register("requiredDate", { required: true })}
+        />
+        {errors.requiredDate && (
+          <p className="error-message">Date is required</p>
+        )}
+      </div>
+
+      {/* Location */}
+      <div className="form-group">
+        <label>Location</label>
+        <input
+          className="form-input"
+          type="text"
+          {...register("location", { required: true })}
+        />
+        {errors.location && (
+          <p className="error-message">Location is required</p>
+        )}
+      </div>
+
+      {/* Critical*/}
+      <div className="form-group">
+        <label>Critical</label>
+        <select
+          className="form-input"
+          {...register("critical", { required: true })}
+        >
+          <option value="">Select</option>
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+        {errors.critical && <p className="error-message">Field is required</p>}
+      </div>
+
+      {/* First Name */}
+      <div className="form-group">
+        <label>Attender First Name</label>
+        <input
+          className="form-input"
+          type="text"
+          // placeholder="Enter Attender First Name"
+          {...register("attenderFirstName", { required: true })}
+        />
+        {errors.attenderFirstName && (
+          <p className="error-message">First Name is required</p>
+        )}
+      </div>
+
+      {/* Last Name */}
+      <div className="form-group">
+        <label>Attender Last Name</label>
+        <input
+          className="form-input"
+          type="text"
+          // placeholder="Enter Attender Last Name"
+          {...register("attenderLasttName", { required: true })}
+        />
+        {errors.attenderLasttName && (
+          <p className="error-message">Last Name is required</p>
+        )}
+      </div>
+
+      {/* mobile number */}
+      <div className="form-group">
+        <label>Mobile Number</label>
+        <input
+          className="form-input"
+          type="tel"
+          // placeholder="Enter Mobile Number"
+          {...register("mobileNumber", {
+            required: true,
+            pattern: {
+              value: /^(?:\+91[-\s]?)?[0]?[789]\d{9}$/,
+              message: "Invalid phone number format",
+            },
+          })}
+        />
+        {errors.mobileNumber && (
+          <p className="error-message">Mobile Number is required</p>
+        )}
+      </div>
+
+      {/* Wiiling to transport*/}
+      <div className="form-group">
+        <label>Wiiling to arrange the transport to the doctor?</label>
+        <select
+          className="form-input"
+          {...register("willing", { required: true })}
+        >
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+        {errors.willing && <p className="error-message">Field is required</p>}
+      </div>
+
+      {/* Terms and Conditions */}
+      <div className="text-start">
+        <input
+          type="checkbox"
+          {...register("terms", { required: true })}
+          className="form-checkbox"
+        />
+        <label>
+          I have read and agree to terms of service and privacy policy
+        </label>
+        {errors.terms && (
+          <p className="error-message">You must agree to the terms</p>
+        )}
+      </div>
+
+      {/* Submit Button */}
+      <div className="d-flex justify-content-evenly">
+        <button
+          type="button"
+          className="submit-button"
+          style={{ backgroundColor: "grey", color: "white", width: "100px" }}
+          onClick={() => navigate("/home")}
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="submit-button"
+          style={{ color: "white", width: "100px" }}
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+  );
+}
+
+export default Request;
