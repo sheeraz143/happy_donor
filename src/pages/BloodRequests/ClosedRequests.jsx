@@ -13,7 +13,7 @@ export default function ClosedRequests() {
   const location = useLocation();
   const { request } = location.state || {}; // Retrieve the passed request object
   console.log("data: ", request);
-
+ 
   if (!request) {
     return <p>No data found!</p>;
   }

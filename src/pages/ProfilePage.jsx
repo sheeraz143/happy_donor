@@ -54,7 +54,7 @@ const Profile = () => {
       toast.error(error);
       dispatch(setLoader(false));
     }
-  }, [dispatch]);
+  }, [dispatch, setValue]);
 
   // Function to handle form submission
   const onSubmit = (data) => {
@@ -88,6 +88,10 @@ const Profile = () => {
           } else {
             // Handle success
             toast.success(res.message);
+            localStorage.setItem(
+              "is_profile_update",
+              res.user?.profile_verified
+            );
             navigate("/home");
           }
           dispatch(setLoader(false));
@@ -157,6 +161,7 @@ const Profile = () => {
         <input
           className="form-input"
           type="tel"
+          readOnly
           {...register("phoneNumber", {
             required: true,
             pattern: {
@@ -246,7 +251,7 @@ const Profile = () => {
       </div>
 
       {/* Location */}
-      <div className="form-group">
+      {/* <div className="form-group">
         <label>Location</label>
         <input
           className="form-input"
@@ -256,7 +261,7 @@ const Profile = () => {
         {errors.location && (
           <p className="error-message">Location is required</p>
         )}
-      </div>
+      </div> */}
 
       {/* Last Blood Donation Date */}
       <div className="form-group">

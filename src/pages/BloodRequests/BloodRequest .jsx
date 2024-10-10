@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "../../css/BloodRequest.css";
 import bloodGroupImg from "../../assets/bloodgroup.png";
 // import profPicImg from "../../assets/profpic.png";
@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { donateBloods, setLoader } from "../../redux/product";
+import { Pagination } from "antd";
 
 const BloodRequest = () => {
   // const { id } = useParams();
@@ -13,45 +14,61 @@ const BloodRequest = () => {
   const dispatch = useDispatch();
   const [openRequests, setOpenRequests] = useState([]);
   const [closedRequests, setClosedRequests] = useState([]);
+  const [requestCount, setRequestCount] = useState({
+    matched: 0,
+    unmatched: 0,
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [activeTab, setActiveTab] = useState("open");
 
-  const loadData = (tab) => {
-    dispatch(setLoader(true)); // Start loading
-    try {
-      dispatch(
-        donateBloods(tab, (res) => {
-          console.log("res: ", res);
-          dispatch(setLoader(false));
+  const loadData = useCallback(
+    (tab) => {
+      dispatch(setLoader(true)); // Start loading
+      try {
+        dispatch(
+          donateBloods(tab, (res) => {
+            console.log("res: ", res);
+            dispatch(setLoader(false));
 
-          if (res.errors) {
-            toast.error(res.errors);
-          } else {
-            if (tab === "open") {
-              setOpenRequests(
-                res.requests.filter((req) => req.status === "Active")
-              );
+            if (res.errors) {
+              toast.error(res.errors);
             } else {
-              setClosedRequests(
-                res.requests.filter((req) => req.status !== "InActive")
-              );
+              if (tab === "open") {
+                // setOpenRequests(
+                //   res.requests.filter((req) => req.status === "In Process")
+                // );
+                setOpenRequests(res.requests);
+                setRequestCount((prevCount) => ({
+                  ...prevCount,
+                  matched: res.pagination.total,
+                }));
+              } else {
+                setClosedRequests(res.requests);
+                setRequestCount((prevCount) => ({
+                  ...prevCount,
+                  unmatched: res.pagination.total,
+                }));
+              }
             }
-          }
-        })
-      );
-    } catch (error) {
-      toast.error(error.message || "Error fetching requests");
-      dispatch(setLoader(false));
-    }
-  };
+          })
+        );
+      } catch (error) {
+        toast.error(error.message || "Error fetching requests");
+        dispatch(setLoader(false));
+      }
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     loadData(activeTab);
-  }, [activeTab, dispatch]);
+  }, [activeTab, dispatch, loadData]);
 
   useEffect(() => {
     loadData("open"); // Load open requests initially
     loadData("closed"); // Load closed requests initially
-  }, [dispatch]);
+  }, [dispatch, loadData]);
 
   const handleCardClick = (request) => {
     navigate(`/donarlist/${request.request_id}`);
@@ -62,7 +79,10 @@ const BloodRequest = () => {
       <div
         className="request-card"
         key={request.request_id}
-        onClick={() => handleCardClick(request)}
+        style={{ cursor: "pointer " }}
+        onClick={() => {
+          navigate(`/bloodrequestdetail/${request.request_id}`);
+        }}
       >
         <div className="request-header">
           <div className="align-content-center">
@@ -88,7 +108,12 @@ const BloodRequest = () => {
 
         <div className="accept-donar-button justify-content-end">
           {request.view_donors && (
-            <button className="accepted-donors-btn">Accepted Donors</button>
+            <button
+              className="accepted-donors-btn"
+              onClick={() => handleCardClick(request)}
+            >
+              Accepted Donors
+            </button>
           )}
         </div>
       </div>
@@ -104,13 +129,13 @@ const BloodRequest = () => {
             className={`tab ${activeTab === "open" ? "active" : ""}`}
             onClick={() => setActiveTab("open")}
           >
-            Open ({openRequests.length})
+            Open ({requestCount.matched || 0})
           </button>
           <button
             className={`tab ${activeTab === "closed" ? "active" : ""}`}
             onClick={() => setActiveTab("closed")}
           >
-            Closed ({closedRequests.length})
+            Closed ({requestCount.unmatched || 0})
           </button>
         </div>
         <div className="requests mb-5">
@@ -127,6 +152,16 @@ const BloodRequest = () => {
             <h4 className="mx-auto mb-5">No Data available.</h4>
           )}
         </div>
+        <Pagination
+          align="center"
+          className="mb-4"
+          current={currentPage}
+          total={requestCount[activeTab] || 0}
+          onChange={(page) => {
+            setCurrentPage(page);
+            loadData(activeTab, page);
+          }}
+        />
       </div>
     </>
   );

@@ -1,37 +1,76 @@
 import { Steps } from "antd";
 import "../../css/BloodrequestDetailPage.css";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 import bloodGroupImg from "../../assets/bloodimage.png";
 import MapComponent from "../../components/map/MapComponent";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setLoader, ViewBloodRequest } from "../../redux/product";
+import { toast } from "react-toastify";
 
 export default function BloodrequestDetailPage() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { request } = location.state || {}; // Retrieve the passed request object
-  console.log("data: ", request);
+  // const location = useLocation();
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const [data, setData] = useState({});
 
-  if (!request) {
+  useEffect(() => {
+    dispatch(setLoader(true));
+    try {
+      dispatch(
+        ViewBloodRequest(id, (res) => {
+          console.log("res: ", res);
+          dispatch(setLoader(false));
+
+          if (res.errors) {
+            toast.error(res.errors);
+          } else {
+            setData(res);
+          }
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "Error fetching requests");
+      dispatch(setLoader(false));
+    }
+  }, [dispatch, id]);
+
+  const statusToStep = {
+    Initiated: 0,
+    Active: 1,
+    "In Process": 2,
+    Completed: 3,
+  };
+
+  const currentStep = statusToStep[data.status] || 0;
+
+  if (!data.request_id) {
     return <p>No data found!</p>;
   }
 
   return (
     <>
       <div className="mb-5 mt-5">
-        <MapComponent path={request.path} />
+        <MapComponent path={[{ lat: data.lat, lon: data.lon }]} />
 
         <div className="col-lg-6 col-md-8 col-sm-10 mx-auto mt-5">
-          <div className="request-card" key={request.id}>
+          <div className="request-card" key={data.request_id}>
             <div className="request-header d-flex align-items-center">
               <div className="align-content-center">
-                <img src={request.profilePic} alt="Profile" />
+                <img
+                  src={data.profile_picture}
+                  alt="Profile"
+                  style={{ width: "150px", height: "150px" }}
+                />
               </div>
               <div className="request-details ms-3">
-                <div className="text-start">Request ID: {request.id}</div>
-                <div className="text-start">Date:{request.date}</div>
-                <div className="text-start">Units: {request.units}</div>
-                <div className="text-start">Address: {request.address}</div>
+                <div className="text-start">Request ID: {data.request_id}</div>
+                <div className="text-start">Date: {data.date}</div>
+                <div className="text-start">Units: {data.units_required}</div>
+                <div className="text-start">Address: {data.address}</div>
               </div>
               <div className="blood-group ms-auto">
                 <img src={bloodGroupImg} alt="Blood Group" />
@@ -42,7 +81,7 @@ export default function BloodrequestDetailPage() {
         <div className="col-lg-5 col-md-8 col-sm-10 mx-auto mt-3">
           <Steps
             progressDot
-            current={1}
+            current={currentStep}
             direction="vertical"
             items={[
               {
@@ -54,20 +93,20 @@ export default function BloodrequestDetailPage() {
                 description: "",
               },
               {
-                title: "In-progress state",
+                title: "In Process",
                 description: "",
               },
               {
-                title: "Completed state",
+                title: "Completed",
                 description: "",
               },
             ]}
           />
           <div
-            className="d-flex  form-control "
+            className="d-flex form-control"
             style={{
               background: "#D9D9D9",
-              padding: " 15px",
+              padding: "15px",
               borderRadius: "10px",
             }}
           >
@@ -89,15 +128,16 @@ export default function BloodrequestDetailPage() {
         </div>
         <div className="col-lg-5 col-md-8 col-sm-10 mx-auto mt-5 d-flex">
           <button
-            className="btn  flex-fill me-2 fw-bold"
-            style={{ padding: "20px", background: "#D9D9D9", color: "black" }}
+            className="btn flex-fill me-2 fw-bold"
+            style={{ padding: "15px", background: "#D9D9D9", color: "black" }}
             onClick={() => navigate("/bloodrequest")}
           >
             Cancel
           </button>
           <button
             className="btn btn-primary flex-fill ms-2 fw-bold"
-            style={{ padding: "20px" }}
+            style={{ padding: "15px" }}
+            onClick={() => navigate(`/donarlist/${id}`)}
           >
             Accept Donors
           </button>

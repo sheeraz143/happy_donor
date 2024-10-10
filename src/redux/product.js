@@ -79,10 +79,10 @@ export const verifytOTP =
   async () => {
     try {
       const response = await Helper.postData(baseUrl + "auth/verify-otp", data);
-      console.log("response: ", response.response.data);
+      console.log("response: ", response);
 
       const result = {
-        ...response.response.data,
+        ...response.data,
         code: response.status,
       };
 
@@ -319,6 +319,30 @@ export const SendGratitudeMessage =
       const response = await Helper.formData(
         baseUrl + `app/blood-requests/gratitude`,
         data
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      callback(result);
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+
+export const ViewBloodRequest =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(
+        baseUrl + `app/blood-requests/${id}/view`
       );
 
       const result = {

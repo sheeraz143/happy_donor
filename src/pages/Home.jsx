@@ -23,6 +23,9 @@ function Home() {
   const dispatch = useDispatch();
   const [getData, setData] = useState({});
   const [recentBloodRequest, setRecentBloodRequest] = useState([]);
+
+  const isProfileUpdate = localStorage.getItem("is_profile_update") === "1";
+
   useEffect(() => {
     dispatch(setLoader(true)); // Start loading
     window.scrollTo(0, 0);
@@ -46,6 +49,7 @@ function Home() {
       dispatch(setLoader(false));
     }
   }, [dispatch]);
+
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -56,13 +60,27 @@ function Home() {
     autoplaySpeed: 2000,
   };
 
+  const handleNavigation = (path) => {
+   
+    if (isProfileUpdate) {
+      navigate(path);
+    } else {
+      if (path === "/request") {
+        toast.error("Please update your profile to see requests");
+      }
+      if (path === "/donate") {
+        toast.error("Please update your profile to donation list");
+      }
+      navigate("/profile");
+    }
+  };
+
   const renderRequestCard = (request) => {
     return (
       <div className="request-card" key={request.id}>
         <div className="request-header d-flex align-items-center">
           <div className="align-content-center">
             <img
-              // src={request?.user_profile?.profile_picture || profPicImg}
               src={getData?.user_profile?.profile_picture || profPicImg}
               style={{
                 border: "1px solid gray",
@@ -75,7 +93,6 @@ function Home() {
           </div>
           <div className="request-details ms-3">
             <div className="request-id">Request ID: {request?.id}</div>
-            {/* Changed recentBloodRequest to request */}
             <div className="request-date">
               Attender: {request?.attender_first_name}{" "}
               {request?.attender_last_name}
@@ -132,12 +149,10 @@ function Home() {
         </div>
       </Slider>
       {/* Cards Section */}
-      <div className="cards-container ">
+      <div className="cards-container">
         <div
           className="card"
-          onClick={() => {
-            navigate("/request");
-          }}
+          onClick={() => handleNavigation("/request")}
           style={{ cursor: "pointer" }}
         >
           <img src={requestblood} alt="Request Blood" />
@@ -145,9 +160,7 @@ function Home() {
         </div>
         <div
           className="card"
-          onClick={() => {
-            navigate("/donate");
-          }}
+          onClick={() => handleNavigation("/donate")}
           style={{ cursor: "pointer" }}
         >
           <img src={donateblood} alt="Donate Blood" />
@@ -155,9 +168,7 @@ function Home() {
         </div>
         <div
           className="card"
-          onClick={() => {
-            navigate("/bloodcamps");
-          }}
+          onClick={() => navigate("/bloodcamps")}
           style={{ cursor: "pointer" }}
         >
           <img src={medicalcamps} alt="Blood-Medical Camps/Events" />
@@ -165,9 +176,7 @@ function Home() {
         </div>
         <div
           className="card"
-          onClick={() => {
-            navigate("/funddonation");
-          }}
+          onClick={() => navigate("/funddonation")}
           style={{ cursor: "pointer" }}
         >
           <img src={funddonation} alt="Fund Donation" />
@@ -189,17 +198,15 @@ function Home() {
           </div>
         </h2>
       </div>
-      {/* <div className=""> */}
       <div className="blood-request-container">
         <div className="requests mt-5">
-          {recentBloodRequest.length > 0 ? (
+          {recentBloodRequest?.length > 0 ? (
             recentBloodRequest.map((request) => renderRequestCard(request))
           ) : (
             <p>No recent blood requests found.</p>
           )}
         </div>
       </div>
-      {/* </div> */}
       {/* Contribution Section */}
       <div className="Contribution-container mt-5">
         <div className="Contribution-card">

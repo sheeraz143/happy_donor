@@ -145,6 +145,10 @@ function Request() {
         >
           <option value="">Select</option>
           <option value="WholeBlood">Whole Blood</option>
+          <option value="Red Blood Cells">Red Blood Cells</option>
+          <option value="Plasma">Plasma</option>
+          <option value="Platelets">Platelets</option>
+          <option value="Cryoprecipitate">Cryoprecipitate</option>
         </select>
         {errors.bloodComponent && (
           <p className="error-message">Blood Component is required</p>

@@ -122,8 +122,8 @@ const EditProfilePage = () => {
         last_blood_donation_date: data?.lastDonationDate || "",
         // lat: "93.1232",
         // lon: "92.32323",
-        lat: data?.lat || "",
-        lon: data?.lon || "",
+        lat: data?.lat || "12.78",
+        lon: data?.lon || "78.12",
         availability:
           data?.availability !== undefined ? Boolean(data.availability) : true,
         terms_accepted:
@@ -279,6 +279,7 @@ const EditProfilePage = () => {
         <input
           className="form-input"
           type="tel"
+          readOnly
           {...register("phoneNumber", {
             required: true,
             // pattern: /^[0-9]{10}$/,

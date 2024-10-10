@@ -15,7 +15,7 @@ import Profile from "./pages/ProfilePage";
 import BloodRequest from "./pages/BloodRequests/BloodRequest ";
 import Footer from "./components/Footer";
 import Request from "./pages/Profile/Request";
-import MapComponent from "./pages/MapComponent";
+// import MapComponent from "./pages/MapComponent";
 import ViewProfilepage from "./pages/Profile/ViewProfilepage";
 import EditProfilePage from "./pages/Profile/EditProfilePage";
 import DonationHistory from "./pages/Profile/DonationHistory";
@@ -44,6 +44,8 @@ import AcceptDonorList from "./pages/BloodRequests/AcceptDonarList";
 import ConfirmDonation from "./pages/BloodRequests/ConfirmDonation";
 import PostGratitudeMesage from "./pages/BloodRequests/PostGratitudeMesage";
 import SimpleBackdrop from "./components/backdrop/backdrop";
+import Approvals from "./pages/Approvals/Approvals";
+import ApproveRequests from "./pages/Approvals/ApproveRequests";
 
 function App() {
   const darkMode = useSelector((state) => state.theme.darkMode);
@@ -71,8 +73,10 @@ function App() {
         <Route path="/otp" element={<OTPVerificationComponent />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/viewprofile" element={<ViewProfilepage />} />
+        <Route path="/approvals" element={<Approvals />} />
+        <Route path="/approve-requests" element={<ApproveRequests />} />
         <Route path="/editprofile" element={<EditProfilePage />} />
-        <Route path="/map" element={<MapComponent />} />
+        {/* <Route path="/map" element={<MapComponent />} /> */}
         <Route path="/bloodrequest" element={<BloodRequest />} />
         <Route path="/donate" element={<Donate />} />
         <Route path="/donationhistory" element={<DonationHistory />} />
@@ -100,7 +104,7 @@ function App() {
         />
         <Route path="/closedrequests/:id" element={<ClosedRequests />} />
         <Route path="/donarlist/:id" element={<AcceptDonorList />} />
-        <Route path="/confirmdonation" element={<ConfirmDonation />} />
+        <Route path="/confirmdonation/:id" element={<ConfirmDonation />} />
         <Route path="/postgratitudemesage" element={<PostGratitudeMesage />} />
       </Routes>
       {!hideNavbarAndFooter && <Footer />}

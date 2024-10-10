@@ -1,11 +1,12 @@
-import "../../css/BloodRequest.css";
-import bloodGroupImg from "../../assets/bloodimage.png";
-import profPicImg from "../../assets/profpic.png";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
-import { AcceptedDonors, MarkDonated, setLoader } from "../../redux/product";
+import { AcceptedDonors, setLoader } from "../../redux/product";
 import { toast } from "react-toastify";
+import Modal from "react-modal";
+import "../../css/BloodRequest.css";
+import bloodGroupImg from "../../assets/bloodimage.png";
+import profPicImg from "../../assets/prof_img.png";
 
 const AcceptDonorList = () => {
   const navigate = useNavigate();
@@ -14,8 +15,8 @@ const AcceptDonorList = () => {
   const [donors, setDonors] = useState([]);
   const [requestId, setRequestId] = useState({});
   const [donationStatus, setDonationStatus] = useState({});
-
-  console.log("id: ", id);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedDonor, setSelectedDonor] = useState(null);
 
   useEffect(() => {
     dispatch(setLoader(true));
@@ -29,13 +30,13 @@ const AcceptDonorList = () => {
             toast.error(res.errors);
           } else {
             setDonors(res.donors || []);
-
             setRequestId(res.request_id);
             const initialStatus = res.donors.reduce((acc, donor) => {
-              acc[donor.donor_id] = donor.donation_status === "Completed";
+              acc[donor.donor_id] = donor.donation_status === "In Process";
               return acc;
             }, {});
             setDonationStatus(initialStatus);
+            console.log("initialStatus: ", initialStatus);
           }
         })
       );
@@ -45,34 +46,20 @@ const AcceptDonorList = () => {
     }
   }, [dispatch, id]);
 
-  const markAsDonated = (donorId) => {
+  const markAsDonated = (donor, donorId) => {
+    console.log("donor: ", donor);
     console.log("donorId: ", donorId);
-    dispatch(setLoader(true));
-    try {
-      dispatch(
-        // MarkDonated({ request_id: requestId, donor_id: donorId }, (res) => {
-        MarkDonated(requestId, (res) => {
-          console.log("res: ", res);
-          dispatch(setLoader(false));
+    navigate(`/confirmdonation/${id}`, { state: { donor } });
+  };
 
-          if (res.errors) {
-            toast.error(res.errors);
-          } else if (res.code === 400) {
-            toast.error("You have already accepted this blood request.");
-          } else if (res.code === 200) {
-            toast.success("Marked as donated successfully");
-            setDonationStatus((prevStatus) => ({
-              ...prevStatus,
-              [donorId]: true,
-            }));
-            navigate("/confirmdonation");
-          }
-        })
-      );
-    } catch (error) {
-      toast.error(error.message || "Error marking as donated");
-      dispatch(setLoader(false));
-    }
+  const openModal = (donor) => {
+    setSelectedDonor(donor);
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setSelectedDonor(null);
   };
 
   const navigateToGratitude = (requestId, donorId) => {
@@ -90,7 +77,7 @@ const AcceptDonorList = () => {
           />
         </div>
         <div className="request-details">
-          <div className="request-id">Name: {donor.name}</div>
+          <div className="request-id">Name: {donor.donor_name}</div>
           <div className="request-date">Location: {donor.location}</div>
           <div className="request-address">Address: {donor.address}</div>
           <div className="request-units">Date: {donor.date}</div>
@@ -107,10 +94,9 @@ const AcceptDonorList = () => {
               Donated
             </button>
             {donor.gratitude_msg ? (
-              // <div className="accepted-donors-btn">
               <button
                 className="accepted-donors-btn"
-                onClick={() => navigate(`/gratitude`, { state: { donor } })}
+                onClick={() => openModal(donor)}
               >
                 View Gratitude Message
               </button>
@@ -126,7 +112,7 @@ const AcceptDonorList = () => {
         ) : (
           <button
             className="accepted-donors-btn"
-            onClick={() => markAsDonated(donor.donor_id)}
+            onClick={() => markAsDonated(donor, donor.donor_id)}
           >
             Mark As Donated
           </button>
@@ -147,6 +133,25 @@ const AcceptDonorList = () => {
           )}
         </div>
       </div>
+
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Gratitude Message"
+        ariaHideApp={false}
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        {selectedDonor && (
+          <div className="d-flex flex-column align-items-center ">
+            <h2>Gratitude Message</h2>
+            <p>{selectedDonor.gratitude_msg}</p>
+            <button onClick={closeModal} className="btn btn-primary">
+              Close
+            </button>
+          </div>
+        )}
+      </Modal>
     </>
   );
 };

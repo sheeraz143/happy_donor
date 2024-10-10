@@ -43,13 +43,20 @@ const OTPVerificationComponent = () => {
     try {
       dispatch(
         verifytOTP(data, (res) => {
-          console.log("res: ", res);
+          console.log("data: ", data);
+          console.log("verifytOTP: ", res);
+          // return;
           if (res.code === 403) {
             const errorMessage = res.error.otp_code;
             console.log("errorMessage: ", errorMessage[0]);
-            toast.error(errorMessage[0]);
+            // toast.error(errorMessage[0]);
+            toast.error(res.message);
           } else {
             // Handle success
+            // toast.success(res.message);
+            localStorage.setItem("user_type", res.user_type);
+            localStorage.setItem("is_profile_update", res.is_profile_update);
+            localStorage.setItem("oAuth", `Bearer ${res.token}`);
             toast.success(res.message);
             navigate("/profile");
           }

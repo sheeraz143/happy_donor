@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import uploadIcon from "../../assets/Image-upload.png";
 import micIcon from "../../assets/Microphone.png";
 import calendarIcon from "../../assets/Clapperboard.png";
 import { useLocation, useNavigate } from "react-router";
-import { SendGratitudeMessage, setLoader } from "../../redux/product";
+import {
+  SendGratitudeMessage,
+  setLoader,
+  ViewBloodRequest,
+} from "../../redux/product";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 
@@ -19,6 +23,28 @@ export default function PostGratitudeMessage() {
   const queryParams = new URLSearchParams(location.search);
   const requestId = queryParams.get("requestId");
   const donorId = queryParams.get("donorId");
+  const [data, setData] = useState({});
+
+  useEffect(() => {
+    dispatch(setLoader(true));
+    try {
+      dispatch(
+        ViewBloodRequest(requestId, (res) => {
+          console.log("res: ", res);
+          dispatch(setLoader(false));
+
+          if (res.errors) {
+            toast.error(res.errors);
+          } else {
+            setData(res);
+          }
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "Error fetching requests");
+      dispatch(setLoader(false));
+    }
+  }, []);
 
   const handleImageUpload = (event) => {
     const files = Array.from(event.target.files);
@@ -102,11 +128,11 @@ export default function PostGratitudeMessage() {
         className="card col-lg-8 col-md-8  col-sm-8 mx-auto align-items-start mt-5 mb-5 gap-3"
         style={{ color: "#097E14" }}
       >
-        <div className="">Name:</div>
-        <div>Request ID:{requestId}</div>
-        <div>Blood Type:</div>
-        <div>Quantity Needed:</div>
-        <div>Location:</div>
+        <div className="">Name: {data?.name}</div>
+        <div>Request ID:{data?.request_id}</div>
+        <div>Blood Type: {data?.blood_group}</div>
+        <div>Quantity Needed: {data?.units_required}</div>
+        <div>Location: {data?.location}</div>
       </div>
       <h5
         style={{ color: "blue" }}

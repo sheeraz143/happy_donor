@@ -1,5 +1,7 @@
 import bloodGroupImg from "../../assets/bloodimage.png";
-import profPicImg from "../../assets/profpic.png";
+// import profPicImg from "../../assets/profpic.png";
+import profImg from "../../assets/prof_img.png";
+
 import User from "../../assets/User.png";
 import SuccessIcon from "../../assets/success icon.png";
 import Myrequest from "../../assets/myrequest.png";
@@ -51,7 +53,7 @@ export default function ViewProfilepage() {
         <div className="d-flex align-items-center justify-center">
           <div className="align-content-center">
             <img
-              src={getData?.profile_picture || profPicImg}
+              src={getData?.profile_picture || profImg}
               alt="Profile"
               style={{ height: "70px", width: "70px", borderRadius: "50%" }}
             />
