@@ -7,7 +7,7 @@ import locationIcon from "../assets/Mappoint.png";
 import { useDispatch } from "react-redux";
 import { BloodDonateList, DonateAccept, setLoader } from "../redux/product";
 import { toast } from "react-toastify";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { Pagination } from "antd";
 
 function Donate() {
@@ -19,13 +19,14 @@ function Donate() {
     unmatched: 0,
   });
   const [currentPage, setCurrentPage] = useState(1);
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const fetchData = useCallback((tab, page) => {
+  const fetchData = (tab) => {
     dispatch(setLoader(true)); // Start loading
     dispatch(
-      BloodDonateList(tab, page, (res) => {
-        // console.log("res: ", res);
+      BloodDonateList(tab, (res) => {
+        console.log("res: ", res);
         dispatch(setLoader(false));
 
         if (res.errors) {
@@ -51,18 +52,21 @@ function Donate() {
       toast.error(error.message || "Error fetching requests");
       dispatch(setLoader(false));
     });
-  }, [dispatch]);
+  };
 
   useEffect(() => {
     fetchData("matched", 1);
     fetchData("unmatched", 1);
-  }, [fetchData]);
+  }, [dispatch]);
 
   useEffect(() => {
     fetchData(activeTab, currentPage);
-  }, [activeTab, currentPage, fetchData]);
+  }, [activeTab, currentPage]);
 
   const handleCardClick = (request) => {
+    // console.log("request: ", request);
+    // navigate(`/request/${request?.request_id}`, { state: { request } });
+
     dispatch(setLoader(true));
 
     try {
