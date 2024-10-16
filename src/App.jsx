@@ -46,6 +46,8 @@ import PostGratitudeMesage from "./pages/BloodRequests/PostGratitudeMesage";
 import SimpleBackdrop from "./components/backdrop/backdrop";
 import Approvals from "./pages/Approvals/Approvals";
 import ApproveRequests from "./pages/Approvals/ApproveRequests";
+import ApproveDonors from "./pages/Approvals/ApproveDonors";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   const darkMode = useSelector((state) => state.theme.darkMode);
@@ -69,43 +71,49 @@ function App() {
       {!hideNavbarAndFooter && <Navbar />}
       <Routes>
         <Route path="/" element={<LoginComponent />} />
-        <Route path="/home" element={<Home />} />
         <Route path="/otp" element={<OTPVerificationComponent />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/viewprofile" element={<ViewProfilepage />} />
-        <Route path="/approvals" element={<Approvals />} />
-        <Route path="/approve-requests" element={<ApproveRequests />} />
-        <Route path="/editprofile" element={<EditProfilePage />} />
-        {/* <Route path="/map" element={<MapComponent />} /> */}
-        <Route path="/bloodrequest" element={<BloodRequest />} />
-        <Route path="/donate" element={<Donate />} />
-        <Route path="/donationhistory" element={<DonationHistory />} />
-        <Route path="/request/:id" element={<RequestDetail />} />
-        <Route path="/request" element={<Request />} />
-        <Route path="/selectlanguage" element={<SelectLanguage />} />
-        <Route path="/notifisetting" element={<NotificationSettings />} />
-        <Route path="/modesetting" element={<ModeSetting />} />
-        <Route path="/emergencycontact" element={<EmergenctContact />} />
-        <Route path="/aboutus" element={<AboutUs />} />
-        <Route path="/privacypolicy" element={<PrivacyPolicy />} />
-        <Route path="/terms" element={<Terms />} />
-        <Route path="/faqs" element={<Faqs />} />
-        <Route path="/writetoUs" element={<WriteToUs />} />
-        <Route path="/gratitude" element={<GratitudePage />} />
-        <Route path="/report" element={<TTIReport />} />
-        <Route path="/bloodcamps" element={<BloodMedicalCamps />} />
-        <Route path="/funddonation" element={<FundDonation />} />
-        <Route path="/campdetails" element={<CampDetails />} />
-        <Route path="/eventdetails" element={<EventDetails />} />
-        <Route path="/contributefund" element={<ContributeFund />} />
-        <Route
-          path="/bloodrequestdetail/:id"
-          element={<BloodrequestDetailPage />}
-        />
-        <Route path="/closedrequests/:id" element={<ClosedRequests />} />
-        <Route path="/donarlist/:id" element={<AcceptDonorList />} />
-        <Route path="/confirmdonation/:id" element={<ConfirmDonation />} />
-        <Route path="/postgratitudemesage" element={<PostGratitudeMesage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/viewprofile" element={<ViewProfilepage />} />
+          <Route path="/approvals" element={<Approvals />} />
+          <Route path="/approve-requests" element={<ApproveRequests />} />
+          <Route path="/approve-donors" element={<ApproveDonors />} />
+          <Route path="/editprofile" element={<EditProfilePage />} />
+          {/* <Route path="/map" element={<MapComponent />} /> */}
+          <Route path="/bloodrequest" element={<BloodRequest />} />
+          <Route path="/donate" element={<Donate />} />
+          <Route path="/donationhistory" element={<DonationHistory />} />
+          <Route path="/request/:id" element={<RequestDetail />} />
+          <Route path="/request" element={<Request />} />
+          <Route path="/selectlanguage" element={<SelectLanguage />} />
+          <Route path="/notifisetting" element={<NotificationSettings />} />
+          <Route path="/modesetting" element={<ModeSetting />} />
+          <Route path="/emergencycontact" element={<EmergenctContact />} />
+          <Route path="/aboutus" element={<AboutUs />} />
+          <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/faqs" element={<Faqs />} />
+          <Route path="/writetoUs" element={<WriteToUs />} />
+          <Route path="/gratitude" element={<GratitudePage />} />
+          <Route path="/report" element={<TTIReport />} />
+          <Route path="/bloodcamps" element={<BloodMedicalCamps />} />
+          <Route path="/funddonation" element={<FundDonation />} />
+          <Route path="/campdetails" element={<CampDetails />} />
+          <Route path="/eventdetails" element={<EventDetails />} />
+          <Route path="/contributefund" element={<ContributeFund />} />
+          <Route
+            path="/bloodrequestdetail/:id"
+            element={<BloodrequestDetailPage />}
+          />
+          <Route path="/closedrequests/:id" element={<ClosedRequests />} />
+          <Route path="/donarlist/:id" element={<AcceptDonorList />} />
+          <Route path="/confirmdonation/:id" element={<ConfirmDonation />} />
+          <Route
+            path="/postgratitudemesage"
+            element={<PostGratitudeMesage />}
+          />
+        </Route>
       </Routes>
       {!hideNavbarAndFooter && <Footer />}
     </>

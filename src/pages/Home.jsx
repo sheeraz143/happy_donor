@@ -24,7 +24,7 @@ function Home() {
   const [getData, setData] = useState({});
   const [recentBloodRequest, setRecentBloodRequest] = useState([]);
 
-  const isProfileUpdate = localStorage.getItem("is_profile_update") === "1";
+  const isProfileUpdate = localStorage.getItem("is_profile_update");
 
   useEffect(() => {
     dispatch(setLoader(true)); // Start loading
@@ -32,7 +32,6 @@ function Home() {
     try {
       dispatch(
         dashboardData((res) => {
-          console.log("res: ", res);
           setData(res);
           setRecentBloodRequest(res?.recent_blood_requests);
           if (res.errors) {
@@ -61,17 +60,17 @@ function Home() {
   };
 
   const handleNavigation = (path) => {
-   
-    if (isProfileUpdate) {
-      navigate(path);
-    } else {
+    if (isProfileUpdate == 0) {
       if (path === "/request") {
+        navigate("/profile");
         toast.error("Please update your profile to see requests");
       }
       if (path === "/donate") {
+        navigate("/profile");
         toast.error("Please update your profile to donation list");
       }
-      navigate("/profile");
+    } else {
+      navigate(path);
     }
   };
 

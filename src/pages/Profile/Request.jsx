@@ -4,7 +4,8 @@ import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { requestBlood, setLoader } from "../../redux/product";
 import { toast } from "react-toastify";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Autocomplete from "react-google-autocomplete";
 
 function Request() {
   const navigate = useNavigate();
@@ -14,19 +15,54 @@ function Request() {
     window.scrollTo(0, 0);
   }, []);
 
+  const [today] = useState(() => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  });
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
 
-  // const onSubmit = (data) => {
-  //   console.log(data);
-  //   // navigate("/bloodrequest");
-  // };
+  const handlePlaceSelected = (place) => {
+    if (place.geometry) {
+      setValue("location", place.formatted_address);
+      setValue("lat", place.geometry.location.lat());
+      setValue("lon", place.geometry.location.lng());
+    }
+  };
+
+  const handleChange = (e) => {
+    let value = e.target.value;
+
+    // Remove non-digit characters and ensure it starts with "+91"
+    if (!value.startsWith("+91")) {
+      value = "+91" + value.replace(/^\+?91/, "");
+    }
+
+    // Extract digits after "+91" prefix
+    const digits = value.slice(3).replace(/\D/g, "");
+
+    // Limit to 10 digits after "+91"
+    if (digits.length > 10) {
+      value = "+91" + digits.slice(0, 10);
+    } else {
+      value = "+91" + digits;
+    }
+
+    // Update the value using setValue
+    setValue("mobileNumber", value, { shouldValidate: true });
+  };
 
   const onSubmit = (data) => {
     console.log(data);
+    // return;
     dispatch(setLoader(true));
     try {
       const payload = {
@@ -38,8 +74,8 @@ function Request() {
         quantity_units: data?.Quantity,
         required_date: data?.requiredDate,
         location: data?.location,
-        lat: "40.712776",
-        lon: "-74.005974",
+        lat: data?.lat,
+        lon: data?.lon,
         is_critical: Boolean(data?.critical),
         attender_first_name: data?.attenderFirstName,
         attender_last_name: data?.attenderLasttName,
@@ -130,6 +166,7 @@ function Request() {
           <option value="AB-">AB-</option>
           <option value="O+">O+</option>
           <option value="O-">O-</option>
+          <option value="Any">Any</option>
         </select>
         {errors.bloodGroup && (
           <p className="error-message">Blood Group is required</p>
@@ -166,6 +203,13 @@ function Request() {
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
         </select>
         {errors.Quantity && (
           <p className="error-message">Quantity is required</p>
@@ -178,6 +222,7 @@ function Request() {
         <input
           className="form-input"
           type="date"
+          min={today}
           {...register("requiredDate", { required: true })}
         />
         {errors.requiredDate && (
@@ -186,7 +231,7 @@ function Request() {
       </div>
 
       {/* Location */}
-      <div className="form-group">
+      {/* <div className="form-group">
         <label>Location</label>
         <input
           className="form-input"
@@ -196,11 +241,26 @@ function Request() {
         {errors.location && (
           <p className="error-message">Location is required</p>
         )}
+      </div> */}
+      <div className="form-group">
+        <label>Location</label>
+        <Autocomplete
+          apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
+          onPlaceSelected={handlePlaceSelected}
+          className="form-input"
+          types={["geocode"]}
+          {...register("location", { required: true })}
+        />
+        {errors.location && (
+          <p className="error-message">Location is required</p>
+        )}
       </div>
+      <input type="hidden" {...register("lat", { required: true })} />
+      <input type="hidden" {...register("lon", { required: true })} />
 
       {/* Critical*/}
       <div className="form-group">
-        <label>Critical</label>
+        <label>Emergency?</label>
         <select
           className="form-input"
           {...register("critical", { required: true })}
@@ -243,7 +303,7 @@ function Request() {
       {/* mobile number */}
       <div className="form-group">
         <label>Mobile Number</label>
-        <input
+        {/* <input
           className="form-input"
           type="tel"
           // placeholder="Enter Mobile Number"
@@ -254,6 +314,25 @@ function Request() {
               message: "Invalid phone number format",
             },
           })}
+        /> */}
+        <input
+          className="form-input"
+          type="tel"
+          defaultValue="+91"
+          {...register("mobileNumber", {
+            required: "Mobile Number is required",
+            pattern: {
+              value: /^\+91[789]\d{9}$/,
+              message: "Invalid phone number format",
+            },
+            validate: (value) => {
+              const digitsOnly = value.replace(/\D/g, "");
+              return (
+                digitsOnly.length === 12 || "Mobile number must be  10 digits "
+              );
+            },
+          })}
+          onChange={handleChange}
         />
         {errors.mobileNumber && (
           <p className="error-message">Mobile Number is required</p>

@@ -84,25 +84,43 @@ const helper = {
       });
   },
 
+  // patchData: async function (url, data) {
+  //   let axiosConfig = {
+  //     headers: {
+  //       "Content-Type": "application/json;charset=UTF-8",
+  //       Authorization: localStorage.getItem("oAuth"),
+  //     },
+  //   };
+
+  //   return await axios
+  //     .patch(url, data, axiosConfig)
+  //     .then((res) => {
+  //       console.log("res: ", res);
+  //       return res;
+  //     })
+  //     .catch((err) => {
+  //       console.log("err: ", err);
+  //       return err;
+  //     });
+  // },
   patchData: async function (url, data) {
-    let axiosConfig = {
+    const axiosConfig = {
       headers: {
         "Content-Type": "application/json;charset=UTF-8",
         Authorization: localStorage.getItem("oAuth"),
       },
     };
 
-    return await axios
-      .patch(url, data, axiosConfig)
-      .then((res) => {
-        console.log("res: ", res);
-        return res;
-      })
-      .catch((err) => {
-        console.log("err: ", err);
-        return err;
-      });
+    try {
+      const res = await axios.patch(url, data, axiosConfig);
+      console.log("res: ", res);
+      return res; // Return the response directly if successful
+    } catch (err) {
+      console.error("Axios error: ", err); // Log the error for debugging
+      throw err; // Throw the error to be handled later
+    }
   },
+
   formData: async function (url, data) {
     let axiosConfig = {
       headers: {

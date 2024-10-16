@@ -14,7 +14,7 @@ const AcceptDonorList = () => {
   const { id } = useParams();
   const [donors, setDonors] = useState([]);
   const [requestId, setRequestId] = useState({});
-  const [donationStatus, setDonationStatus] = useState({});
+  // const [donationStatus, setDonationStatus] = useState({});
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedDonor, setSelectedDonor] = useState(null);
 
@@ -31,12 +31,12 @@ const AcceptDonorList = () => {
           } else {
             setDonors(res.donors || []);
             setRequestId(res.request_id);
-            const initialStatus = res.donors.reduce((acc, donor) => {
-              acc[donor.donor_id] = donor.donation_status === "In Process";
-              return acc;
-            }, {});
-            setDonationStatus(initialStatus);
-            console.log("initialStatus: ", initialStatus);
+            // const initialStatus = res.donors.reduce((acc, donor) => {
+            //   acc[donor.donor_id] = donor.donation_status !== "Donated";
+            //   return acc;
+            // }, {});
+            // // setDonationStatus(initialStatus);
+            // console.log("initialStatus: ", initialStatus);
           }
         })
       );
@@ -73,7 +73,12 @@ const AcceptDonorList = () => {
           <img
             src={donor.profile_picture || profPicImg}
             alt="Profile"
-            style={{ width: "100px" }}
+            style={{
+              width: "100px",
+              height: "100px",
+              borderRadius: "50%",
+              objectFit: "cover",
+            }}
           />
         </div>
         <div className="request-details">
@@ -88,12 +93,12 @@ const AcceptDonorList = () => {
       </div>
 
       <div className="accept-donar-button justify-content-end gap-3">
-        {donationStatus[donor.donor_id] ? (
+        {donor.donation_status == "Donated" ? (
           <>
             <button className="accepted-donors-btn btn-secondary" disabled>
               Donated
             </button>
-            {donor.gratitude_msg ? (
+            {donor.gratitude_msg !== "" ? (
               <button
                 className="accepted-donors-btn"
                 onClick={() => openModal(donor)}

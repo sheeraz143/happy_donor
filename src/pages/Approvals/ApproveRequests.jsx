@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
-import { donateBloods, setLoader } from "../../redux/product";
+import {
+  ApproveAdminBloodRequest,
+  CancelBloodRequest,
+  donateBloods,
+  setLoader,
+} from "../../redux/product";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { Pagination } from "antd";
+import Modal from "react-modal";
 
 export default function ApproveRequests() {
   const dispatch = useDispatch();
@@ -10,11 +16,27 @@ export default function ApproveRequests() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRequests, setTotalRequests] = useState(0);
   const perPage = 10;
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [closureReason, setClosureReason] = useState("");
+  const [additionalComments, setAdditionalComments] = useState("");
+  const [requestId, setRequestId] = useState("");
+
+  const openModal = (request_id) => {
+    console.log("request_id: ", request_id);
+    setModalIsOpen(true);
+    setRequestId(request_id);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setClosureReason("");
+    setAdditionalComments("");
+  };
 
   useEffect(() => {
     const fetchRequests = async () => {
       dispatch(setLoader(true));
-      const type = "open";
+      const type = "all/admin";
       try {
         dispatch(
           donateBloods(
@@ -42,26 +64,80 @@ export default function ApproveRequests() {
     fetchRequests();
   }, [dispatch, currentPage]);
 
-  const handleApprove = () => {};
+  const handleApprove = (requestId) => {
+    dispatch(setLoader(true));
 
-  const handleReject = () => {};
+    try {
+      dispatch(
+        ApproveAdminBloodRequest(requestId, (res) => {
+          // console.log("res: ", res);
+          if (res.code === 200) {
+            toast.success(res.message);
+          } else {
+            toast.error(res.message);
+          }
+          dispatch(setLoader(false));
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "An unexpected error occurred.");
+      dispatch(setLoader(false));
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!closureReason.trim()) {
+      toast.error("Closure reason is required");
+      return;
+    }
+    if (!additionalComments.trim()) {
+      toast.error("Additional comments are required");
+      return;
+    }
+    const dataToSend = {
+      closure_reason: closureReason,
+      additional_comments: additionalComments,
+    };
+    // return;
+    dispatch(setLoader(true));
+    try {
+      dispatch(
+        CancelBloodRequest(requestId, dataToSend, (res) => {
+          // console.log("res: ", res);
+          if (res.code === 200) {
+            toast.success(res.message);
+            closeModal();
+          } else {
+            toast.error(res.message);
+          }
+          dispatch(setLoader(false));
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "An unexpected error occurred.");
+      dispatch(setLoader(false));
+    }
+  };
 
   return (
     <div className="cards-container mt-5 mb-5 col-lg-4 mx-auto">
       {requests?.map((request) => (
         <div className="card mb-3" key={request.request_id}>
           <div className="">
-            <p className="card-text text-start">Patient Name: {request.name}</p>
-            <p className="card-text text-start">
+            <p className="card-text text-start">Patient Name: {request.patient_name}</p>
+            {/* <p className="card-text text-start">
               Patient Mobile: {request.patient_mobile}
-            </p>
+            </p> */}
             <p className="card-text text-start">
               Attender Name: {request.attender_name}
             </p>
             <p className="card-text text-start">
-              Attender Mobile: {request.attender_mobile}
+              Attender Mobile: {request.attender_mobile_number}
             </p>
-            <p className="card-text text-start">
+            <p
+              className="card-text text-start"
+              style={{ overflowWrap: "anywhere" }}
+            >
               Request ID: {request.request_id}
             </p>
             <p className="card-text text-start">Date: {request.date}</p>
@@ -72,7 +148,8 @@ export default function ApproveRequests() {
             <div className="d-flex justify-content-between mt-4">
               <button
                 className="btn btn-danger"
-                onClick={() => handleReject(request.request_id)}
+                // onClick={() => handleReject(request.request_id)}
+                onClick={() => openModal(request.request_id)}
               >
                 Reject
               </button>
@@ -96,6 +173,43 @@ export default function ApproveRequests() {
           setCurrentPage(page);
         }}
       />
+
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Gratitude Message"
+        ariaHideApp={false}
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <div className="d-flex flex-column align-items-center ">
+          <h2>Cancel Blood Request</h2>
+          <label className="text-start col-lg-6 col-md-6 col-sm-6">
+            Closure reason
+          </label>
+          <input
+            className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
+            value={closureReason}
+            onChange={(e) => setClosureReason(e.target.value)}
+          />
+          <label className="text-start col-lg-6 col-md-6 col-sm-6">
+            Additional comments
+          </label>
+          <input
+            className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
+            value={additionalComments}
+            onChange={(e) => setAdditionalComments(e.target.value)}
+          />
+          <div className="d-flex justify-content-evenly col-lg-6 col-md-6 col-sm-6">
+            <button onClick={closeModal} className="btn btn-primary">
+              Close
+            </button>
+            <button onClick={handleSubmit} className="btn btn-primary">
+              Submit
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -90,7 +90,7 @@ const MapComponent = ({ path }) => {
 
   // Load Google Maps JavaScript API
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyDfsJx7wDFEfu0_jKXwVHQBjFyLm8nfKvQ", // Replace with your actual API key
+    googleMapsApiKey: "AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0", // Replace with your actual API key
   });
 
   if (!isLoaded) {

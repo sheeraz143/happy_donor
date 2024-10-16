@@ -19,7 +19,13 @@ export default function Approvals() {
         <img src={requestblood} alt="Donate Blood" />
         <p>New Blood Requests</p>
       </div>
-      <div className="card" style={{ cursor: "pointer" }}>
+      <div
+        className="card"
+        style={{ cursor: "pointer" }}
+        onClick={() => {
+          navigate("/approve-donors");
+        }}
+      >
         <img src={donateblood} alt="Donate Blood" />
         <p>New Blood Donations</p>
       </div>

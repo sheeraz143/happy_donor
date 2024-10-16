@@ -177,7 +177,7 @@ nav a.active {
 .profile-menu {
   position: absolute;
   width: auto;
-  top: 50px;
+  top: 40px;
   right: 0;
   background-color: white;
   border: 1px solid #ccc;
@@ -213,7 +213,7 @@ nav a.active {
   }
 
   .navbar {
-    justify-content: end !important;
+    /* justify-content: end !important; */
     width: 100%;
   }
 

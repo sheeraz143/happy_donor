@@ -138,6 +138,20 @@
   z-index: 999;
 }
 
+.emergency-tag {
+  top: 21px;
+  left: -2px;
+  background-color: red;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 5px;
+  font-weight: bold;
+  z-index: 1;
+  transform: rotate(-35deg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-size: 12px;
+}
+
 @media (max-width: 768px) {
   .requests {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import "../../css/ProfilePage.css";
 import { useNavigate } from "react-router";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/prof_img.png";
 import cameraIcon from "../../assets/cameraImg.png";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react"; // Add useCallback
 import { useDispatch } from "react-redux";
 import {
   getProfile,
@@ -12,14 +12,22 @@ import {
   updateProfile,
 } from "../../redux/product";
 import { toast } from "react-toastify";
+import Autocomplete from "react-google-autocomplete";
 
 const EditProfilePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [profileImage, setProfileImage] = useState(logo);
-  // const [originalData, setOriginalData] = useState({});
+  const [location, setLocation] = useState("");
 
-  // const [getData, setData] = useState({});
+  const [today] = useState(() => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  });
+  const [originalData, setOriginalData] = useState({});
 
   const {
     register,
@@ -28,6 +36,23 @@ const EditProfilePage = () => {
     setValue,
   } = useForm();
 
+  const fetchAddress = useCallback(
+    async (lat, lon) => {
+      if (lat !== null) {
+        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0`;
+        const response = await fetch(geocodeUrl);
+        const data = await response.json();
+
+        if (data.results && data.results.length > 0) {
+          const address = data.results[0].formatted_address;
+          setLocation(address);
+          setValue("location", address);
+        }
+      }
+    },
+    [setValue]
+  ); // Add dependencies if any
+
   useEffect(() => {
     window.scrollTo(0, 0);
     dispatch(setLoader(true)); // Start loading
@@ -35,21 +60,25 @@ const EditProfilePage = () => {
       dispatch(
         getProfile((res) => {
           console.log("res: ", res.user);
-          // const user = res?.user;
+          const user = res?.user;
           setProfileImage(res?.user?.profile_picture || logo);
           setValue("title", res?.user?.title);
-          setValue("firstName", res?.user?.first_name);
-          setValue("lastName", res?.user?.last_name);
-          setValue("phoneNumber", res?.user?.phone_number);
+          setValue("first_name", res?.user?.first_name);
+          setValue("last_name", res?.user?.last_name);
+          setValue("phone_number", res?.user?.phone_number);
           setValue("email", res?.user?.email);
-          setValue("bloodGroup", res?.user?.blood_group);
-          setValue("dateOfBirth", res?.user?.date_of_birth);
+          setValue("blood_group", res?.user?.blood_group);
+          setValue("date_of_birth", res?.user?.date_of_birth);
           setValue("gender", res?.user?.gender);
           setValue("address", res?.user?.address);
           setValue("location", res?.user?.location);
-          setValue("lastDonationDate", res?.user?.last_blood_donation_date);
-          // setOriginalData(user);
-          // setData(res?.user);
+          setValue(
+            "last_blood_donation_date",
+            res?.user?.last_blood_donation_date
+          );
+          fetchAddress(res?.user?.lat, res?.user?.lon);
+
+          setOriginalData(user);
           if (res.errors) {
             toast.error(res.errors);
           } else {
@@ -63,18 +92,14 @@ const EditProfilePage = () => {
       toast.error(error);
       dispatch(setLoader(false));
     }
-  }, [dispatch, setValue]);
-
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onload = () => {
-  //       setProfileImage(reader.result); // Display the selected image
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
+  }, [dispatch, fetchAddress, setValue]);
+  const handlePlaceSelected = (place) => {
+    if (place.geometry) {
+      setValue("location", place.formatted_address);
+      setValue("lat", place.geometry.location.lat());
+      setValue("lon", place.geometry.location.lng());
+    }
+  };
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
@@ -103,97 +128,63 @@ const EditProfilePage = () => {
     }
   };
 
-  // Function to handle form submission
   const onSubmit = (data) => {
     console.log(data);
     dispatch(setLoader(true)); // Start loading
     try {
-      const dataToSend = {
-        title: data?.title || "",
-        first_name: data?.firstName || "",
-        last_name: data?.lastName || "",
-        phone_number: data?.phoneNumber || "",
-        email: data?.email || "",
-        blood_group: data?.bloodGroup || "",
-        date_of_birth: data?.dateOfBirth || "",
-        gender: data?.gender || "",
-        address: data?.address || "",
-        location: data?.location || "",
-        last_blood_donation_date: data?.lastDonationDate || "",
-        // lat: "93.1232",
-        // lon: "92.32323",
-        lat: data?.lat || "12.78",
-        lon: data?.lon || "78.12",
-        availability:
-          data?.availability !== undefined ? Boolean(data.availability) : true,
-        terms_accepted:
-          data?.termsAccepted !== undefined
-            ? Boolean(data.termsAccepted)
-            : true,
-      };
-
-      // Log to ensure values are correct
-      console.log("dataToSend", dataToSend);
-
       const formData = new FormData();
-      // Append fields to formData
-      formData.append("title", data?.title || "");
-      formData.append("first_name", data?.firstName || "");
-      formData.append("last_name", data?.lastName || "");
-      formData.append("phone_number", data?.phoneNumber || "");
-      formData.append("email", data?.email || "");
-      formData.append("blood_group", data?.bloodGroup || "");
-      formData.append("date_of_birth", data?.dateOfBirth || "");
-      formData.append("gender", data?.gender || "");
-      formData.append("address", data?.address || "");
-      formData.append("location", data?.location || "");
-      formData.append("last_blood_donation_date", data?.lastDonationDate || "");
-      formData.append("lat", "93.1232"); // Static value, change as needed
-      formData.append("lon", "92.32323"); // Static value, change as needed
-      // formData.append("terms_accepted", Boolean(true));
-      const availabilityBool =
-        data?.availability !== undefined ? Boolean(data.availability) : true;
-      const termsAcceptedBool =
-        data?.termsAccepted !== undefined ? Boolean(data.termsAccepted) : true;
-      console.log("availabilityBool: ", typeof availabilityBool);
-      console.log("termsAcceptedBool: ", typeof termsAcceptedBool);
 
-      // Append boolean values as strings "true" or "false"
-      formData.append("availability", availabilityBool);
-      formData.append("terms_accepted", termsAcceptedBool);
+      // Create a map for changed data
+      const changedData = {};
 
-      // Append profile image file if a new file was selected
-      // const fileInput = document.getElementById("fileInput");
-      // if (fileInput.files[0]) {
-      //   formData.append("profileImage", fileInput.files[0]);
-      // }
+      // Append fields to formData if they have changed and are not undefined
+      Object.keys(data).forEach((key) => {
+        if (data[key] !== originalData[key] && data[key] !== undefined) {
+          // Handle lat and lon separately
+          if (key === "lat" || key === "lon") return;
 
-      // Object.keys(data).forEach((key) => {
-      //   if (data[key] !== originalData[key] && data[key]) {
-      //     formData.append(key, data[key]);
-      //   }
-      // });
+          // Handle boolean values
+          if (key === "availability" || key === "termsAccepted") {
+            formData.append(key, Boolean(data[key]).toString());
+          } else {
+            formData.append(key, data[key]);
+          }
 
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${typeof value}`);
+          // Add to changed data
+          changedData[key] = data[key];
+        }
+      });
+
+      // Convert lat and lon to string if they exist and are changed
+      if (data.lat !== originalData.lat && data.lat !== undefined) {
+        formData.append("lat", data.lat.toString());
+        changedData.lat = data.lat.toString();
+      }
+      if (data.lon !== originalData.lon && data.lon !== undefined) {
+        formData.append("lon", data.lon.toString());
+        changedData.lon = data.lon.toString();
       }
 
-      // return;
+      // Log to ensure formData is correct
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${typeof value} - ${value}`);
+      }
+
+      // Log changedData to ensure only changed fields are being sent
+      console.log("changedData: ", changedData);
+
+      // Dispatch the action to update profile
       dispatch(
-        updateProfile(dataToSend, (res) => {
+        updateProfile(formData, (res) => {
           console.log("res: ", res);
           if (res.errors) {
-            toast.error(res.errors);
-
-            // Handle validation errors
-            // for (const [field, messages] of Object.entries(res.errors)) {
-            //   messages.forEach((message) =>
-            //     toast.error(`${field}: ${message}`)
-            //   );
-            // }
+            // Handle error response
+            const errorMessages = Object.values(res.errors).flat().join(", ");
+            toast.error(errorMessages); // Show error messages
           } else {
             // Handle success
             toast.success(res.message);
+
             navigate("/viewprofile");
           }
           dispatch(setLoader(false));
@@ -201,7 +192,7 @@ const EditProfilePage = () => {
       );
     } catch (error) {
       // Handle unexpected errors
-      toast.error(error);
+      toast.error(error.message || "An unexpected error occurred.");
       dispatch(setLoader(false));
     }
   };
@@ -240,9 +231,9 @@ const EditProfilePage = () => {
           {...register("title", { required: true })}
         >
           <option value="">Select</option>
-          <option value="mr">mr</option>
-          <option value="ms">ms</option>
-          <option value="mrs">Mrs</option>
+          <option value="Mr">Mr</option>
+          <option value="Ms">Ms</option>
+          <option value="Mrs">Mrs</option>
         </select>
         {errors.title && <p className="error-message">Title is required</p>}
       </div>
@@ -253,9 +244,9 @@ const EditProfilePage = () => {
         <input
           className="form-input"
           type="text"
-          {...register("firstName", { required: true })}
+          {...register("first_name", { required: true })}
         />
-        {errors.firstName && (
+        {errors.first_name && (
           <p className="error-message">First Name is required</p>
         )}
       </div>
@@ -266,9 +257,9 @@ const EditProfilePage = () => {
         <input
           className="form-input"
           type="text"
-          {...register("lastName", { required: true })}
+          {...register("last_name", { required: true })}
         />
-        {errors.lastName && (
+        {errors.last_name && (
           <p className="error-message">Last Name is required</p>
         )}
       </div>
@@ -280,7 +271,7 @@ const EditProfilePage = () => {
           className="form-input"
           type="tel"
           readOnly
-          {...register("phoneNumber", {
+          {...register("phone_number", {
             required: true,
             // pattern: /^[0-9]{10}$/,
             pattern: {
@@ -289,7 +280,7 @@ const EditProfilePage = () => {
             },
           })}
         />
-        {errors.phoneNumber && (
+        {errors.phone_number && (
           <p className="error-message">Phone Number is required</p>
         )}
       </div>
@@ -313,7 +304,7 @@ const EditProfilePage = () => {
         <label>Blood Group</label>
         <select
           className="form-input"
-          {...register("bloodGroup", { required: true })}
+          {...register("blood_group", { required: true })}
         >
           <option value="">Select</option>
           <option value="A+">A+</option>
@@ -325,7 +316,7 @@ const EditProfilePage = () => {
           <option value="O+">O+</option>
           <option value="O-">O-</option>
         </select>
-        {errors.bloodGroup && (
+        {errors.blood_group && (
           <p className="error-message">Blood Group is required</p>
         )}
       </div>
@@ -336,9 +327,10 @@ const EditProfilePage = () => {
         <input
           className="form-input"
           type="date"
-          {...register("dateOfBirth", { required: true })}
+          max={today}
+          {...register("date_of_birth", { required: true })}
         />
-        {errors.dateOfBirth && (
+        {errors.date_of_birth && (
           <p className="error-message">Date of Birth is required</p>
         )}
       </div>
@@ -372,15 +364,22 @@ const EditProfilePage = () => {
       {/* Location */}
       <div className="form-group">
         <label>Location</label>
-        <input
+        <Autocomplete
+          apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
+          onPlaceSelected={handlePlaceSelected}
           className="form-input"
-          type="text"
+          types={["geocode"]}
+          defaultValue={location} // Set the default value for the input
+          // value={location} // Control the input value
+          onChange={(e) => setLocation(e.target.value)} // Handle input change
           {...register("location", { required: true })}
         />
         {errors.location && (
           <p className="error-message">Location is required</p>
         )}
       </div>
+      <input type="hidden" {...register("lat", { required: true })} />
+      <input type="hidden" {...register("lon", { required: true })} />
 
       {/* Last Blood Donation Date */}
       <div className="form-group">
@@ -388,9 +387,10 @@ const EditProfilePage = () => {
         <input
           className="form-input"
           type="date"
-          {...register("lastDonationDate", { required: true })}
+          max={today}
+          {...register("last_blood_donation_date", { required: true })}
         />
-        {errors.lastDonationDate && (
+        {errors.last_blood_donation_date && (
           <p className="error-message">Last Donation Date is required</p>
         )}
       </div>

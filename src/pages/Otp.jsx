@@ -30,42 +30,55 @@ const OTPVerificationComponent = () => {
   };
 
   const handleVerify = () => {
-    dispatch(setLoader(true));
     const otpString = otp.join("");
 
+    // Check if the OTP array is empty
+    if (otp.every((digit) => digit === "")) {
+      toast.error("OTP cannot be empty");
+      return;
+    }
+    if (otp.some((digit) => digit === "")) {
+      toast.error("All OTP fields must be filled");
+      return;
+    }
+
+    // Check if the length of the OTP string is correct
+    if (otpString.length !== 4) {
+      toast.error("OTP must be 4 digits");
+      return;
+    }
+    dispatch(setLoader(true));
     const data = {
       phone_number: phoneNum,
       otp_code: otpString,
     };
 
-    // console.log("data: ", data);
-    // return;
     try {
       dispatch(
         verifytOTP(data, (res) => {
-          console.log("data: ", data);
           console.log("verifytOTP: ", res);
-          // return;
-          if (res.code === 403) {
-            const errorMessage = res.error.otp_code;
-            console.log("errorMessage: ", errorMessage[0]);
-            // toast.error(errorMessage[0]);
-            toast.error(res.message);
-          } else {
+          if (res.code === 200) {
             // Handle success
-            // toast.success(res.message);
             localStorage.setItem("user_type", res.user_type);
             localStorage.setItem("is_profile_update", res.is_profile_update);
             localStorage.setItem("oAuth", `Bearer ${res.token}`);
-            toast.success(res.message);
-            navigate("/profile");
+            toast.success("Otp verified successfully");
+            if (res.is_profile_update === 0) {
+              navigate("/profile");
+            } else {
+              navigate("/home");
+            }
+          } else {
+            // Handle error
+            toast.error(res.message);
           }
           dispatch(setLoader(false));
         })
       );
     } catch (error) {
+      console.log("error: ", error);
       // Handle unexpected errors
-      toast.error(error);
+      toast.error(error.message || "An unexpected error occurred.");
       dispatch(setLoader(false));
     }
   };

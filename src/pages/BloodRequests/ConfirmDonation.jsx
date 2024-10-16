@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { MarkDonated, setLoader, ViewBloodRequest } from "../../redux/product";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -10,6 +10,10 @@ export default function ConfirmDonation() {
   const { id } = useParams();
   const [data, setData] = useState({});
   console.log("id: ", id);
+
+  const location = useLocation();
+
+  const donorId = location?.state?.donor?.donor_id || {};
 
   // const location = useLocation();
   // console.log("location: ", location);
@@ -27,6 +31,7 @@ export default function ConfirmDonation() {
             toast.error(res.errors);
           } else {
             setData(res);
+            console.log("res: ", res);
           }
         })
       );
@@ -39,20 +44,27 @@ export default function ConfirmDonation() {
   const confirmDonated = () => {
     dispatch(setLoader(true));
     console.log("data?.request_id: ", data?.request_id);
+
+    const dataToSend = {
+      request_id: data?.request_id,
+      donor_id: donorId,
+      units_donated: "1",
+    };
+
     try {
       dispatch(
         // MarkDonated({ request_id: requestId, donor_id: donorId }, (res) => {
-        MarkDonated(data?.request_id, (res) => {
+        MarkDonated(dataToSend, (res) => {
           console.log("res: ", res);
           dispatch(setLoader(false));
 
           if (res.errors) {
             toast.error(res.errors);
           } else if (res.code === 400) {
-            toast.error("You have already accepted this blood request.");
+            toast.error(res.message);
             navigate(`/donarlist/${id}`);
           } else if (res.code === 200) {
-            toast.success("Marked as donated successfully");
+            toast.success(res.message);
             navigate(`/donarlist/${id}`);
           }
         })

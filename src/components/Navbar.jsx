@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import "./NavBar.css";
 import { useEffect, useState } from "react";
 import { getProfile, setLoader } from "../redux/product";
@@ -14,25 +14,14 @@ function Navbar() {
   const [profileVerified, setProfileVerified] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const toggleProfileMenu = () => {
-    setShowProfileMenu(!showProfileMenu);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("user_type");
-    localStorage.removeItem("is_profile_update");
-    localStorage.removeItem("oAuth");
-    navigate("/"); // Change the path to your login or home page
-  };
+  const location = useLocation();
+  const [activeLink, setActiveLink] = useState(location.pathname);
 
   useEffect(() => {
     const storedUserType = localStorage.getItem("user_type");
+    const profileVerified = localStorage.getItem("is_profile_update");
     setUserType(storedUserType);
+    setProfileVerified(profileVerified);
   }, []);
 
   useEffect(() => {
@@ -44,28 +33,51 @@ function Navbar() {
           if (res.errors) {
             toast.error(res.errors);
           } else {
-            // Handle success
             setData(res?.user);
-            console.log('res?.user: ', res?.user);
-            setProfileVerified(res?.user?.profile_verified);
+            // setProfileVerified(res?.user?.profile_verified);
           }
           dispatch(setLoader(false));
         })
       );
     } catch (error) {
-      // Handle unexpected errors
       toast.error(error);
       dispatch(setLoader(false));
     }
   }, [dispatch]);
 
+  useEffect(() => {
+    setActiveLink(location.pathname);
+  }, [location.pathname]);
+
   const handleNavigation = (path) => {
-    if (profileVerified === "0") {
-      navigate("/viewprofile"); // Navigate to profile page if not verified
+    if (profileVerified === null || profileVerified === "0") {
+      toast.error("Please update your profile");
+      navigate("/profile");
+      return;
     } else {
-      navigate(path); // Navigate to the intended path
+      navigate(path);
     }
-    setIsOpen(false); // Close the menu after navigation
+    setActiveLink(path); // Set active link
+    setIsOpen(false);
+  };
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user_type");
+    localStorage.removeItem("is_profile_update");
+    localStorage.removeItem("oAuth");
+    navigate("/");
+  };
+
+  const handleMouseEnter = () => {
+    setShowProfileMenu(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowProfileMenu(false);
   };
 
   return (
@@ -83,15 +95,21 @@ function Navbar() {
         </NavLink>
         <NavLink
           to="/donate"
-          className={({ isActive }) => (isActive ? "active" : "")}
-          onClick={() => handleNavigation("/donate")}
+          className={activeLink === "/donate" ? "active" : ""}
+          onClick={(e) => {
+            e.preventDefault();
+            handleNavigation("/donate");
+          }}
         >
           Donate
         </NavLink>
         <NavLink
           to="/request"
-          className={({ isActive }) => (isActive ? "active" : "")}
-              onClick={() => handleNavigation("/request")}
+          className={activeLink === "/request" ? "active" : ""}
+          onClick={(e) => {
+            e.preventDefault();
+            handleNavigation("/request");
+          }}
         >
           Request
         </NavLink>
@@ -102,7 +120,7 @@ function Navbar() {
         >
           Profile
         </NavLink>
-        {userType === "2" && (
+        {(userType === "1" || userType === "3") && (
           <NavLink
             to="/approvals"
             className={({ isActive }) => (isActive ? "active" : "")}
@@ -112,9 +130,15 @@ function Navbar() {
           </NavLink>
         )}
       </div>
-      <div className="profile-container gap-3" onClick={toggleProfileMenu}>
+      <div
+        className="profile-container gap-3"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         <h5 style={{ margin: 0 }}>
-          {data?.name == null ? "Guest" : data?.name}
+          {data?.first_name == null
+            ? "Guest"
+            : `${data?.first_name} ${data?.last_name}`}
         </h5>
         <img
           src={data?.profile_picture || profilePic}
@@ -123,7 +147,11 @@ function Navbar() {
         />
         {showProfileMenu && (
           <div className="profile-menu">
-            <p>{data?.name}</p>
+            <p>
+              {data?.name == null
+                ? "Guest"
+                : `${data?.first_name} ${data?.last_name}`}
+            </p>
             <button onClick={handleLogout}>Logout</button>
           </div>
         )}

@@ -23,35 +23,35 @@ const BloodRequest = () => {
   const [activeTab, setActiveTab] = useState("open");
 
   const loadData = useCallback(
-    (tab) => {
+    (tab, page = 1) => {
       dispatch(setLoader(true)); // Start loading
       try {
         dispatch(
-          donateBloods(tab, (res) => {
-            console.log("res: ", res);
-            dispatch(setLoader(false));
+          donateBloods(
+            tab,
+            (res) => {
+              dispatch(setLoader(false));
 
-            if (res.errors) {
-              toast.error(res.errors);
-            } else {
-              if (tab === "open") {
-                // setOpenRequests(
-                //   res.requests.filter((req) => req.status === "In Process")
-                // );
-                setOpenRequests(res.requests);
-                setRequestCount((prevCount) => ({
-                  ...prevCount,
-                  matched: res.pagination.total,
-                }));
+              if (res.errors) {
+                toast.error(res.errors);
               } else {
-                setClosedRequests(res.requests);
-                setRequestCount((prevCount) => ({
-                  ...prevCount,
-                  unmatched: res.pagination.total,
-                }));
+                if (tab === "open") {
+                  setOpenRequests(res.requests);
+                  setRequestCount((prevCount) => ({
+                    ...prevCount,
+                    matched: res.pagination.total,
+                  }));
+                } else {
+                  setClosedRequests(res.requests);
+                  setRequestCount((prevCount) => ({
+                    ...prevCount,
+                    unmatched: res.pagination.total,
+                  }));
+                }
               }
-            }
-          })
+            },
+            page
+          )
         );
       } catch (error) {
         toast.error(error.message || "Error fetching requests");
@@ -71,18 +71,21 @@ const BloodRequest = () => {
   }, [dispatch, loadData]);
 
   const handleCardClick = (request) => {
+    navigate(`/bloodrequestdetail/${request.request_id}`);
+  };
+
+  const handleAcceptedDonorsClick = (request, event) => {
+    event.stopPropagation();
     navigate(`/donarlist/${request.request_id}`);
   };
 
-  const renderRequestCard = (request) => {
+  const renderRequestCard = (request, isOpen) => {
     return (
       <div
         className="request-card"
         key={request.request_id}
-        style={{ cursor: "pointer " }}
-        onClick={() => {
-          navigate(`/bloodrequestdetail/${request.request_id}`);
-        }}
+        style={{ cursor: "pointer" }}
+        onClick={() => handleCardClick(request)}
       >
         <div className="request-header">
           <div className="align-content-center">
@@ -93,7 +96,9 @@ const BloodRequest = () => {
             />
           </div>
           <div className="request-details">
-            <div className="request-id">Request ID: {request.request_id}</div>
+            <div className="request-id" style={{ overflowWrap: "anywhere" }}>
+              Request ID: {request.request_id}
+            </div>
             <div className="request-date">Date: {request.date}</div>
             <div className="request-units">
               Units Required: {request.units_required}
@@ -101,16 +106,18 @@ const BloodRequest = () => {
             <div className="request-address">Address: {request.address}</div>
             <div className="request-status">Status: {request.status}</div>
           </div>
-          <div className="blood-group">
-            <img src={bloodGroupImg} alt="Blood Group" />
-          </div>
+          {isOpen && (
+            <div className="blood-group">
+              <img src={bloodGroupImg} alt="Blood Group" />
+            </div>
+          )}
         </div>
 
         <div className="accept-donar-button justify-content-end">
           {request.view_donors && (
             <button
               className="accepted-donors-btn"
-              onClick={() => handleCardClick(request)}
+              onClick={(event) => handleAcceptedDonorsClick(request, event)}
             >
               Accepted Donors
             </button>
@@ -140,9 +147,9 @@ const BloodRequest = () => {
         </div>
         <div className="requests mb-5">
           {activeTab === "open" &&
-            openRequests.map((request) => renderRequestCard(request))}
+            openRequests.map((request) => renderRequestCard(request, true))}
           {activeTab === "closed" &&
-            closedRequests.map((request) => renderRequestCard(request))}
+            closedRequests.map((request) => renderRequestCard(request, false))}
         </div>
         <div>
           {activeTab === "open" && openRequests.length === 0 && (

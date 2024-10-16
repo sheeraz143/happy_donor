@@ -5,11 +5,19 @@ import { Link } from "react-router-dom";
 import { getProfile, setLoader, updateProfile } from "../redux/product";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const Profile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [today] = useState(() => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  });
 
   const {
     register,
@@ -24,7 +32,7 @@ const Profile = () => {
     try {
       dispatch(
         getProfile((res) => {
-          console.log("res: ", res.user);
+          console.log("res: ", res);
           // const user = res?.user;
           setValue("title", res?.user?.title);
           setValue("firstName", res?.user?.first_name);
@@ -58,8 +66,6 @@ const Profile = () => {
 
   // Function to handle form submission
   const onSubmit = (data) => {
-    console.log(data);
-
     dispatch(setLoader(true)); // Start loading
     try {
       const payload = {
@@ -82,7 +88,6 @@ const Profile = () => {
 
       dispatch(
         updateProfile(payload, (res) => {
-          console.log("res: ", res);
           if (res.errors) {
             toast.error(res.errors);
           } else {
@@ -122,9 +127,9 @@ const Profile = () => {
           {...register("title", { required: true })}
         >
           <option value="">Select</option>
-          <option value="mr">mr</option>
-          <option value="ms">ms</option>
-          <option value="mrs">Mrs</option>
+          <option value="Mr">Mr</option>
+          <option value="Ms">Ms</option>
+          <option value="Mrs">Mrs</option>
         </select>
         {errors.title && <p className="error-message">Title is required</p>}
       </div>
@@ -217,6 +222,7 @@ const Profile = () => {
         <input
           className="form-input"
           type="date"
+          max={today}
           {...register("dateOfBirth", { required: true })}
         />
         {errors.dateOfBirth && (
@@ -269,6 +275,7 @@ const Profile = () => {
         <input
           className="form-input"
           type="date"
+          max={today}
           {...register("lastDonationDate", { required: true })}
         />
         {errors.lastDonationDate && (

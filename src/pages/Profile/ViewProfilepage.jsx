@@ -104,65 +104,55 @@ export default function ViewProfilepage() {
             <span className="slider round"></span>
           </label>
         </div>
-        <div className="formpf-container mb-3">
+        <div
+          className="formpf-container mb-3"
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            navigate("/editprofile");
+          }}
+        >
           <img src={User} alt="profile" style={{ cursor: "pointer" }} />
-          <label
-            className="switch-label"
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              navigate("/editprofile");
-            }}
-          >
-            Edit Profile
-          </label>
+          <label className="switch-label">Edit Profile</label>
         </div>
-        <div className="formpf-container mb-3">
+        <div
+          className="formpf-container mb-3"
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            navigate("/donationhistory");
+          }}
+        >
           <img src={SuccessIcon} alt="profile" />
-          <label
-            className="switch-label"
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              navigate("/donationhistory");
-            }}
-          >
-            Donate History
-          </label>
+          <label className="switch-label">Donate History</label>
         </div>
-        <div className="formpf-container mb-3">
+        <div
+          className="formpf-container mb-3"
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            navigate("/bloodrequest");
+          }}
+        >
           <img src={Myrequest} alt="profile" />
-          <label
-            className="switch-label"
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              navigate("/bloodrequest");
-            }}
-          >
-            My Requests
-          </label>
+          <label className="switch-label">My Requests</label>
         </div>
-        <div className="formpf-container mb-3">
+        <div
+          className="formpf-container mb-3"
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            navigate("/selectlanguage");
+          }}
+        >
           <img src={Language} alt="profile" />
-          <label
-            className="switch-label"
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              navigate("/selectlanguage");
-            }}
-          >
-            Language
-          </label>
+          <label className="switch-label">Language</label>
         </div>
-        <div className="formpf-container mb-3">
+        <div
+          className="formpf-container mb-3"
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            navigate("/notifisetting");
+          }}
+        >
           <img src={Bell} alt="profile" />
-          <label
-            className="switch-label"
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              navigate("/notifisetting");
-            }}
-          >
-            Notification Preference
-          </label>
+          <label className="switch-label">Notification Preference</label>
         </div>
         {/* <div className="formpf-container mb-3">
           <img src={DarkMode} alt="profile" />
@@ -176,19 +166,26 @@ export default function ViewProfilepage() {
             Mode
           </label>
         </div> */}
-        <div className="formpf-container mb-3">
+        <div
+          className="formpf-container mb-3"
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            navigate("/emergencycontact");
+          }}
+        >
           <img src={Emergency} alt="profile" />
-          <label
-            className="switch-label"
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              navigate("/emergencycontact");
-            }}
-          >
-            Emergency Contact
-          </label>
+          <label className="switch-label">Emergency Contact</label>
         </div>
-        <div className="formpf-container mb-3">
+        <div
+          className="formpf-container mb-3"
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            localStorage.removeItem("user_type");
+            localStorage.removeItem("is_profile_update");
+            localStorage.removeItem("oAuth");
+            navigate("/");
+          }}
+        >
           <img src={Logout} alt="profile" />
           <label className="switch-label">Log Out</label>
         </div>

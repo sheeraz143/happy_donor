@@ -8,7 +8,8 @@ import PropTypes from "prop-types"; // Import PropTypes
 
 const MapComponent = ({ path }) => {
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyDfsJx7wDFEfu0_jKXwVHQBjFyLm8nfKvQ",
+    // googleMapsApiKey: "AIzaSyDfsJx7wDFEfu0_jKXwVHQBjFyLm8nfKvQ",
+    googleMapsApiKey: "AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0",
   });
 
   if (!isLoaded) return <div>Loading...</div>;
@@ -18,7 +19,7 @@ const MapComponent = ({ path }) => {
     path && path.length > 0 ? path[0] : { lat: 12.9716, lng: 77.5946 };
     // path && path.length > 0 ? path[0] : { lat: path[0]?.lat, lng: path[0]?.lng};
 
-  console.log("Polyline Path: ", path);
+  // console.log("Polyline Path: ", path);
 
   return (
     <GoogleMap

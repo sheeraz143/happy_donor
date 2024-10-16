@@ -30,7 +30,7 @@ export default function PostGratitudeMessage() {
     try {
       dispatch(
         ViewBloodRequest(requestId, (res) => {
-          console.log("res: ", res);
+          // console.log("res: ", res);
           dispatch(setLoader(false));
 
           if (res.errors) {
@@ -110,8 +110,8 @@ export default function PostGratitudeMessage() {
           } else if (res.code === 404) {
             toast.error(res.message);
           } else if (res.code === 200) {
+            navigate(`/donarlist/${requestId}`);
             toast.success(res.message);
-            navigate("");
           }
         })
       );
