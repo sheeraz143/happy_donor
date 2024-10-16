@@ -25,7 +25,7 @@ function Donate() {
     dispatch(setLoader(true)); // Start loading
     dispatch(
       BloodDonateList(tab, page, (res) => {
-        console.log("res: ", res);
+        // console.log("res: ", res);
         dispatch(setLoader(false));
 
         if (res.errors) {
