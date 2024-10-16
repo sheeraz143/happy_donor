@@ -59,7 +59,6 @@ const EditProfilePage = () => {
     try {
       dispatch(
         getProfile((res) => {
-          console.log("res: ", res.user);
           const user = res?.user;
           setProfileImage(res?.user?.profile_picture || logo);
           setValue("title", res?.user?.title);
@@ -110,7 +109,6 @@ const EditProfilePage = () => {
       try {
         dispatch(
           profilePicUpdate(formData, (res) => {
-            console.log("res: ", res);
             if (res.errors) {
               toast.error(res.errors);
             } else {
@@ -129,7 +127,6 @@ const EditProfilePage = () => {
   };
 
   const onSubmit = (data) => {
-    console.log(data);
     dispatch(setLoader(true)); // Start loading
     try {
       const formData = new FormData();
@@ -166,17 +163,15 @@ const EditProfilePage = () => {
       }
 
       // Log to ensure formData is correct
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${typeof value} - ${value}`);
-      }
+      // for (let [key, value] of formData.entries()) {
+      //   console.log(`${key}: ${typeof value} - ${value}`);
+      // }
 
       // Log changedData to ensure only changed fields are being sent
-      console.log("changedData: ", changedData);
 
       // Dispatch the action to update profile
       dispatch(
         updateProfile(formData, (res) => {
-          console.log("res: ", res);
           if (res.errors) {
             // Handle error response
             const errorMessages = Object.values(res.errors).flat().join(", ");

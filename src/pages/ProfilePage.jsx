@@ -32,7 +32,6 @@ const Profile = () => {
     try {
       dispatch(
         getProfile((res) => {
-          console.log("res: ", res);
           // const user = res?.user;
           setValue("title", res?.user?.title);
           setValue("firstName", res?.user?.first_name);

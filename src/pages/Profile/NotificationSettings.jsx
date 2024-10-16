@@ -22,7 +22,6 @@ export default function NotificationSettings() {
       newcampalertSMS: !!data.newcampalertSMS,
       adminnotificationSMS: !!data.adminnotificationSMS,
     };
-    console.log(formattedData);
 
     navigate("#");
   };

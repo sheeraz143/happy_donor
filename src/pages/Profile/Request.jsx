@@ -61,8 +61,6 @@ function Request() {
   };
 
   const onSubmit = (data) => {
-    console.log(data);
-    // return;
     dispatch(setLoader(true));
     try {
       const payload = {
@@ -86,7 +84,6 @@ function Request() {
 
       dispatch(
         requestBlood(payload, (res) => {
-          console.log("res: ", res);
           if (res.errors) {
             toast.error(res.errors);
           } else {

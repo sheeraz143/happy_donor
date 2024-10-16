@@ -9,14 +9,12 @@ export default function ConfirmDonation() {
   const dispatch = useDispatch();
   const { id } = useParams();
   const [data, setData] = useState({});
-  console.log("id: ", id);
 
   const location = useLocation();
 
   const donorId = location?.state?.donor?.donor_id || {};
 
   // const location = useLocation();
-  // console.log("location: ", location);
   // const request = location.state.donor || {}; // Retrieve the passed request object
 
   useEffect(() => {
@@ -24,14 +22,12 @@ export default function ConfirmDonation() {
     try {
       dispatch(
         ViewBloodRequest(id, (res) => {
-          console.log("res: ", res);
           dispatch(setLoader(false));
 
           if (res.errors) {
             toast.error(res.errors);
           } else {
             setData(res);
-            console.log("res: ", res);
           }
         })
       );
@@ -43,7 +39,6 @@ export default function ConfirmDonation() {
 
   const confirmDonated = () => {
     dispatch(setLoader(true));
-    console.log("data?.request_id: ", data?.request_id);
 
     const dataToSend = {
       request_id: data?.request_id,
@@ -55,7 +50,6 @@ export default function ConfirmDonation() {
       dispatch(
         // MarkDonated({ request_id: requestId, donor_id: donorId }, (res) => {
         MarkDonated(dataToSend, (res) => {
-          console.log("res: ", res);
           dispatch(setLoader(false));
 
           if (res.errors) {

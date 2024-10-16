@@ -37,15 +37,12 @@ export default function BloodrequestDetailPage() {
     try {
       dispatch(
         ViewBloodRequest(id, (res) => {
-          console.log("res: ", res);
           dispatch(setLoader(false));
 
           if (res.errors) {
             toast.error(res.errors);
           } else {
             setData(res);
-            // console.log("res: ", res);
-            // console.log("lat: ", typeof parseFloat(res.lat));
           }
         })
       );
@@ -87,7 +84,6 @@ export default function BloodrequestDetailPage() {
     try {
       dispatch(
         CancelBloodRequest(data.request_id, dataToSend, (res) => {
-          // console.log("res: ", res);
           if (res.code === 200) {
             toast.success(res.message);
             closeModal();

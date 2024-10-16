@@ -68,7 +68,6 @@ const mapStyles = [
 ];
 
 const MapComponent = ({ path }) => {
-  console.log("path: ", path);
 
   // const polylinePath = [
   //   { lat: 12.5186, lng: 78.213 }, // Krishnagiri

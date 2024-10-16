@@ -86,7 +86,6 @@ const RequestDetail = () => {
   const request = location.state?.request || {};
 
   // Use requestId as needed
-  console.log("Request :", request);
   const path = [
     {
       lat: parseFloat(request.lat),

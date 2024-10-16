@@ -23,7 +23,6 @@ const AcceptDonorList = () => {
     try {
       dispatch(
         AcceptedDonors(id, (res) => {
-          console.log("res: ", res);
           dispatch(setLoader(false));
 
           if (res.errors) {
@@ -36,7 +35,6 @@ const AcceptDonorList = () => {
             //   return acc;
             // }, {});
             // // setDonationStatus(initialStatus);
-            // console.log("initialStatus: ", initialStatus);
           }
         })
       );
@@ -46,9 +44,7 @@ const AcceptDonorList = () => {
     }
   }, [dispatch, id]);
 
-  const markAsDonated = (donor, donorId) => {
-    console.log("donor: ", donor);
-    console.log("donorId: ", donorId);
+  const markAsDonated = (donor) => {
     navigate(`/confirmdonation/${id}`, { state: { donor } });
   };
 

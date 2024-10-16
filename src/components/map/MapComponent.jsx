@@ -19,7 +19,6 @@ const MapComponent = ({ path }) => {
     path && path.length > 0 ? path[0] : { lat: 12.9716, lng: 77.5946 };
     // path && path.length > 0 ? path[0] : { lat: path[0]?.lat, lng: path[0]?.lng};
 
-  // console.log("Polyline Path: ", path);
 
   return (
     <GoogleMap

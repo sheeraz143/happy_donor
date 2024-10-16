@@ -50,7 +50,6 @@ const LoginComponent = () => {
     try {
       dispatch(
         requestOTP(number, (res) => {
-          console.log("res: ", res);
           if (res.errors) {
             toast.error(res.errors);
           } else {

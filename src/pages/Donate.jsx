@@ -26,7 +26,6 @@ function Donate() {
     dispatch(setLoader(true)); // Start loading
     dispatch(
       BloodDonateList(tab, (res) => {
-        console.log("res: ", res);
         dispatch(setLoader(false));
 
         if (res.errors) {
@@ -72,7 +71,6 @@ function Donate() {
     try {
       dispatch(
         DonateAccept(request?.request_id, (res) => {
-          console.log("res: ", res);
           if (res.code === 200) {
             toast.success(res.message);
           } else {

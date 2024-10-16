@@ -48,7 +48,6 @@ export default function ApproveRequests() {
               } else {
                 setRequests(res.requests);
                 setTotalRequests(res.pagination.total);
-                console.log("res: ", res);
               }
             },
             currentPage,
@@ -70,7 +69,6 @@ export default function ApproveRequests() {
     try {
       dispatch(
         ApproveAdminBloodRequest(requestId, (res) => {
-          // console.log("res: ", res);
           if (res.code === 200) {
             toast.success(res.message);
           } else {
@@ -98,12 +96,10 @@ export default function ApproveRequests() {
       closure_reason: closureReason,
       additional_comments: additionalComments,
     };
-    // return;
     dispatch(setLoader(true));
     try {
       dispatch(
         CancelBloodRequest(requestId, dataToSend, (res) => {
-          // console.log("res: ", res);
           if (res.code === 200) {
             toast.success(res.message);
             closeModal();

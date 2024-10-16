@@ -26,7 +26,6 @@ export default function ViewProfilepage() {
     try {
       dispatch(
         getProfile((res) => {
-          console.log("res: ", res.user);
           setData(res?.user);
           if (res.errors) {
             toast.error(res.errors);

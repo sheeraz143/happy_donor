@@ -30,7 +30,6 @@ export default function PostGratitudeMessage() {
     try {
       dispatch(
         ViewBloodRequest(requestId, (res) => {
-          // console.log("res: ", res);
           dispatch(setLoader(false));
 
           if (res.errors) {
@@ -95,15 +94,14 @@ export default function PostGratitudeMessage() {
     image.forEach((image) => {
       formData.append("media[]", image);
     });
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
+    // for (let [key, value] of formData.entries()) {
+    //   console.log(`${key}: ${value}`);
+    // }
 
     dispatch(setLoader(true));
     try {
       dispatch(
         SendGratitudeMessage(formData, (res) => {
-          console.log("res: ", res);
           dispatch(setLoader(false));
           if (res.errors) {
             toast.error(res.errors);

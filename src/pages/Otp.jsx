@@ -56,7 +56,6 @@ const OTPVerificationComponent = () => {
     try {
       dispatch(
         verifytOTP(data, (res) => {
-          console.log("verifytOTP: ", res);
           if (res.code === 200) {
             // Handle success
             localStorage.setItem("user_type", res.user_type);
@@ -76,7 +75,6 @@ const OTPVerificationComponent = () => {
         })
       );
     } catch (error) {
-      console.log("error: ", error);
       // Handle unexpected errors
       toast.error(error.message || "An unexpected error occurred.");
       dispatch(setLoader(false));

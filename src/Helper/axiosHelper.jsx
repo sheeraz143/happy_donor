@@ -113,7 +113,6 @@ const helper = {
 
     try {
       const res = await axios.patch(url, data, axiosConfig);
-      console.log("res: ", res);
       return res; // Return the response directly if successful
     } catch (err) {
       console.error("Axios error: ", err); // Log the error for debugging
