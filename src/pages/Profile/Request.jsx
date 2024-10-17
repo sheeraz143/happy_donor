@@ -220,6 +220,10 @@ function Request() {
           className="form-input"
           type="date"
           min={today}
+          onFocus={(e) => {
+            e.target.showPicker();
+          }}
+          style={{ cursor: "pointer" }}
           {...register("requiredDate", { required: true })}
         />
         {errors.requiredDate && (

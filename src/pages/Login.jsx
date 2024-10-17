@@ -11,17 +11,6 @@ const LoginComponent = () => {
   const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState("+91");
 
-  // const handleChange = (e) => {
-  //   const value = e.target.value;
-  //   console.log("value: ", value);
-  //   // Allow only numbers and limit to 10 characters
-  //   if (/^\d{0,12}$/.test(value)) {
-  //     // if (/^\+?(\d{0,12})$/.test(value)) {
-  //     setInputValue(value);
-  //   }
-
-  // };
-
   const handleChange = (e) => {
     let value = e.target.value;
     // If the input value doesn't start with +91, add it
@@ -35,12 +24,12 @@ const LoginComponent = () => {
   };
 
   const onSubmit = () => {
-    // if (inputValue.trim() === "") {
-    //   toast.error("Phone number cannot be empty");
-    //   return;
-    // }
-    if (inputValue.trim() === "+91" || inputValue.length !== 13) {
+    if (inputValue.trim() === "+91") {
       toast.error("Phone number cannot be empty");
+      return;
+    }
+    if (inputValue.length !== 13) {
+      toast.error("Please enter a valid 10-digit phone number");
       return;
     }
     dispatch(setLoader(true)); // Start loading
@@ -62,7 +51,7 @@ const LoginComponent = () => {
       );
     } catch (error) {
       // Handle unexpected errors
-      toast.error(error);
+      toast.error(error.message);
       dispatch(setLoader(false));
     }
   };

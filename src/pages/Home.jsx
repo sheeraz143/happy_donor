@@ -91,15 +91,17 @@ function Home() {
             />
           </div>
           <div className="request-details ms-3">
-            <div className="request-id">Request ID: {request?.id}</div>
-            <div className="request-date">
+            <div className="request-id text-start">
+              Request ID: {request?.id}
+            </div>
+            <div className="request-date text-start" style={{ textWrap: "nowrap" }}>
               Attender: {request?.attender_first_name}{" "}
               {request?.attender_last_name}
             </div>
-            <div className="request-units">
+            <div className="request-units text-start">
               Units Required: {request?.quantity_units}
             </div>
-            <div className="request-address">
+            <div className="request-address text-start">
               Address: {request?.delivery_address}
             </div>
           </div>

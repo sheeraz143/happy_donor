@@ -20,6 +20,7 @@ export default function ApproveRequests() {
   const [closureReason, setClosureReason] = useState("");
   const [additionalComments, setAdditionalComments] = useState("");
   const [requestId, setRequestId] = useState("");
+  const [refresh, setRefresh] = useState(false);
 
   const openModal = (request_id) => {
     console.log("request_id: ", request_id);
@@ -61,7 +62,7 @@ export default function ApproveRequests() {
     };
 
     fetchRequests();
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage, refresh]);
 
   const handleApprove = (requestId) => {
     dispatch(setLoader(true));
@@ -71,6 +72,7 @@ export default function ApproveRequests() {
         ApproveAdminBloodRequest(requestId, (res) => {
           if (res.code === 200) {
             toast.success(res.message);
+            setRefresh(!refresh);
           } else {
             toast.error(res.message);
           }
@@ -103,6 +105,7 @@ export default function ApproveRequests() {
           if (res.code === 200) {
             toast.success(res.message);
             closeModal();
+            setRefresh(!refresh);
           } else {
             toast.error(res.message);
           }
@@ -120,7 +123,9 @@ export default function ApproveRequests() {
       {requests?.map((request) => (
         <div className="card mb-3" key={request.request_id}>
           <div className="">
-            <p className="card-text text-start">Patient Name: {request.patient_name}</p>
+            <p className="card-text text-start">
+              Patient Name: {request.patient_name}
+            </p>
             {/* <p className="card-text text-start">
               Patient Mobile: {request.patient_mobile}
             </p> */}

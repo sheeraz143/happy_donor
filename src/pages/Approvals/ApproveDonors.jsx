@@ -120,6 +120,8 @@ export default function ApproveDonors() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRequests, setTotalRequests] = useState(0);
   const perPage = 10;
+  const [refresh, setRefresh] = useState(false);
+
   // const [modalIsOpen, setModalIsOpen] = useState(false);
   // const [closureReason, setClosureReason] = useState("");
   // const [additionalComments, setAdditionalComments] = useState("");
@@ -152,7 +154,6 @@ export default function ApproveDonors() {
               } else {
                 setRequests(res.requests);
                 setTotalRequests(res.pagination.total);
-                console.log("res: ", res);
               }
             },
             currentPage,
@@ -166,7 +167,7 @@ export default function ApproveDonors() {
     };
 
     fetchRequests();
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage, refresh]);
 
   const handleApprove = (request) => {
     // console.log("request: ", request);
@@ -184,6 +185,7 @@ export default function ApproveDonors() {
           // console.log("res: ", res);
           if (res.code === 200) {
             toast.success(res.message);
+            setRefresh(!refresh);
           } else {
             toast.error(res.message);
           }
@@ -220,6 +222,7 @@ export default function ApproveDonors() {
           // console.log("res: ", res);
           if (res.code === 200) {
             toast.success(res.message);
+            setRefresh(!refresh);
             // closeModal();
           } else {
             toast.error(res.message);

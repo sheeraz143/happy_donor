@@ -53,6 +53,14 @@ const EditProfilePage = () => {
     [setValue]
   ); // Add dependencies if any
 
+  const handlePlaceSelected = (place) => {
+    if (place.geometry) {
+      setValue("location", place.formatted_address);
+      setValue("lat", String(place.geometry.location.lat())); // Convert to string
+      setValue("lon", String(place.geometry.location.lng())); // Convert to string
+    }
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
     dispatch(setLoader(true)); // Start loading
@@ -61,23 +69,27 @@ const EditProfilePage = () => {
         getProfile((res) => {
           const user = res?.user;
           setProfileImage(res?.user?.profile_picture || logo);
-          setValue("title", res?.user?.title);
-          setValue("first_name", res?.user?.first_name);
-          setValue("last_name", res?.user?.last_name);
-          setValue("phone_number", res?.user?.phone_number);
-          setValue("email", res?.user?.email);
-          setValue("blood_group", res?.user?.blood_group);
-          setValue("date_of_birth", res?.user?.date_of_birth);
-          setValue("gender", res?.user?.gender);
-          setValue("address", res?.user?.address);
-          setValue("location", res?.user?.location);
-          setValue(
-            "last_blood_donation_date",
-            res?.user?.last_blood_donation_date
-          );
-          fetchAddress(res?.user?.lat, res?.user?.lon);
+          setValue("title", user?.title);
+          setValue("first_name", user?.first_name);
+          setValue("last_name", user?.last_name);
+          setValue("phone_number", user?.phone_number);
+          setValue("email", user?.email);
+          setValue("blood_group", user?.blood_group);
+          setValue("date_of_birth", user?.date_of_birth);
+          setValue("gender", user?.gender);
+          setValue("address", user?.address);
+          setValue("location", user?.location);
+          setValue("last_blood_donation_date", user?.last_blood_donation_date);
+
+          // Fetch latitude and longitude if they exist
+          if (user?.lat && user?.lon) {
+            setValue("lat", user.lat);
+            setValue("lon", user.lon);
+            fetchAddress(user.lat, user.lon);
+          }
 
           setOriginalData(user);
+
           if (res.errors) {
             toast.error(res.errors);
           } else {
@@ -87,18 +99,10 @@ const EditProfilePage = () => {
         })
       );
     } catch (error) {
-      // Handle unexpected errors
-      toast.error(error);
+      toast.error(error.message || "An unexpected error occurred.");
       dispatch(setLoader(false));
     }
   }, [dispatch, fetchAddress, setValue]);
-  const handlePlaceSelected = (place) => {
-    if (place.geometry) {
-      setValue("location", place.formatted_address);
-      setValue("lat", place.geometry.location.lat());
-      setValue("lon", place.geometry.location.lng());
-    }
-  };
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
@@ -109,6 +113,7 @@ const EditProfilePage = () => {
       try {
         dispatch(
           profilePicUpdate(formData, (res) => {
+            console.log("res: ", res);
             if (res.errors) {
               toast.error(res.errors);
             } else {
@@ -127,20 +132,17 @@ const EditProfilePage = () => {
   };
 
   const onSubmit = (data) => {
+    // console.log("Received data: ", data); // Log the incoming data
+
     dispatch(setLoader(true)); // Start loading
     try {
       const formData = new FormData();
-
-      // Create a map for changed data
       const changedData = {};
 
       // Append fields to formData if they have changed and are not undefined
       Object.keys(data).forEach((key) => {
         if (data[key] !== originalData[key] && data[key] !== undefined) {
-          // Handle lat and lon separately
-          if (key === "lat" || key === "lon") return;
-
-          // Handle boolean values
+          // Handle boolean values separately
           if (key === "availability" || key === "termsAccepted") {
             formData.append(key, Boolean(data[key]).toString());
           } else {
@@ -151,44 +153,32 @@ const EditProfilePage = () => {
           changedData[key] = data[key];
         }
       });
+      // console.log("changedData: ", changedData);
 
-      // Convert lat and lon to string if they exist and are changed
-      if (data.lat !== originalData.lat && data.lat !== undefined) {
-        formData.append("lat", data.lat.toString());
-        changedData.lat = data.lat.toString();
-      }
-      if (data.lon !== originalData.lon && data.lon !== undefined) {
-        formData.append("lon", data.lon.toString());
-        changedData.lon = data.lon.toString();
-      }
-
-      // Log to ensure formData is correct
+      // // Log formData for verification
       // for (let [key, value] of formData.entries()) {
       //   console.log(`${key}: ${typeof value} - ${value}`);
       // }
 
-      // Log changedData to ensure only changed fields are being sent
-
-      // Dispatch the action to update profile
+      // Dispatch action to update profile
       dispatch(
         updateProfile(formData, (res) => {
-          if (res.errors) {
-            // Handle error response
-            const errorMessages = Object.values(res.errors).flat().join(", ");
-            toast.error(errorMessages); // Show error messages
-          } else {
-            // Handle success
-            toast.success(res.message);
+          console.log("Response: ", res);
+          dispatch(setLoader(false)); // Stop loading
 
-            navigate("/viewprofile");
+          // Check for response status
+          if (res.status === true) {
+            toast.success(res.message); // Show success message
+            navigate("/viewprofile"); // Navigate to view profile
+          } else {
+            const errorMessages = res.message || "An error occurred.";
+            toast.error(errorMessages); // Show error messages
           }
-          dispatch(setLoader(false));
         })
       );
     } catch (error) {
-      // Handle unexpected errors
       toast.error(error.message || "An unexpected error occurred.");
-      dispatch(setLoader(false));
+      dispatch(setLoader(false)); // Stop loading
     }
   };
 
@@ -355,7 +345,6 @@ const EditProfilePage = () => {
         />
         {errors.address && <p className="error-message">Address is required</p>}
       </div>
-
       {/* Location */}
       <div className="form-group">
         <label>Location</label>
@@ -365,16 +354,17 @@ const EditProfilePage = () => {
           className="form-input"
           types={["geocode"]}
           defaultValue={location} // Set the default value for the input
-          // value={location} // Control the input value
+          // Controlled component (uncomment if necessary)
+          // value={location}
           onChange={(e) => setLocation(e.target.value)} // Handle input change
-          {...register("location", { required: true })}
+          {...register("location", { required: true })} // Register location
         />
         {errors.location && (
           <p className="error-message">Location is required</p>
         )}
       </div>
-      <input type="hidden" {...register("lat", { required: true })} />
-      <input type="hidden" {...register("lon", { required: true })} />
+      <input type="hidden" {...register("lat", { required: false })} />
+      <input type="hidden" {...register("lon", { required: false })} />
 
       {/* Last Blood Donation Date */}
       <div className="form-group">

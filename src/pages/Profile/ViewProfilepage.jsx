@@ -54,7 +54,8 @@ export default function ViewProfilepage() {
             <img
               src={getData?.profile_picture || profImg}
               alt="Profile"
-              style={{ height: "70px", width: "70px", borderRadius: "50%" }}
+              className="profile_img"
+              // style={{ height: "70px", width: "70px", borderRadius: "50%" }}
             />
             {/* Fallback to default image */}
           </div>
@@ -74,6 +75,7 @@ export default function ViewProfilepage() {
             <img
               src={getData?.bloodGroupImage || bloodGroupImg}
               alt="Blood Group"
+              className="Blood_Group_img"
             />{" "}
             {/* Fallback to default blood group image */}
           </div>

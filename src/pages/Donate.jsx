@@ -147,7 +147,48 @@ function Donate() {
   );
 
   const renderOthersCard = (request) => (
-    <div className="request-card" key={request?.request_id}>
+    // <div className="request-card" key={request?.request_id}>
+    //   <div className="request-header d-flex align-items-center">
+    //     <div className="align-content-center">
+    //       <img
+    //         src={request?.profile_picture || profImg}
+    //         alt="Profile"
+    //         style={{
+    //           border: "1px solid gray",
+    //           borderRadius: "50%",
+    //           height: "60px",
+    //           width: "60px",
+    //           objectFit: "cover",
+    //         }}
+    //       />
+    //     </div>
+    //     <div className="request-details ms-3">
+    //       <div className="text-start fw-bold">
+    //         {request?.attender_first_name}
+    //       </div>
+    //       <div className="text-start">
+    //         Blood units: {request?.units_required}
+    //       </div>
+    //       <div className="text-start">{request?.date}</div>
+    //       <div className="text-start">{request?.location}</div>
+    //     </div>
+    //     <div className="blood-group ms-auto">
+    //       <img src={bloodGroupImg} alt="Blood Group" />
+    //     </div>
+    //     <div className="icon-container d-flex me-3">
+    //       <Link to="#" className="share-link me-2">
+    //         <img src={shareIcon} alt="Share" className="icon-img" />
+    //       </Link>
+    //       <Link to="#" className="location-link">
+    //         <img src={locationIcon} alt="Location" className="icon-img" />
+    //       </Link>
+    //     </div>
+    //   </div>
+    // </div>
+    <div className="request-card position-relative" key={request?.request_id}>
+      {request.is_critical && (
+        <div className="emergency-tag position-absolute">Emergency</div>
+      )}
       <div className="request-header d-flex align-items-center">
         <div className="align-content-center">
           <img
@@ -163,23 +204,29 @@ function Donate() {
           />
         </div>
         <div className="request-details ms-3">
-          <div className="text-start fw-bold">
-            {request?.attender_first_name}
-          </div>
+          <div className="text-start fw-bold">{request?.name}</div>
+          <div className="text-start">{request?.location}</div>
           <div className="text-start">
             Blood units: {request?.units_required}
           </div>
           <div className="text-start">{request?.date}</div>
-          <div className="text-start">{request?.location}</div>
         </div>
         <div className="blood-group ms-auto">
           <img src={bloodGroupImg} alt="Blood Group" />
         </div>
+      </div>
+
+      <div className="accept-donar-button d-flex align-items-center mt-3">
         <div className="icon-container d-flex me-3">
           <Link to="#" className="share-link me-2">
             <img src={shareIcon} alt="Share" className="icon-img" />
           </Link>
-          <Link to="#" className="location-link">
+          <Link
+            to={`https://www.google.com/maps?q=${request.lat},${request.lon}`}
+            className="location-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <img src={locationIcon} alt="Location" className="icon-img" />
           </Link>
         </div>
