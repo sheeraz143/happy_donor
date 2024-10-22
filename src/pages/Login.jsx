@@ -82,7 +82,7 @@ const LoginComponent = () => {
       </div>
 
       {/* Get OTP Button */}
-      <a href="/index.html">
+      <a href="/app.html">
       <button>
         Go to Index
       </button>
