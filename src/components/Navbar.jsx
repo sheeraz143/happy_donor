@@ -69,7 +69,7 @@ function Navbar() {
     localStorage.removeItem("user_type");
     localStorage.removeItem("is_profile_update");
     localStorage.removeItem("oAuth");
-    navigate("/");
+    navigate("/login");
   };
 
   const handleMouseEnter = () => {

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import "../../css/BloodRequest.css";
 import bloodGroupImg from "../../assets/bloodgroup.png";
-// import profPicImg from "../../assets/profpic.png";
+import profPicImg from "../../assets/prof_img.png";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -90,7 +90,7 @@ const BloodRequest = () => {
         <div className="request-header">
           <div className="align-content-center">
             <img
-              src={request.profile_picture}
+              src={request.profile_picture || profPicImg}
               alt="Profile"
               style={{ height: "70px", width: "70px", borderRadius: "50%" }}
             />

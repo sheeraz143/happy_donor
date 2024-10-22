@@ -100,7 +100,8 @@ nav a.active {
 /* Navbar styles */
 /* Navbar styles */
 nav {
-  background-color: #fcf1f1;
+  /* background-color: #fcf1f1; */
+  background-color: #d9d9d9 !important;
   padding: 1rem;
   display: flex;
   justify-content: space-between;

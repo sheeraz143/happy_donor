@@ -94,7 +94,7 @@ function Home() {
             <div className="request-id text-start">
               Request ID: {request?.id}
             </div>
-            <div className="request-date text-start" style={{ textWrap: "nowrap" }}>
+            <div className="request-date text-start">
               Attender: {request?.attender_first_name}{" "}
               {request?.attender_last_name}
             </div>
@@ -113,12 +113,20 @@ function Home() {
           </div>
         </div>
 
-        <div className="accept-donor-button d-flex align-items-center mt-3">
+        <div className="accept-donor-button d-flex justify-content-around align-items-center ">
           <div className="icon-container d-flex me-3">
             <Link to="#" className="share-link me-2">
               <img src={shareIcon} alt="Share" className="icon-img" />
             </Link>
-            <Link to="#" className="location-link">
+            {/* <Link to="#" className="location-link">
+              <img src={locationIcon} alt="Location" className="icon-img" />
+            </Link> */}
+            <Link
+              to={`https://www.google.com/maps?q=${request.delivery_lat},${request.delivery_lon}`}
+              className="location-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img src={locationIcon} alt="Location" className="icon-img" />
             </Link>
           </div>

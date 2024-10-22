@@ -59,7 +59,7 @@ function App() {
   const location = useLocation();
 
   const hideNavbarAndFooter =
-    location.pathname === "/" ||
+    location.pathname === "/login" ||
     location.pathname === "/otp" ||
     location.pathname === "/map" ||
     location.pathname === "/profile";
@@ -70,10 +70,10 @@ function App() {
       <SimpleBackdrop />
       {!hideNavbarAndFooter && <Navbar />}
       <Routes>
-        <Route path="/" element={<LoginComponent />} />
+        <Route path="/login" element={<LoginComponent />} />
         <Route path="/otp" element={<OTPVerificationComponent />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="/home" element={<Home />} />
+        <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/viewprofile" element={<ViewProfilepage />} />
           <Route path="/approvals" element={<Approvals />} />

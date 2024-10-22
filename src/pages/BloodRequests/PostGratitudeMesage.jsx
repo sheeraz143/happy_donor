@@ -120,7 +120,7 @@ export default function PostGratitudeMessage() {
   };
 
   return (
-    <div>
+    <div className="d-flex flex-column">
       <h2 className="mt-4">Post Gratitude Message</h2>
       <div
         className="card col-lg-8 col-md-8  col-sm-8 mx-auto align-items-start mt-5 mb-5 gap-3"
@@ -139,8 +139,8 @@ export default function PostGratitudeMessage() {
         Dear Donors,
       </h5>
 
-      <div className="col-lg-7 col-md-8 mx-auto mt-4">
-        <div className="border p-3 rounded shadow-sm bg-white">
+      <div className="col-lg-7 col-md-8 col-sm-8 mx-auto mt-4">
+        <div className="border p-3 rounded shadow-sm bg-white d-flex flex-column">
           <input
             className=" col-lg-8 col-md-8  col-sm-8 mb-4"
             placeholder=" Thank you for your donation! Your generosity has saved lives."

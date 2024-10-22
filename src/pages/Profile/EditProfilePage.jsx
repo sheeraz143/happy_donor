@@ -313,6 +313,9 @@ const EditProfilePage = () => {
           className="form-input"
           type="date"
           max={today}
+          onFocus={(e) => {
+            e.target.showPicker();
+          }}
           {...register("date_of_birth", { required: true })}
         />
         {errors.date_of_birth && (
@@ -373,6 +376,9 @@ const EditProfilePage = () => {
           className="form-input"
           type="date"
           max={today}
+          onFocus={(e) => {
+            e.target.showPicker();
+          }}
           {...register("last_blood_donation_date", { required: true })}
         />
         {errors.last_blood_donation_date && (

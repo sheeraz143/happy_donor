@@ -119,98 +119,100 @@ export default function ApproveRequests() {
   };
 
   return (
-    <div className="cards-container mt-5 mb-5 col-lg-4 mx-auto">
-      {requests?.map((request) => (
-        <div className="card mb-3" key={request.request_id}>
-          <div className="">
-            <p className="card-text text-start">
-              Patient Name: {request.patient_name}
-            </p>
-            {/* <p className="card-text text-start">
+    <div className="d-flex">
+      <div className="cards-container mt-5 mb-5 col-lg-4 mx-auto">
+        {requests?.map((request) => (
+          <div className="card mb-3" key={request.request_id}>
+            <div className="">
+              <p className="card-text text-start">
+                Patient Name: {request.patient_name}
+              </p>
+              {/* <p className="card-text text-start">
               Patient Mobile: {request.patient_mobile}
             </p> */}
-            <p className="card-text text-start">
-              Attender Name: {request.attender_name}
-            </p>
-            <p className="card-text text-start">
-              Attender Mobile: {request.attender_mobile_number}
-            </p>
-            <p
-              className="card-text text-start"
-              style={{ overflowWrap: "anywhere" }}
-            >
-              Request ID: {request.request_id}
-            </p>
-            <p className="card-text text-start">Date: {request.date}</p>
-            <p className="card-text text-start">
-              Units Required: {request.units_required}
-            </p>
-            <p className="card-text text-start">Address: {request.address}</p>
-            <div className="d-flex justify-content-between mt-4">
-              <button
-                className="btn btn-danger"
-                // onClick={() => handleReject(request.request_id)}
-                onClick={() => openModal(request.request_id)}
+              <p className="card-text text-start">
+                Attender Name: {request.attender_name}
+              </p>
+              <p className="card-text text-start">
+                Attender Mobile: {request.attender_mobile_number}
+              </p>
+              <p
+                className="card-text text-start"
+                style={{ overflowWrap: "anywhere" }}
               >
-                Reject
+                Request ID: {request.request_id}
+              </p>
+              <p className="card-text text-start">Date: {request.date}</p>
+              <p className="card-text text-start">
+                Units Required: {request.units_required}
+              </p>
+              <p className="card-text text-start">Address: {request.address}</p>
+              <div className="d-flex justify-content-between mt-4">
+                <button
+                  className="btn btn-danger"
+                  // onClick={() => handleReject(request.request_id)}
+                  onClick={() => openModal(request.request_id)}
+                >
+                  Reject
+                </button>
+                <button
+                  className="btn btn-success"
+                  onClick={() => handleApprove(request.request_id)}
+                >
+                  Approve
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+        <Pagination
+          align="center"
+          className="mb-4"
+          current={currentPage}
+          total={totalRequests}
+          pageSize={perPage}
+          onChange={(page) => {
+            setCurrentPage(page);
+          }}
+        />
+
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          contentLabel="Gratitude Message"
+          ariaHideApp={false}
+          className="Modal"
+          overlayClassName="Overlay"
+        >
+          <div className="d-flex flex-column align-items-center ">
+            <h2>Cancel Blood Request</h2>
+            <label className="text-start col-lg-6 col-md-6 col-sm-6">
+              Closure reason
+            </label>
+            <input
+              className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
+              value={closureReason}
+              onChange={(e) => setClosureReason(e.target.value)}
+            />
+            <label className="text-start col-lg-6 col-md-6 col-sm-6">
+              Additional comments
+            </label>
+            <input
+              className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
+              value={additionalComments}
+              onChange={(e) => setAdditionalComments(e.target.value)}
+            />
+            <div className="d-flex justify-content-evenly col-lg-6 col-md-6 col-sm-6">
+              <button onClick={closeModal} className="btn btn-primary">
+                Close
               </button>
-              <button
-                className="btn btn-success"
-                onClick={() => handleApprove(request.request_id)}
-              >
-                Approve
+              <button onClick={handleSubmit} className="btn btn-primary">
+                Submit
               </button>
             </div>
           </div>
-        </div>
-      ))}
-      <Pagination
-        align="center"
-        className="mb-4"
-        current={currentPage}
-        total={totalRequests}
-        pageSize={perPage}
-        onChange={(page) => {
-          setCurrentPage(page);
-        }}
-      />
-
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Gratitude Message"
-        ariaHideApp={false}
-        className="Modal"
-        overlayClassName="Overlay"
-      >
-        <div className="d-flex flex-column align-items-center ">
-          <h2>Cancel Blood Request</h2>
-          <label className="text-start col-lg-6 col-md-6 col-sm-6">
-            Closure reason
-          </label>
-          <input
-            className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
-            value={closureReason}
-            onChange={(e) => setClosureReason(e.target.value)}
-          />
-          <label className="text-start col-lg-6 col-md-6 col-sm-6">
-            Additional comments
-          </label>
-          <input
-            className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
-            value={additionalComments}
-            onChange={(e) => setAdditionalComments(e.target.value)}
-          />
-          <div className="d-flex justify-content-evenly col-lg-6 col-md-6 col-sm-6">
-            <button onClick={closeModal} className="btn btn-primary">
-              Close
-            </button>
-            <button onClick={handleSubmit} className="btn btn-primary">
-              Submit
-            </button>
-          </div>
-        </div>
-      </Modal>
+        </Modal>
+      </div>
     </div>
   );
 }

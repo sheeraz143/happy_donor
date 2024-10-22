@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../assets/logo.png";
 import "../css/LoginComponent.css";
 import { useNavigate } from "react-router";
@@ -11,6 +11,15 @@ const LoginComponent = () => {
   const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState("+91");
 
+  useEffect(() => {
+    const auth = localStorage.getItem("oAuth");
+
+    if (auth) {
+      navigate("/home");
+    } else {
+      navigate("/login");cd 
+    }
+  }, []);
   const handleChange = (e) => {
     let value = e.target.value;
     // If the input value doesn't start with +91, add it

@@ -69,7 +69,7 @@ export default function ConfirmDonation() {
     }
   };
   return (
-    <div className="">
+    <div className="d-flex flex-column">
       <h2>Confirm Donation</h2>
       <div
         className="card col-lg-8 col-md-8  col-sm-8 mx-auto align-items-start mt-5 mb-5 gap-3"

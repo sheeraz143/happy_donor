@@ -105,103 +105,104 @@ export default function BloodrequestDetailPage() {
         <MapComponent
           path={[{ lat: parseFloat(data.lat), lng: parseFloat(data.lon) }]}
         />
-
-        <div className="col-lg-6 col-md-8 col-sm-10 mx-auto mt-5">
-          <div className="request-card" key={data.request_id}>
-            <div className="request-header d-flex align-items-center">
-              <div className="align-content-center">
-                <img
-                  src={data.profile_picture}
-                  alt="Profile"
-                  style={{
-                    width: "120px",
-                    height: "120px",
-                    borderRadius: "50%",
-                  }}
-                />
-              </div>
-              <div className="request-details ms-3">
-                <div
-                  className="text-start"
-                  style={{ overflowWrap: "anywhere" }}
-                >
-                  Request ID: {data.request_id}
+        <div className="d-flex flex-column">
+          <div className="col-lg-6 col-md-8 col-sm-10 mx-auto mt-5">
+            <div className="request-card" key={data.request_id}>
+              <div className="request-header d-flex align-items-center">
+                <div className="align-content-center">
+                  <img
+                    src={data.profile_picture}
+                    alt="Profile"
+                    style={{
+                      width: "120px",
+                      height: "120px",
+                      borderRadius: "50%",
+                    }}
+                  />
                 </div>
-                <div className="text-start">Date: {data.date}</div>
-                <div className="text-start">Units: {data.units_required}</div>
-                <div className="text-start">Address: {data.address}</div>
-              </div>
-              <div className="blood-group ms-auto">
-                <img src={bloodGroupImg} alt="Blood Group" />
+                <div className="request-details ms-3">
+                  <div
+                    className="text-start"
+                    style={{ overflowWrap: "anywhere" }}
+                  >
+                    Request ID: {data.request_id}
+                  </div>
+                  <div className="text-start">Date: {data.date}</div>
+                  <div className="text-start">Units: {data.units_required}</div>
+                  <div className="text-start">Address: {data.address}</div>
+                </div>
+                <div className="blood-group ms-auto">
+                  <img src={bloodGroupImg} alt="Blood Group" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="col-lg-5 col-md-8 col-sm-10 mx-auto mt-3">
-          <Steps
-            progressDot
-            current={currentStep}
-            direction="vertical"
-            items={[
-              {
-                title: "Initiated",
-                description: "",
-              },
-              {
-                title: "Active",
-                description: "",
-              },
-              {
-                title: "In Progress",
-                description: "",
-              },
-              {
-                title: "Completed",
-                description: "",
-              },
-            ]}
-          />
-          <div
-            className="d-flex form-control"
-            style={{
-              background: "#D9D9D9",
-              padding: "15px",
-              borderRadius: "10px",
-            }}
-          >
-            <input
-              style={{
-                width: "100%",
-                border: "none",
-                outline: "none",
-                background: "#D9D9D9",
-                color: "black",
-              }}
-              placeholder="Enter Your Queries"
-              className=""
+          <div className="col-lg-5 col-md-8 col-sm-10 mx-auto mt-3">
+            <Steps
+              progressDot
+              current={currentStep}
+              direction="vertical"
+              items={[
+                {
+                  title: "Initiated",
+                  description: "",
+                },
+                {
+                  title: "Active",
+                  description: "",
+                },
+                {
+                  title: "In Progress",
+                  description: "",
+                },
+                {
+                  title: "Completed",
+                  description: "",
+                },
+              ]}
             />
-            <Link to="#" style={{ textDecoration: "none" }}>
-              Submit
-            </Link>
-          </div>
-        </div>
-        <div className="col-lg-5 col-md-8 col-sm-10 mx-auto mt-5 d-flex">
-          <button
-            className="btn flex-fill me-2 fw-bold"
-            style={{ padding: "15px", background: "#D9D9D9", color: "black" }}
-            onClick={() => openModal()}
-          >
-            Cancel
-          </button>
-          {data.view_donors && (
-            <button
-              className="btn btn-primary flex-fill ms-2 fw-bold"
-              style={{ padding: "15px" }}
-              onClick={() => navigate(`/donarlist/${id}`)}
+            <div
+              className="d-flex form-control"
+              style={{
+                background: "#D9D9D9",
+                padding: "25px",
+                borderRadius: "10px",
+              }}
             >
-              Accepted Donors
+              <input
+                style={{
+                  width: "100%",
+                  border: "none",
+                  outline: "none",
+                  background: "#D9D9D9",
+                  color: "black",
+                }}
+                placeholder="Enter Your Queries"
+                className=""
+              />
+              <Link to="#" style={{ textDecoration: "none" }}>
+                Submit
+              </Link>
+            </div>
+          </div>
+          <div className="col-lg-5 col-md-8 col-sm-10 mx-auto mt-5 d-flex">
+            <button
+              className="btn flex-fill me-2 fw-bold"
+              style={{ padding: "15px", background: "#D9D9D9", color: "black" }}
+              onClick={() => openModal()}
+            >
+              Cancel
             </button>
-          )}
+            {data.view_donors && (
+              <button
+                className="btn btn-primary flex-fill ms-2 fw-bold"
+                style={{ padding: "15px" }}
+                onClick={() => navigate(`/donarlist/${id}`)}
+              >
+                Accepted Donors
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

@@ -222,6 +222,9 @@ const Profile = () => {
           className="form-input"
           type="date"
           max={today}
+          onFocus={(e) => {
+            e.target.showPicker();
+          }}
           {...register("dateOfBirth", { required: true })}
         />
         {errors.dateOfBirth && (
@@ -275,6 +278,9 @@ const Profile = () => {
           className="form-input"
           type="date"
           max={today}
+          onFocus={(e) => {
+            e.target.showPicker();
+          }}
           {...register("lastDonationDate", { required: true })}
         />
         {errors.lastDonationDate && (

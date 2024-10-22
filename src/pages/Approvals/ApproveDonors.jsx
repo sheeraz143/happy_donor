@@ -105,8 +105,8 @@
 import { useEffect, useState } from "react";
 import {
   ApproveAdminBloodDonor,
+  CancelBloodRequest,
   donateApprove,
-  RejectBloodDonorByAdmin,
   setLoader,
 } from "../../redux/product";
 import { toast } from "react-toastify";
@@ -198,8 +198,7 @@ export default function ApproveDonors() {
     }
   };
 
-  const handleSubmit = (name) => {
-    // console.log("name: ", name);
+  const handleSubmit = (request) => {
     // if (!closureReason.trim()) {
     //   toast.error("Closure reason is required");
     //   return;
@@ -210,7 +209,9 @@ export default function ApproveDonors() {
     // }
     const dataToSend = {
       closure_reason: "Rejected",
-      additional_comments: ` ${name ?? "service team"} rejected this`,
+      additional_comments: ` ${
+        request.donor_name ?? "service team"
+      } rejected this`,
     };
     // console.log("dataToSend: ", dataToSend);
     // return;
@@ -218,7 +219,7 @@ export default function ApproveDonors() {
     dispatch(setLoader(true));
     try {
       dispatch(
-        RejectBloodDonorByAdmin(dataToSend, (res) => {
+        CancelBloodRequest(request.request_id, dataToSend, (res) => {
           // console.log("res: ", res);
           if (res.code === 200) {
             toast.success(res.message);
@@ -237,63 +238,64 @@ export default function ApproveDonors() {
   };
 
   return (
-    <div className="cards-container mt-5 mb-5 col-lg-4 mx-auto">
-      {requests?.map((request) => (
-        <div className="card mb-3" key={request.request_id}>
-          <div className="">
-            <p className="card-text text-start">
-              Patient Name: {request.patient_name}
-            </p>
-            {/* <p className="card-text text-start">
+    <div className="d-flex">
+      <div className="cards-container mt-5 mb-5 col-lg-4 mx-auto">
+        {requests?.map((request) => (
+          <div className="card mb-3" key={request.request_id}>
+            <div className="">
+              <p className="card-text text-start">
+                Patient Name: {request.patient_name}
+              </p>
+              {/* <p className="card-text text-start">
               Patient Mobile: {request.patient_mobile}
             </p> */}
-            <p className="card-text text-start">
-              Attender Name: {request.attender_name}
-            </p>
-            <p className="card-text text-start">
-              Attender Mobile: {request.attender_mobile_number}
-            </p>
-            <p
-              className="card-text text-start"
-              style={{ overflowWrap: "anywhere" }}
-            >
-              Request ID: {request.request_id}
-            </p>
-            <p className="card-text text-start">Date: {request.date}</p>
-            <p className="card-text text-start">
-              Units Required: {request.units_required}
-            </p>
-            <p className="card-text text-start">Address: {request.address}</p>
-            <div className="d-flex justify-content-between mt-4">
-              <button
-                className="btn btn-danger"
-                onClick={() => handleSubmit(request.donor_name)}
-                // onClick={() => openModal(request.request_id)}
+              <p className="card-text text-start">
+                Attender Name: {request.attender_name}
+              </p>
+              <p className="card-text text-start">
+                Attender Mobile: {request.attender_mobile_number}
+              </p>
+              <p
+                className="card-text text-start"
+                style={{ overflowWrap: "anywhere" }}
               >
-                Reject
-              </button>
-              <button
-                className="btn btn-success"
-                onClick={() => handleApprove(request)}
-              >
-                Approve
-              </button>
+                Request ID: {request.request_id}
+              </p>
+              <p className="card-text text-start">Date: {request.date}</p>
+              <p className="card-text text-start">
+                Units Required: {request.units_required}
+              </p>
+              <p className="card-text text-start">Address: {request.address}</p>
+              <div className="d-flex justify-content-between mt-4">
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleSubmit(request)}
+                  // onClick={() => openModal(request.request_id)}
+                >
+                  Reject
+                </button>
+                <button
+                  className="btn btn-success"
+                  onClick={() => handleApprove(request)}
+                >
+                  Approve
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-      <Pagination
-        align="center"
-        className="mb-4"
-        current={currentPage}
-        total={totalRequests}
-        pageSize={perPage}
-        onChange={(page) => {
-          setCurrentPage(page);
-        }}
-      />
+        ))}
+        <Pagination
+          align="center"
+          className="mb-4"
+          current={currentPage}
+          total={totalRequests}
+          pageSize={perPage}
+          onChange={(page) => {
+            setCurrentPage(page);
+          }}
+        />
 
-      {/* <Modal
+        {/* <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Gratitude Message"
@@ -329,6 +331,7 @@ export default function ApproveDonors() {
           </div>
         </div>
       </Modal> */}
+      </div>
     </div>
   );
 }

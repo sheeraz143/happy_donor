@@ -104,7 +104,7 @@ function Request() {
   return (
     <form className="form-container mb-4" onSubmit={handleSubmit(onSubmit)}>
       {/* Title */}
-      <h3>Request for blood</h3>
+      <h3 style={{color:"black"}}>Request for blood</h3>
       <div className="form-group">
         <label>Title</label>
         <select
@@ -115,6 +115,7 @@ function Request() {
           <option value="Mr">Mr</option>
           <option value="Ms">Ms</option>
           <option value="Mrs">Mrs</option>
+          <option value="Dr">Dr</option>
         </select>
         {errors.title && <p className="error-message">Title is required</p>}
       </div>

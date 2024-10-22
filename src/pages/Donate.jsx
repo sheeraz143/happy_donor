@@ -90,21 +90,13 @@ function Donate() {
       {request.is_critical && (
         <div className="emergency-tag position-absolute">Emergency</div>
       )}
-      <div className="request-header d-flex align-items-center">
-        <div className="align-content-center">
-          <img
-            src={request?.profile_picture || profImg}
-            alt="Profile"
-            style={{
-              border: "1px solid gray",
-              borderRadius: "50%",
-              height: "60px",
-              width: "60px",
-              objectFit: "cover",
-            }}
-          />
-        </div>
-        <div className="request-details ms-3">
+      <div className="request-header">
+        <img
+          src={request?.profile_picture || profImg}
+          alt="Profile"
+          className="profile_img"
+        />
+        <div className="request-details">
           <div className="text-start fw-bold">{request?.name}</div>
           <div className="text-start">{request?.location}</div>
           <div className="text-start">
@@ -112,14 +104,14 @@ function Donate() {
           </div>
           <div className="text-start">{request?.date}</div>
         </div>
-        <div className="blood-group ms-auto">
+        <div className="blood-group">
           <img src={bloodGroupImg} alt="Blood Group" />
         </div>
       </div>
 
-      <div className="accept-donar-button d-flex align-items-center mt-3">
-        <div className="icon-container d-flex me-3">
-          <Link to="#" className="share-link me-2">
+      <div className="accept-donar-button">
+        <div className="icon-container">
+          <Link to="#" className="share-link">
             <img src={shareIcon} alt="Share" className="icon-img" />
           </Link>
           <Link
@@ -236,7 +228,7 @@ function Donate() {
 
   return (
     <>
-      <h3 className="mt-3">Donate Blood</h3>
+      <h3 className="mt-3" style={{color:"black"}}>Donate Blood</h3>
       <div className="blood-request-container">
         <div className="tabs mt-4">
           <button

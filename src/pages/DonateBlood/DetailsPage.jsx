@@ -86,6 +86,7 @@ const RequestDetail = () => {
   const request = location.state?.request || {};
 
   // Use requestId as needed
+  console.log("Request :", request);
   const path = [
     {
       lat: parseFloat(request.lat),
@@ -116,9 +117,7 @@ const RequestDetail = () => {
               <div className="text-start">
                 Date: {new Date(request.date).toLocaleDateString()}
               </div>
-              <div className="text-start">
-                Location: {request.location}
-              </div>
+              <div className="text-start">Location: {request.location}</div>
             </div>
             <div className="blood-group ms-auto">
               <img src={bloodGroupImg} alt="Blood Group" />
