@@ -17,7 +17,7 @@ const LoginComponent = () => {
     if (auth) {
       navigate("/home");
     } else {
-      navigate("/login");
+      navigate("/login"); 
     }
   }, []);
   const handleChange = (e) => {
