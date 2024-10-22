@@ -82,9 +82,11 @@ const LoginComponent = () => {
       </div>
 
       {/* Get OTP Button */}
-      <button className="button" onClick={onSubmit}>
-        Get OTP
+      <a href="/index.html">
+      <button>
+        Go to Index
       </button>
+    </a>
     </div>
   );
 };
