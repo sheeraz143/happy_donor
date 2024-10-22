@@ -51,12 +51,17 @@ import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   const darkMode = useSelector((state) => state.theme.darkMode);
+  const location = useLocation();
 
   useEffect(() => {
+
+    if (location.pathname === "/") {
+      window.location.href = "/app.html";
+  }
+  
     document.body.className = darkMode ? "dark-mode" : "";
   }, [darkMode]);
 
-  const location = useLocation();
 
   const hideNavbarAndFooter =
     location.pathname === "/login" ||
