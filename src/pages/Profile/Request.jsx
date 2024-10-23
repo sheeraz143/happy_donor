@@ -324,7 +324,7 @@ function Request() {
           {...register("mobileNumber", {
             required: "Mobile Number is required",
             pattern: {
-              value: /^\+91[789]\d{9}$/,
+              value: /^(?:\+91[-\s]?)?[0]?[123456789]\d{9}$/,
               message: "Invalid phone number format",
             },
             validate: (value) => {

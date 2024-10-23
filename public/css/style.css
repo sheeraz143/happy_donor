@@ -2845,11 +2845,14 @@ body {
     }
 
     .lap\:ml-28 {
-        margin-left: 7rem
+        margin-left: 7rem;
+        margin-top: -8rem
     }
 
     .lap\:ml-32 {
-        margin-left: 8rem
+        margin-left: 8rem;
+        margin-top: -8rem
+
     }
 
     .lap\:ml-36 {

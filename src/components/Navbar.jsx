@@ -135,7 +135,7 @@ function Navbar() {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <h5 style={{ margin: 0 }}>
+        <h5 style={{ margin: 0, color: "#fff" }}>
           {data?.first_name == null
             ? "Guest"
             : `${data?.first_name} ${data?.last_name}`}

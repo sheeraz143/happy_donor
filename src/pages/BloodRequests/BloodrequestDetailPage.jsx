@@ -62,7 +62,7 @@ export default function BloodrequestDetailPage() {
   const currentStep = statusToStep[data.status] || 0;
 
   if (!data.request_id) {
-    return <p>No data found!</p>;
+    return <h4 className="mt-4 mb-4">No data found!</h4>;
   }
 
   const handleSubmit = () => {

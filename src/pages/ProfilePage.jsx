@@ -65,7 +65,7 @@ const Profile = () => {
 
   // Function to handle form submission
   const onSubmit = (data) => {
-    dispatch(setLoader(true)); // Start loading
+    // dispatch(setLoader(true)); // Start loading
     try {
       const payload = {
         title: data?.title,
@@ -81,15 +81,14 @@ const Profile = () => {
         last_blood_donation_date: data?.lastDonationDate,
         lat: "93.1232", // Consider using actual lat/lon values
         lon: "92.32323",
-        availability: data?.availability,
+        availability: data?.availability !== null ? data.availability : false,
         terms_accepted: data?.terms,
       };
 
       dispatch(
         updateProfile(payload, (res) => {
-          if (res.errors) {
-            toast.error(res.errors);
-          } else {
+          console.log("res: ", res);
+          if (res.code === 200) {
             // Handle success
             toast.success(res.message);
             localStorage.setItem(
@@ -97,6 +96,8 @@ const Profile = () => {
               res.user?.profile_verified
             );
             navigate("/home");
+          } else {
+            toast.error(res.message);
           }
           dispatch(setLoader(false));
         })
@@ -129,6 +130,7 @@ const Profile = () => {
           <option value="Mr">Mr</option>
           <option value="Ms">Ms</option>
           <option value="Mrs">Mrs</option>
+          <option value="Dr">Dr</option>
         </select>
         {errors.title && <p className="error-message">Title is required</p>}
       </div>
@@ -169,7 +171,7 @@ const Profile = () => {
           {...register("phoneNumber", {
             required: true,
             pattern: {
-              value: /^(?:\+91[-\s]?)?[0]?[789]\d{9}$/,
+              value: /^(?:\+91[-\s]?)?[0]?[123456789]\d{9}$/,
               message: "Invalid phone number format",
             },
           })}

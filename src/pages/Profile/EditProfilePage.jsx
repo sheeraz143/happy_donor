@@ -3,7 +3,7 @@ import "../../css/ProfilePage.css";
 import { useNavigate } from "react-router";
 import logo from "../../assets/prof_img.png";
 import cameraIcon from "../../assets/cameraImg.png";
-import { useEffect, useState, useCallback } from "react"; // Add useCallback
+import { useEffect, useState } from "react"; // Add useCallback
 import { useDispatch } from "react-redux";
 import {
   getProfile,
@@ -36,26 +36,26 @@ const EditProfilePage = () => {
     setValue,
   } = useForm();
 
-  const fetchAddress = useCallback(
-    async (lat, lon) => {
-      if (lat !== null) {
-        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0`;
-        const response = await fetch(geocodeUrl);
-        const data = await response.json();
+  // const fetchAddress = useCallback(
+  //   async (lat, lon) => {
+  //     if (lat !== null) {
+  //       const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0`;
+  //       const response = await fetch(geocodeUrl);
+  //       const data = await response.json();
 
-        if (data.results && data.results.length > 0) {
-          const address = data.results[0].formatted_address;
-          setLocation(address);
-          setValue("location", address);
-        }
-      }
-    },
-    [setValue]
-  ); // Add dependencies if any
+  //       if (data.results && data.results.length > 0) {
+  //         const address = data.results[0].formatted_address;
+  //         setLocation(address);
+  //         setValue("location", address);
+  //       }
+  //     }
+  //   },
+  //   [setValue]
+  // ); // Add dependencies if any
 
   const handlePlaceSelected = (place) => {
     if (place.geometry) {
-      setValue("location", place.formatted_address);
+      setValue("address", place.formatted_address);
       setValue("lat", String(place.geometry.location.lat())); // Convert to string
       setValue("lon", String(place.geometry.location.lng())); // Convert to string
     }
@@ -68,6 +68,7 @@ const EditProfilePage = () => {
       dispatch(
         getProfile((res) => {
           const user = res?.user;
+          console.log('user: ', user);
           setProfileImage(res?.user?.profile_picture || logo);
           setValue("title", user?.title);
           setValue("first_name", user?.first_name);
@@ -77,15 +78,16 @@ const EditProfilePage = () => {
           setValue("blood_group", user?.blood_group);
           setValue("date_of_birth", user?.date_of_birth);
           setValue("gender", user?.gender);
-          setValue("address", user?.address);
-          setValue("location", user?.location);
+          // setValue("address", user?.address);
+          setValue("address", user?.location);
+          setLocation(user?.address)
           setValue("last_blood_donation_date", user?.last_blood_donation_date);
 
           // Fetch latitude and longitude if they exist
           if (user?.lat && user?.lon) {
             setValue("lat", user.lat);
             setValue("lon", user.lon);
-            fetchAddress(user.lat, user.lon);
+            // fetchAddress(user?.location);
           }
 
           setOriginalData(user);
@@ -102,7 +104,7 @@ const EditProfilePage = () => {
       toast.error(error.message || "An unexpected error occurred.");
       dispatch(setLoader(false));
     }
-  }, [dispatch, fetchAddress, setValue]);
+  }, [dispatch, setValue]);
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
@@ -219,6 +221,8 @@ const EditProfilePage = () => {
           <option value="Mr">Mr</option>
           <option value="Ms">Ms</option>
           <option value="Mrs">Mrs</option>
+          <option value="Dr">Dr</option>
+
         </select>
         {errors.title && <p className="error-message">Title is required</p>}
       </div>
@@ -260,7 +264,7 @@ const EditProfilePage = () => {
             required: true,
             // pattern: /^[0-9]{10}$/,
             pattern: {
-              value: /^(?:\+91[-\s]?)?[0]?[789]\d{9}$/,
+              value: /^(?:\+91[-\s]?)?[0]?[123456789]\d{9}$/,
               message: "Invalid phone number format",
             },
           })}
@@ -339,7 +343,7 @@ const EditProfilePage = () => {
       </div>
 
       {/* Address */}
-      <div className="form-group">
+      {/* <div className="form-group">
         <label>Address</label>
         <textarea
           className="form-input"
@@ -347,10 +351,10 @@ const EditProfilePage = () => {
           {...register("address", { required: true })}
         />
         {errors.address && <p className="error-message">Address is required</p>}
-      </div>
+      </div> */}
       {/* Location */}
       <div className="form-group">
-        <label>Location</label>
+        <label>Address</label>
         <Autocomplete
           apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
           onPlaceSelected={handlePlaceSelected}
@@ -360,9 +364,9 @@ const EditProfilePage = () => {
           // Controlled component (uncomment if necessary)
           // value={location}
           onChange={(e) => setLocation(e.target.value)} // Handle input change
-          {...register("location", { required: true })} // Register location
+          {...register("address", { required: false })} // Register location
         />
-        {errors.location && (
+        {errors.address && (
           <p className="error-message">Location is required</p>
         )}
       </div>

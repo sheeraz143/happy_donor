@@ -96,18 +96,18 @@ const BloodRequest = () => {
             />
           </div>
           <div className="request-details">
-            <div className="request-id" style={{ overflowWrap: "anywhere" }}>
+            <div className="request-id text-start" style={{ overflowWrap: "anywhere" }}>
               Request ID: {request.request_id}
             </div>
-            <div className="request-date">Date: {request.date}</div>
-            <div className="request-units">
+            <div className="request-date text-start">Date: {request.date}</div>
+            <div className="request-units text-start">
               Units Required: {request.units_required}
             </div>
-            <div className="request-address">Address: {request.address}</div>
-            <div className="request-status">Status: {request.status}</div>
+            <div className="request-address text-start">Address: {request.location}</div>
+            <div className="request-status text-start">Status: {request.status}</div>
           </div>
           {isOpen && (
-            <div className="blood-group">
+            <div className="blood-group text-start">
               <img src={bloodGroupImg} alt="Blood Group" />
             </div>
           )}

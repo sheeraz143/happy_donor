@@ -19,6 +19,7 @@ function Donate() {
     unmatched: 0,
   });
   const [currentPage, setCurrentPage] = useState(1);
+  const [refresh, setRefresh] = useState(false);
   // const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -60,7 +61,7 @@ function Donate() {
 
   useEffect(() => {
     fetchData(activeTab, currentPage);
-  }, [activeTab, currentPage]);
+  }, [activeTab, currentPage,refresh]);
 
   const handleCardClick = (request) => {
     // console.log("request: ", request);
@@ -73,6 +74,7 @@ function Donate() {
         DonateAccept(request?.request_id, (res) => {
           if (res.code === 200) {
             toast.success(res.message);
+            setRefresh(!refresh);
           } else {
             toast.error(res.message);
           }
@@ -228,7 +230,9 @@ function Donate() {
 
   return (
     <>
-      <h3 className="mt-3" style={{color:"black"}}>Donate Blood</h3>
+      <h3 className="mt-3" style={{ color: "black" }}>
+        Donate Blood
+      </h3>
       <div className="blood-request-container">
         <div className="tabs mt-4">
           <button
