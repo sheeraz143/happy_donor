@@ -101,7 +101,7 @@ nav a.active {
 /* Navbar styles */
 nav {
   /* background-color: #fcf1f1; */
-  background-color: #0750B1 !important;
+  background-color: #5780b1 !important;
   padding: 1rem;
   display: flex;
   justify-content: space-between;
@@ -123,8 +123,11 @@ nav a:hover {
 }
 
 nav a.active {
-  border-bottom: 2px solid #FFF;
-
+  border-bottom: 2px solid #fff;
+  font-size: 16px;
+}
+nav a.inactive {
+  font-size: 16px;
 }
 
 .navbar {
@@ -157,6 +160,10 @@ nav a.active {
 .menu a {
   text-decoration: none;
   color: #fff;
+}
+
+.menu a:hover {
+  color: green;
 }
 
 .menu a.active {

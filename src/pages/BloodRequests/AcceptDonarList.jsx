@@ -79,8 +79,8 @@ const AcceptDonorList = () => {
         </div>
         <div className="request-details">
           <div className="request-id">Name: {donor.donor_name}</div>
-          <div className="request-date">Location: {donor.location}</div>
-          <div className="request-address">Address: {donor.address}</div>
+          <div className="request-date">Patient Name: {donor.patient_name}</div>
+          {/* <div className="request-address">Address: {donor.address}</div> */}
           <div className="request-units">Date: {donor.date}</div>
         </div>
         <div className="blood-group">

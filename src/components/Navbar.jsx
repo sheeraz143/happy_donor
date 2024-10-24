@@ -88,14 +88,14 @@ function Navbar() {
       <div className={`menu ${isOpen ? "open" : ""}`}>
         <NavLink
           to="/home"
-          className={({ isActive }) => (isActive ? "active" : "")}
+          className={({ isActive }) => (isActive ? "active" : "inactive")}
           onClick={() => setIsOpen(false)}
         >
           Home
         </NavLink>
         <NavLink
           to="/donate"
-          className={activeLink === "/donate" ? "active" : ""}
+          className={activeLink === "/donate" ? "active" : "inactive"}
           onClick={(e) => {
             e.preventDefault();
             handleNavigation("/donate");
@@ -105,17 +105,17 @@ function Navbar() {
         </NavLink>
         <NavLink
           to="/request"
-          className={activeLink === "/request" ? "active" : ""}
+          className={activeLink === "/request" ? "active" : "inactive"}
           onClick={(e) => {
             e.preventDefault();
-            handleNavigation("/request");
+            handleNavigation("/bloodrequest");
           }}
         >
           Request
         </NavLink>
         <NavLink
           to="/viewprofile"
-          className={({ isActive }) => (isActive ? "active" : "")}
+          className={({ isActive }) => (isActive ? "active" : "inactive")}
           onClick={() => setIsOpen(false)}
         >
           Profile
@@ -123,7 +123,7 @@ function Navbar() {
         {(userType === "1" || userType === "3") && (
           <NavLink
             to="/approvals"
-            className={({ isActive }) => (isActive ? "active" : "")}
+            className={({ isActive }) => (isActive ? "active" : "inactive")}
             onClick={() => setIsOpen(false)}
           >
             Approvals
@@ -147,12 +147,14 @@ function Navbar() {
         />
         {showProfileMenu && (
           <div className="profile-menu">
-            <p>
+            <p style={{ fontSize: "16px" }}>
               {data?.name == null
                 ? "Guest"
                 : `${data?.first_name} ${data?.last_name}`}
             </p>
-            <button onClick={handleLogout}>Logout</button>
+            <button onClick={handleLogout} style={{ background: "red" }}>
+              Logout
+            </button>
           </div>
         )}
       </div>

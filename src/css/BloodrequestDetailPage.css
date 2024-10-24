@@ -22,3 +22,40 @@
   position: relative;
   left: -3px;
 }
+.mb-5 {
+  margin-bottom: 5rem;
+}
+
+.mt-5 {
+  margin-top: 5rem;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.map-container {
+  flex: 0 0 40%; /* 40% width for map */
+  height: 100%; /* Full height to match card */
+}
+
+.card-container {
+  flex: 0 0 60%; /* 60% width for card */
+  padding: 20px; /* Padding around the card */
+}
+
+.request-card {
+  background: white; /* or any other background color */
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* optional shadow */
+  padding: 10px; /* spacing within the card */
+}
+
+.request-header {
+  display: flex;
+  align-items: center;
+}
+
+
+
+

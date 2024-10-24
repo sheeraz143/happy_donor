@@ -1,9 +1,10 @@
 import { Steps } from "antd";
 import "../../css/BloodrequestDetailPage.css";
 import { useNavigate, useParams } from "react-router";
-import bloodGroupImg from "../../assets/bloodimage.png";
+import bloodGroupImg from "../../assets/bloodgroup.png";
+
 import MapComponent from "../../components/map/MapComponent";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
@@ -16,7 +17,6 @@ import Modal from "react-modal";
 
 export default function BloodrequestDetailPage() {
   const navigate = useNavigate();
-  // const location = useLocation();
   const dispatch = useDispatch();
   const { id } = useParams();
   const [data, setData] = useState({});
@@ -78,7 +78,7 @@ export default function BloodrequestDetailPage() {
       closure_reason: closureReason,
       additional_comments: additionalComments,
     };
-    // return;
+
     dispatch(setLoader(true));
 
     try {
@@ -99,14 +99,23 @@ export default function BloodrequestDetailPage() {
       dispatch(setLoader(false));
     }
   };
+
   return (
     <>
-      <div className="mb-5 mt-5">
-        <MapComponent
-          path={[{ lat: parseFloat(data.lat), lng: parseFloat(data.lon) }]}
-        />
-        <div className="d-flex flex-column">
-          <div className="col-lg-6 col-md-8 col-sm-10 mx-auto mt-5">
+      <div className="mb-5 mt-5 d-flex">
+        <div
+          className="flex-shrink-0"
+          style={{ flex: "0 0 40%", paddingRight: "20px" }}
+        >
+          <MapComponent
+            path={[{ lat: parseFloat(data.lat), lng: parseFloat(data.lon) }]}
+          />
+        </div>
+        <div
+          className="col-lg-7 col-md-8 col-sm-10 d-flex flex-column"
+          style={{ flex: "0 0 60%" }}
+        >
+          <div className="col-lg-10 col-md-10 col-sm-10">
             <div className="request-card" key={data.request_id}>
               <div className="request-header d-flex align-items-center">
                 <div className="align-content-center">
@@ -132,76 +141,40 @@ export default function BloodrequestDetailPage() {
                   <div className="text-start">Address: {data.address}</div>
                 </div>
                 <div className="blood-group ms-auto">
-                  <img src={bloodGroupImg} alt="Blood Group" />
+                  <img
+                    src={bloodGroupImg}
+                    alt="Blood Group"
+                    onClick={openModal}
+                    className="cursor-pointer"
+                  />
                 </div>
               </div>
+              {data.view_donors && (
+                <div className="mt-3">
+                  <button
+                    className="btn btn-primary"
+                    style={{ padding: "10px" }}
+                    onClick={() => navigate(`/donarlist/${id}`)}
+                  >
+                    Accepted Donors
+                  </button>
+                </div>
+              )}
             </div>
           </div>
-          <div className="col-lg-5 col-md-8 col-sm-10 mx-auto mt-3">
+          <div className="col-lg-10 col-md-10 col-sm-10 mt-2">
             <Steps
               progressDot
               current={currentStep}
               direction="vertical"
+              // style={{ display: "flex", alignItems: "center" }}
               items={[
-                {
-                  title: "Initiated",
-                  description: "",
-                },
-                {
-                  title: "Active",
-                  description: "",
-                },
-                {
-                  title: "In Progress",
-                  description: "",
-                },
-                {
-                  title: "Completed",
-                  description: "",
-                },
+                { title: "Initiated", description: "" },
+                { title: "Active", description: "" },
+                { title: "In Progress", description: "" },
+                { title: "Completed", description: "" },
               ]}
             />
-            <div
-              className="d-flex form-control"
-              style={{
-                background: "#D9D9D9",
-                padding: "25px",
-                borderRadius: "10px",
-              }}
-            >
-              <input
-                style={{
-                  width: "100%",
-                  border: "none",
-                  outline: "none",
-                  background: "#D9D9D9",
-                  color: "black",
-                }}
-                placeholder="Enter Your Queries"
-                className=""
-              />
-              <Link to="#" style={{ textDecoration: "none" }}>
-                Submit
-              </Link>
-            </div>
-          </div>
-          <div className="col-lg-5 col-md-8 col-sm-10 mx-auto mt-5 d-flex">
-            <button
-              className="btn flex-fill me-2 fw-bold"
-              style={{ padding: "15px", background: "#D9D9D9", color: "black" }}
-              onClick={() => openModal()}
-            >
-              Cancel
-            </button>
-            {data.view_donors && (
-              <button
-                className="btn btn-primary flex-fill ms-2 fw-bold"
-                style={{ padding: "15px" }}
-                onClick={() => navigate(`/donarlist/${id}`)}
-              >
-                Accepted Donors
-              </button>
-            )}
           </div>
         </div>
       </div>

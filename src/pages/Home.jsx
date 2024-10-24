@@ -2,7 +2,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../css/Home.css";
-import bannerImg from "../assets/banner.png";
+// import bannerImg from "../assets/banner.png";
 import requestblood from "../assets/requestblood.png";
 import donateblood from "../assets/donateblood.png";
 import medicalcamps from "../assets/medicalcamps.png";
@@ -22,6 +22,7 @@ function Home() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [getData, setData] = useState({});
+  const [banners, setBanners] = useState([]);
   const [recentBloodRequest, setRecentBloodRequest] = useState([]);
 
   const isProfileUpdate = localStorage.getItem("is_profile_update");
@@ -33,6 +34,7 @@ function Home() {
       dispatch(
         dashboardData((res) => {
           setData(res);
+          setBanners(res.banners);
           setRecentBloodRequest(res?.recent_blood_requests);
           if (res.errors) {
             toast.error(res.errors);
@@ -147,15 +149,21 @@ function Home() {
     <div className="home-container">
       {/* Banner Slider Section */}
       <Slider {...sliderSettings} className="banner-slider mb-5">
-        <div>
-          <img src={bannerImg} alt="Banner 1" className="banner-image" />
-        </div>
-        <div>
+        {banners.map((banner, index) => (
+          <div key={index}>
+            <img
+              src={banner.image_url}
+              alt={`Banner ${index + 1}`}
+              className="banner-image"
+            />
+          </div>
+        ))}
+        {/* <div>
           <img src={bannerImg} alt="Banner 2" className="banner-image" />
         </div>
         <div>
           <img src={bannerImg} alt="Banner 3" className="banner-image" />
-        </div>
+        </div> */}
       </Slider>
       {/* Cards Section */}
       <div className="cards-container">
@@ -198,10 +206,14 @@ function Home() {
       </div>
       {/* Recent Blood Requests Section */}
       <div className="recent-requests">
-        <h2>
+        <h2 style={{ fontSize: "1.5rem" }}>
           Recent Blood Requests
           <div>
-            <Link to="/donate" className="seeall">
+            <Link
+              to="/donate"
+              className="seeall"
+              style={{ fontSize: "1.25rem" }}
+            >
               See all
             </Link>
           </div>

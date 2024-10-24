@@ -250,7 +250,11 @@ function Request() {
           apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
           onPlaceSelected={handlePlaceSelected}
           className="form-input"
-          types={["geocode"]}
+          options={{
+            componentRestrictions: { country: "IN" },
+            // types: ["establishment"],
+
+          }}
           {...register("location", { required: true })}
         />
         {errors.location && (

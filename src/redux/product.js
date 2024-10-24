@@ -678,3 +678,36 @@ export const RejectBloodDonorByAdmin =
       });
     }
   };
+
+export const DonateHistory =
+  (callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(
+        baseUrl + `app/blood-donors/history`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };

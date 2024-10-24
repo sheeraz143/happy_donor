@@ -61,11 +61,9 @@ export default function ViewProfilepage() {
           </div>
           <div className="request-details ms-3">
             <div className="text-start fw-bold">
-              Name: {getData?.first_name} {getData?.last_name}
+              {getData?.first_name} {getData?.last_name}
             </div>
-            <div className="text-start text-nowrap">
-              Email: {getData?.email}
-            </div>
+            <div className="text-start text-nowrap">{getData?.email}</div>
             <div className="text-start">DOB: {getData?.date_of_birth}</div>
             <div className="text-start">
               LDD: {getData?.last_blood_donation_date}

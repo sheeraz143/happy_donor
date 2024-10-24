@@ -68,7 +68,7 @@ const EditProfilePage = () => {
       dispatch(
         getProfile((res) => {
           const user = res?.user;
-          console.log('user: ', user);
+          console.log("user: ", user);
           setProfileImage(res?.user?.profile_picture || logo);
           setValue("title", user?.title);
           setValue("first_name", user?.first_name);
@@ -80,7 +80,7 @@ const EditProfilePage = () => {
           setValue("gender", user?.gender);
           // setValue("address", user?.address);
           setValue("address", user?.location);
-          setLocation(user?.address)
+          setLocation(user?.address);
           setValue("last_blood_donation_date", user?.last_blood_donation_date);
 
           // Fetch latitude and longitude if they exist
@@ -222,7 +222,6 @@ const EditProfilePage = () => {
           <option value="Ms">Ms</option>
           <option value="Mrs">Mrs</option>
           <option value="Dr">Dr</option>
-
         </select>
         {errors.title && <p className="error-message">Title is required</p>}
       </div>
@@ -352,6 +351,7 @@ const EditProfilePage = () => {
         />
         {errors.address && <p className="error-message">Address is required</p>}
       </div> */}
+
       {/* Location */}
       <div className="form-group">
         <label>Address</label>
@@ -359,12 +359,16 @@ const EditProfilePage = () => {
           apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
           onPlaceSelected={handlePlaceSelected}
           className="form-input"
-          types={["geocode"]}
-          defaultValue={location} // Set the default value for the input
-          // Controlled component (uncomment if necessary)
-          // value={location}
-          onChange={(e) => setLocation(e.target.value)} // Handle input change
-          {...register("address", { required: false })} // Register location
+          defaultValue={location}
+          onChange={(e) => {
+            setLocation(e.target.value);
+          }}
+          {...register("address", { required: false })}
+          options={{
+            componentRestrictions: { country: "IN" },
+            // types: ["point_of_interest", "health", "(establishment)", "hospital"],
+            // types: ["establishment"],
+          }}
         />
         {errors.address && (
           <p className="error-message">Location is required</p>
