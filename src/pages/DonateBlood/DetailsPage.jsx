@@ -72,7 +72,7 @@
 // src/components/RequestDetail.js
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import profPicImg from "../../assets/profpic.png";
+import profPicImg from "../../assets/prof_img.png";
 import bloodGroupImg from "../../assets/bloodimage.png";
 import MapComponent from "../MapComponent";
 // import profPicImg from "../../assets/profpic.png";
@@ -106,6 +106,10 @@ const RequestDetail = () => {
                 src={request.profile_picture || profPicImg}
                 alt="Profile"
                 style={{ width: "70px", height: "70px", borderRadius: "50%" }}
+                onError={(e) => {
+                  e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
+                  e.target.src = profPicImg; // Set to default image on error
+                }}
               />
             </div>
             <div className="request-details ms-3">

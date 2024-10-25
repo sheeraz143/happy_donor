@@ -185,7 +185,7 @@ export default function ApproveRequests() {
           overlayClassName="Overlay"
         >
           <div className="d-flex flex-column align-items-center ">
-            <h2>Cancel Blood Request</h2>
+            <h3>Cancel Blood Request</h3>
             <label className="text-start col-lg-6 col-md-6 col-sm-6">
               Closure reason
             </label>

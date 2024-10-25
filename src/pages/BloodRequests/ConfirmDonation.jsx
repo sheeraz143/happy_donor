@@ -50,17 +50,25 @@ export default function ConfirmDonation() {
       dispatch(
         // MarkDonated({ request_id: requestId, donor_id: donorId }, (res) => {
         MarkDonated(dataToSend, (res) => {
-          dispatch(setLoader(false));
-
-          if (res.errors) {
-            toast.error(res.errors);
-          } else if (res.code === 400) {
-            toast.error(res.message);
-            navigate(`/donarlist/${id}`);
-          } else if (res.code === 200) {
+          if (res.code === 200) {
             toast.success(res.message);
             navigate(`/donarlist/${id}`);
+            // setRefresh(!refresh);
+          } else {
+            toast.error(res.message);
+            navigate(`/donarlist/${id}`);
           }
+          dispatch(setLoader(false));
+
+          // if (res.errors) {
+          //   toast.error(res.errors);
+          // } else if (res.code === 400) {
+          //   toast.error(res.message);
+          //   navigate(`/donarlist/${id}`);
+          // } else if (res.code === 200) {
+          //   toast.success(res.message);
+          //   navigate(`/donarlist/${id}`);
+          // }
         })
       );
     } catch (error) {

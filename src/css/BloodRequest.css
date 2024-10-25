@@ -91,11 +91,29 @@
   justify-content: flex-end;
 }
 
-.accept-donar-button {
+/* .accept-donar-button {
   display: flex;
   justify-content: space-around;
   align-items: center;
   margin-top: auto;
+} */
+.accepted-donors-btn {
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  padding: 10px 20px; /* Ensure padding is equal for both buttons */
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  min-width: 150px; /* Set a minimum width */
+  text-align: center;
+  display: inline-block;
+}
+
+.accepted-donors-btn:disabled {
+  background-color: #b0b0b0; /* Slightly different color for disabled state */
+  cursor: not-allowed;
 }
 
 .icon-container {
@@ -193,10 +211,32 @@
   z-index: 1000;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  width: 50%;
+  width: 40%;
   height: auto;
+  animation: modalFadeInScale 0.3s ease forwards;
 }
 
+@keyframes modalFadeInScale {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes modalFadeOutScale {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+}
 .Overlay {
   position: fixed;
   top: 0;

@@ -105,7 +105,7 @@ function Navbar() {
         </NavLink>
         <NavLink
           to="/request"
-          className={activeLink === "/request" ? "active" : "inactive"}
+          className={activeLink === "/bloodrequest" ? "active" : "inactive"}
           onClick={(e) => {
             e.preventDefault();
             handleNavigation("/bloodrequest");

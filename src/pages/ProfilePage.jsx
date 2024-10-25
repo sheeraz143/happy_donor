@@ -6,10 +6,12 @@ import { getProfile, setLoader, updateProfile } from "../redux/product";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+import Autocomplete from "react-google-autocomplete";
 
 const Profile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [location, setLocation] = useState("");
 
   const [today] = useState(() => {
     const date = new Date();
@@ -41,8 +43,10 @@ const Profile = () => {
           setValue("bloodGroup", res?.user?.blood_group);
           setValue("dateOfBirth", res?.user?.date_of_birth);
           setValue("gender", res?.user?.gender);
-          setValue("address", res?.user?.address);
-          setValue("location", res?.user?.location);
+          // setValue("address", res?.user?.address);
+          // setValue("location", res?.user?.location);
+          setValue("address", res?.user?.location);
+          setLocation(res?.user?.address);
           setValue("lastDonationDate", res?.user?.last_blood_donation_date);
           setValue("availability", res?.user?.availability);
           setValue("terms", res?.user?.terms_accepted);
@@ -249,17 +253,31 @@ const Profile = () => {
         {errors.gender && <p className="error-message">Gender is required</p>}
       </div>
 
-      {/* Address */}
       <div className="form-group">
-        <label>Address</label>
-        <textarea
+        <label>Location</label>
+        <Autocomplete
+          apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
           className="form-input"
-          type="text"
-          {...register("address", { required: true })}
+          defaultValue={location}
+          onPlaceSelected={(place) => {
+            if (place.geometry) {
+              setValue("address", place.formatted_address);
+              setValue("lat", String(place.geometry.location.lat())); // Convert to string
+              setValue("lon", String(place.geometry.location.lng())); // Convert to string
+            }
+          }}
+          options={{
+            types: ["establishment"],
+            componentRestrictions: { country: "IN" },
+          }}
         />
-        {errors.address && <p className="error-message">Address is required</p>}
+        ;
+        {errors.address && (
+          <p className="error-message">Location is required</p>
+        )}
       </div>
-
+      <input type="hidden" {...register("lat", { required: false })} />
+      <input type="hidden" {...register("lon", { required: false })} />
       {/* Location */}
       {/* <div className="form-group">
         <label>Location</label>

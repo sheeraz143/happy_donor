@@ -38,6 +38,8 @@ const BloodRequest = () => {
   };
 
   const closeModal = () => {
+    setClosureReason("");
+    setAdditionalComments("");
     setModalIsOpen(false);
   };
 
@@ -148,22 +150,25 @@ const BloodRequest = () => {
               src={request.profile_picture || profPicImg}
               alt="Profile"
               style={{ height: "70px", width: "70px", borderRadius: "50%" }}
+              onError={(e) => {
+                e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
+                e.target.src = profPicImg; // Set to default image on error
+              }}
             />
           </div>
           <div className="request-details">
-            <div
+            {/* <div
               className="request-id text-start"
               style={{ overflowWrap: "anywhere" }}
             >
               Request ID: {request.request_id}
-            </div>
-            <div className="request-date text-start">Date: {request.date}</div>
+            </div> */}
+            <div className="request-date text-start"> {request.name}</div>
+            <div className="request-date text-start"> {request.date}</div>
             <div className="request-units text-start">
               Units Required: {request.units_required}
             </div>
-            <div className="request-address text-start">
-              Address: {request.location}
-            </div>
+            <div className="request-address text-start">{request.location}</div>
             <div className="request-status text-start">
               Status: {request.status}
             </div>
@@ -258,7 +263,7 @@ const BloodRequest = () => {
         overlayClassName="Overlay"
       >
         <div className="d-flex flex-column align-items-center ">
-          <h2>Cancel Blood Request</h2>
+          <h3>Cancel Blood Request</h3>
           <label className="text-start col-lg-6 col-md-6 col-sm-6">
             Closure reason
           </label>

@@ -104,8 +104,8 @@ function DonationHistory() {
           onClick={() => handleButtonClick(request)}
         >
           {request.requestType === "gratitude"
-            ? "Gratitude Message"
-            : "ITI Report"}
+            ? "View Gratitude Message"
+            : "TTI Report"}
         </button>
       </div>
     </div>

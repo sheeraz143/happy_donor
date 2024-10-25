@@ -49,6 +49,7 @@ const AcceptDonorList = () => {
   };
 
   const openModal = (donor) => {
+    console.log("donor: ", donor);
     setSelectedDonor(donor);
     setModalIsOpen(true);
   };
@@ -62,65 +63,102 @@ const AcceptDonorList = () => {
     navigate(`/postgratitudemesage?requestId=${requestId}&donorId=${donorId}`);
   };
 
-  const renderRequestCard = (donor) => (
-    <div className="request-card" key={donor.donor_id}>
-      <div className="request-header">
-        <div className="align-content-center">
-          <img
-            src={donor.profile_picture || profPicImg}
-            alt="Profile"
-            style={{
-              width: "100px",
-              height: "100px",
-              borderRadius: "50%",
-              objectFit: "cover",
-            }}
-          />
-        </div>
-        <div className="request-details">
-          <div className="request-id">Name: {donor.donor_name}</div>
-          <div className="request-date">Patient Name: {donor.patient_name}</div>
-          {/* <div className="request-address">Address: {donor.address}</div> */}
-          <div className="request-units">Date: {donor.date}</div>
-        </div>
-        <div className="blood-group">
-          <img src={bloodGroupImg} alt="Blood Group" />
-        </div>
-      </div>
+  const renderRequestCard = (donor) => {
+    console.log("donor: ", donor);
 
-      <div className="accept-donar-button justify-content-end gap-3">
-        {donor.donation_status == "Donated" ? (
-          <>
-            <button className="accepted-donors-btn btn-secondary" disabled>
-              Donated
+    return (
+      <div className="request-card" key={donor.donor_id}>
+        <div className="request-header">
+          <div className="align-content-center">
+            <img
+              src={donor.profile_picture || profPicImg}
+              alt="Profile"
+              style={{
+                width: "100px",
+                height: "100px",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+              onError={(e) => {
+                e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
+                e.target.src = profPicImg; // Set to default image on error
+              }}
+            />
+          </div>
+          <div className="request-details">
+            <div className="request-id text-start">
+              Name: {donor.donor_name}
+            </div>
+            <div className="request-date text-start">
+              Patient Name: {donor.patient_name}
+            </div>
+            {/* <div className="request-address">Address: {donor.address}</div> */}
+            <div className="request-units text-start">Date: {donor.date}</div>
+          </div>
+          <div className="blood-group">
+            <img src={bloodGroupImg} alt="Blood Group" />
+          </div>
+        </div>
+
+        <div className="accept-donar-button d-flex justify-content-end gap-3 mt-2">
+          {/* {donor.donation_status == "Completed" ? (
+            <>
+              <button className="accepted-donors-btn btn-secondary" disabled>
+                Donated
+              </button>
+              {donor.gratitude_msg !== "" ? (
+                <button
+                  className="accepted-donors-btn"
+                  onClick={() => openModal(donor)}
+                >
+                  View Gratitude Message
+                </button>
+              ) : (
+                <button
+                  className="accepted-donors-btn"
+                  onClick={() => navigateToGratitude(requestId, donor.donor_id)}
+                >
+                  Post Gratitude Message
+                </button>
+              )}
+            </>
+          ) : */}
+
+          {donor.donation_status == "In Progress" && (
+            <button
+              className="accepted-donors-btn"
+              onClick={() => markAsDonated(donor, donor.donor_id)}
+            >
+              Mark As Donated
             </button>
-            {donor.gratitude_msg !== "" ? (
-              <button
-                className="accepted-donors-btn"
-                onClick={() => openModal(donor)}
-              >
-                View Gratitude Message
+          )}
+          {(donor.donation_status === "Completed" ||
+            donor.donation_status === "Donated") && (
+            <>
+              <button className="accepted-donors-btn btn-secondary" disabled>
+                Donated
               </button>
-            ) : (
-              <button
-                className="accepted-donors-btn"
-                onClick={() => navigateToGratitude(requestId, donor.donor_id)}
-              >
-                Post Gratitude Message
-              </button>
-            )}
-          </>
-        ) : (
-          <button
-            className="accepted-donors-btn"
-            onClick={() => markAsDonated(donor, donor.donor_id)}
-          >
-            Mark As Donated
-          </button>
-        )}
+              {donor.gratitude_msg !== "" ? (
+                <button
+                  className="accepted-donors-btn"
+                  onClick={() => openModal(donor)}
+                >
+                  View Gratitude Message
+                </button>
+              ) : (
+                <button
+                  className="accepted-donors-btn"
+                  onClick={() => navigateToGratitude(requestId, donor.donor_id)}
+                >
+                  Post Gratitude Message
+                </button>
+              )}
+            </>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <>
