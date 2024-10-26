@@ -5625,7 +5625,7 @@ header .risec-e .navbar-collapse{
     max-width: 662px;
   }
   .page-header {
-    padding: 80px 0;
+    padding:30px 0;
   }
   .about-us-container {
     width: auto;
@@ -5952,7 +5952,7 @@ header .risec-e .navbar-collapse{
     margin: 48px 0;
   }
   .page-header {
-    padding: 80px 0;
+    padding: 30px 0;
   }
   .message-container-404 {
     margin: 48px 0;
@@ -6132,7 +6132,7 @@ header .risec-e .navbar-collapse{
     display: none;
   }
   .page-header {
-    padding: 80px 0;
+    padding: 30px 0;
   }
   /*----- Section Heading ----*/
   .section-heading-wrapper {
