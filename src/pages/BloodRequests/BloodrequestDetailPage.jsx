@@ -2,6 +2,7 @@ import { Steps } from "antd";
 import "../../css/BloodrequestDetailPage.css";
 import { useNavigate, useParams } from "react-router";
 import bloodGroupImg from "../../assets/bloodgroup.png";
+import profPicImg from "../../assets/prof_img.png";
 
 import MapComponent from "../../components/map/MapComponent";
 // import { Link } from "react-router-dom";
@@ -102,7 +103,7 @@ export default function BloodrequestDetailPage() {
 
   return (
     <>
-      <div className="mb-5 mt-5 d-flex">
+      <div className="mb-5 mt-5 d-flex res_mobile">
         <div
           className="flex-shrink-0"
           style={{ flex: "0 0 40%", paddingRight: "20px" }}
@@ -120,12 +121,17 @@ export default function BloodrequestDetailPage() {
               <div className="request-header d-flex align-items-center">
                 <div className="align-content-center">
                   <img
+                    className="prof_img"
                     src={data.profile_picture}
                     alt="Profile"
-                    style={{
-                      width: "120px",
-                      height: "120px",
-                      borderRadius: "50%",
+                    // style={{
+                    //   width: "120px",
+                    //   height: "120px",
+                    //   borderRadius: "50%",
+                    // }}
+                    onError={(e) => {
+                      e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
+                      e.target.src = profPicImg; // Set to default image on error
                     }}
                   />
                 </div>

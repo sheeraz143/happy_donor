@@ -163,7 +163,7 @@ nav a.inactive {
 }
 
 .menu a:hover {
-  color: green;
+  color: #fff;
 }
 
 .menu a.active {

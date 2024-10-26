@@ -53,13 +53,16 @@ const EditProfilePage = () => {
   //   [setValue]
   // ); // Add dependencies if any
 
-  const handlePlaceSelected = (place) => {
-    if (place.geometry) {
-      setValue("address", place.formatted_address);
-      setValue("lat", String(place.geometry.location.lat())); // Convert to string
-      setValue("lon", String(place.geometry.location.lng())); // Convert to string
-    }
-  };
+  // const handlePlaceSelected = (place) => {
+  //   console.log("place: ", place);
+  //   console.log("lat: ", String(place.geometry.location.lat()));
+  //   console.log("lng: ", String(place.geometry.location.lng()));
+  //   if (place.geometry) {
+  //     setValue("address", place.formatted_address);
+  //     setValue("lat", String(place.geometry.location.lat())); // Convert to string
+  //     setValue("lon", String(place.geometry.location.lng())); // Convert to string
+  //   }
+  // };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -134,7 +137,7 @@ const EditProfilePage = () => {
   };
 
   const onSubmit = (data) => {
-    // console.log("Received data: ", data); // Log the incoming data
+    console.log("Received data: ", data); // Log the incoming data
 
     dispatch(setLoader(true)); // Start loading
     try {
@@ -157,10 +160,10 @@ const EditProfilePage = () => {
       });
       // console.log("changedData: ", changedData);
 
-      // // Log formData for verification
-      // for (let [key, value] of formData.entries()) {
-      //   console.log(`${key}: ${typeof value} - ${value}`);
-      // }
+      // Log formData for verification
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${typeof value} - ${value}`);
+      }
 
       // Dispatch action to update profile
       dispatch(
@@ -171,6 +174,7 @@ const EditProfilePage = () => {
           // Check for response status
           if (res.status === true) {
             toast.success(res.message); // Show success message
+            localStorage.setItem("is_profile_update", 1);
             navigate("/viewprofile"); // Navigate to view profile
           } else {
             const errorMessages = res.message || "An error occurred.";
@@ -205,7 +209,7 @@ const EditProfilePage = () => {
         <input
           id="fileInput"
           type="file"
-          accept="image/*"
+          accept=".jpeg, .png, .jpg"
           style={{ display: "none" }} // Hide the file input
           onChange={handleImageChange} // Handle image change
         />
@@ -355,12 +359,13 @@ const EditProfilePage = () => {
       {/* Location */}
       <div className="form-group">
         <label>Address</label>
-        <Autocomplete
+        {/* <Autocomplete
           apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
           onPlaceSelected={handlePlaceSelected}
           className="form-input"
           defaultValue={location}
           onChange={(e) => {
+            console.log("e.target.value: ", e.target.value);
             setLocation(e.target.value);
           }}
           {...register("address", { required: false })}
@@ -369,7 +374,26 @@ const EditProfilePage = () => {
             // types: ["point_of_interest", "health", "(establishment)", "hospital"],
             // types: ["establishment"],
           }}
+        /> */}
+        <Autocomplete
+          apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
+          className="form-input"
+          defaultValue={location}
+          onPlaceSelected={(place) => {
+            console.log(place);
+            if (place.geometry) {
+              setValue("address", place.formatted_address);
+              setValue("lat", String(place.geometry.location.lat())); // Convert to string
+              setValue("lon", String(place.geometry.location.lng())); // Convert to string
+            }
+          }}
+          options={{
+            types: ["establishment"],
+            componentRestrictions: { country: "IN" },
+          }}
+          // defaultValue="Amsterdam"
         />
+        ;
         {errors.address && (
           <p className="error-message">Location is required</p>
         )}

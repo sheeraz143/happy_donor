@@ -34,6 +34,8 @@ function Home() {
       dispatch(
         dashboardData((res) => {
           setData(res);
+          // console.log("res: ", res.user_profile.usertype);
+          localStorage.setItem("user_type", res.user_profile.usertype);
           setBanners(res.banners);
           setRecentBloodRequest(res?.recent_blood_requests);
           if (res.errors) {

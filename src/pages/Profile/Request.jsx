@@ -30,13 +30,13 @@ function Request() {
     formState: { errors },
   } = useForm();
 
-  const handlePlaceSelected = (place) => {
-    if (place.geometry) {
-      setValue("location", place.formatted_address);
-      setValue("lat", place.geometry.location.lat());
-      setValue("lon", place.geometry.location.lng());
-    }
-  };
+  // const handlePlaceSelected = (place) => {
+  //   if (place.geometry) {
+  //     setValue("location", place.formatted_address);
+  //     setValue("lat", place.geometry.location.lat());
+  //     setValue("lon", place.geometry.location.lng());
+  //   }
+  // };
 
   const handleChange = (e) => {
     let value = e.target.value;
@@ -71,7 +71,7 @@ function Request() {
         blood_component: data?.bloodComponent,
         quantity_units: data?.Quantity,
         required_date: data?.requiredDate,
-        location: data?.location,
+        location: data?.address,
         lat: data?.lat,
         lon: data?.lon,
         is_critical: Boolean(data?.critical),
@@ -104,7 +104,7 @@ function Request() {
   return (
     <form className="form-container mb-4" onSubmit={handleSubmit(onSubmit)}>
       {/* Title */}
-      <h3 style={{color:"black"}}>Request for blood</h3>
+      <h3 style={{ color: "black" }}>Request for blood</h3>
       <div className="form-group">
         <label>Title</label>
         <select
@@ -248,16 +248,22 @@ function Request() {
         <label>Location</label>
         <Autocomplete
           apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
-          onPlaceSelected={handlePlaceSelected}
+          onPlaceSelected={(place) => {
+            console.log(place);
+            if (place.geometry) {
+              setValue("address", place.formatted_address);
+              setValue("lat", String(place.geometry.location.lat())); // Convert to string
+              setValue("lon", String(place.geometry.location.lng())); // Convert to string
+            }
+          }}
           className="form-input"
           options={{
             componentRestrictions: { country: "IN" },
-            // types: ["establishment"],
-
+            types: ["establishment"],
           }}
-          {...register("location", { required: true })}
+          {...register("address", { required: true })}
         />
-        {errors.location && (
+        {errors.address && (
           <p className="error-message">Location is required</p>
         )}
       </div>

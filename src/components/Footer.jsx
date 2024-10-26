@@ -95,13 +95,31 @@ const Footer = () => {
           <h3>Quick Links</h3>
           <ul>
             <li>
-              <Link to="/home">Home</Link>
+              {/* <Link to="">Home</Link> */}
+              <a
+                href="/app.html"
+                style={{ color: "#fff", textDecoration: "none" }}
+              >
+                Home
+              </a>
             </li>
             <li>
-              <Link to="/home">About</Link>
+              {/* <Link to="/">About</Link> */}
+              <a
+                href="/about-us.html"
+                style={{ color: "#fff", textDecoration: "none" }}
+              >
+                About
+              </a>
             </li>
             <li>
-              <Link to="/home">Services</Link>
+              {/* <Link to="/">Services</Link> */}
+              <a
+                href="/app.html"
+                style={{ color: "#fff", textDecoration: "none" }}
+              >
+                Services
+              </a>
             </li>
           </ul>
         </div>

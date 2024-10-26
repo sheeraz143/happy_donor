@@ -446,9 +446,18 @@ export const MarkDonated =
         code: response.status,
       };
 
-      callback(result);
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
     } catch (err) {
-      console.error("Update profile error: ", err);
       callback({
         status: false,
         code: err.response?.status || 500,
