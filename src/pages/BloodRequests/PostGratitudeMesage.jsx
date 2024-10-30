@@ -12,9 +12,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 
 export default function PostGratitudeMessage() {
-  const [image, setImage] = useState([]);
-  const [transcript, setTranscript] = useState("");
-  const [isRecording, setIsRecording] = useState(false);
+  const [media, setMedia] = useState([]); // State for all media types
   const [textMessage, setTextMessage] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -31,7 +29,6 @@ export default function PostGratitudeMessage() {
       dispatch(
         ViewBloodRequest(requestId, (res) => {
           dispatch(setLoader(false));
-
           if (res.errors) {
             toast.error(res.errors);
           } else {
@@ -45,44 +42,20 @@ export default function PostGratitudeMessage() {
     }
   }, []);
 
-  const handleImageUpload = (event) => {
+  const handleMediaUpload = (event) => {
     const files = Array.from(event.target.files);
-    setImage(files); // Store the array of files
-  };
-
-  const handleMicClick = () => {
-    if (!window.webkitSpeechRecognition) {
-      alert("Speech recognition is not supported in your browser.");
-      return;
-    }
-
-    const recognition = new window.webkitSpeechRecognition();
-    recognition.continuous = false; // Set to true if you want to keep recognizing speech
-    recognition.interimResults = false; // Set to true to get interim results
-
-    recognition.onstart = () => {
-      setIsRecording(true);
-    };
-
-    recognition.onresult = (event) => {
-      const speechToText = event.results[0][0].transcript;
-      setTranscript(speechToText);
-    };
-
-    recognition.onend = () => {
-      setIsRecording(false);
-    };
-
-    recognition.onerror = (event) => {
-      console.error("Speech recognition error", event.error);
-      setIsRecording(false);
-    };
-
-    recognition.start();
+    setMedia((prev) => [...prev, ...files]); // Add new files to existing media
   };
 
   const handleCalendarClick = () => {
-    alert("Calendar button clicked");
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "video/*"; // Accept video files only
+    fileInput.onchange = (e) => {
+      const files = Array.from(e.target.files);
+      setMedia((prev) => [...prev, ...files]); // Add video files to media
+    };
+    fileInput.click();
   };
 
   const handleSubmit = () => {
@@ -91,19 +64,34 @@ export default function PostGratitudeMessage() {
     formData.append("donor_id", donorId);
     formData.append("message", textMessage);
 
-    image.forEach((image) => {
-      formData.append("media[]", image);
+    media.forEach((file) => {
+      formData.append("media[]", file); // Append all media files
     });
-    // for (let [key, value] of formData.entries()) {
-    //   console.log(`${key}: ${value}`);
-    // }
 
     dispatch(setLoader(true));
     try {
       dispatch(
         SendGratitudeMessage(formData, (res) => {
           dispatch(setLoader(false));
-          if (res.errors) {
+
+          // Check for 422 status code
+          if (res.code === 422) {
+            // Check if errors exist
+            if (res.errors) {
+              // Extract specific media error messages
+              for (const [key, value] of Object.entries(res.errors)) {
+                // Show the specific error message for media
+                if (key.startsWith("media.")) {
+                  value.forEach((error) => {
+                    toast.error(error); // Show each error message
+                  });
+                }
+              }
+            } else {
+              toast.error("The media must not be greater than 5120 kilobytes.");
+            }
+          } else if (res.errors) {
+            // Handle other types of errors
             toast.error(res.errors);
           } else if (res.code === 404) {
             toast.error(res.message);
@@ -121,43 +109,35 @@ export default function PostGratitudeMessage() {
 
   return (
     <div className="d-flex flex-column">
-      <h2 className="mt-4">Post Gratitude Message</h2>
+      <h2 className="mt-4 text-center">Post Gratitude Message</h2>
       <div
-        className="card col-lg-8 col-md-8  col-sm-8 mx-auto align-items-start mt-5 mb-5 gap-3"
+        className="card col-lg-8 col-md-8 col-sm-8 mx-auto align-items-start mt-5 mb-5 gap-3"
         style={{ color: "#097E14" }}
       >
-        <div className="">Name: {data?.name}</div>
-        <div>Request ID:{data?.request_id}</div>
+        <div>{data?.name}</div>
         <div>Blood Type: {data?.blood_group}</div>
         <div>Quantity Needed: {data?.units_required}</div>
-        <div>Location: {data?.location}</div>
+        <div>{data?.location}</div>
       </div>
       <h5
         style={{ color: "blue" }}
-        className="col-lg-8 col-md-8  col-sm-8 mx-auto text-start"
+        className="col-lg-8 col-md-8 col-sm-8 mx-auto text-start"
       >
         Dear Donors,
       </h5>
-
       <div className="col-lg-7 col-md-8 col-sm-8 mx-auto mt-4">
         <div className="border p-3 rounded shadow-sm bg-white d-flex flex-column">
           <input
-            className=" col-lg-8 col-md-8  col-sm-8 mb-4"
+            className="col-lg-8 col-md-8 col-sm-8 mb-4"
             placeholder=" Thank you for your donation! Your generosity has saved lives."
             style={{ border: "none", outline: "none" }}
             onChange={(e) => setTextMessage(e.target.value)}
           />
-          {/* <p className="text-center text-muted mb-4">
-            Thank you for your donation!
-            <br />
-            Your generosity has saved lives.
-          </p> */}
           <div
             style={{ borderBottom: "1px solid #ccc" }}
             className="mb-3"
           ></div>
-          <div className="d-flex justify-content-end mb-3 mt-3">
-            {/* File Upload Icon */}
+          <div className="d-flex justify-content-end align-items-center mb-3 mt-3">
             <label htmlFor="file-upload" className="me-3">
               <img
                 src={uploadIcon}
@@ -169,19 +149,26 @@ export default function PostGratitudeMessage() {
             <input
               id="file-upload"
               type="file"
-              accept="image/*"
+              accept="image/*,audio/*" // Accept images and audio files
               style={{ display: "none" }}
-              onChange={handleImageUpload}
+              onChange={handleMediaUpload}
             />
-            {/* Mic Icon */}
-            <img
-              src={micIcon}
-              alt="Microphone Icon"
-              className="icon me-3"
-              style={{ cursor: "pointer" }}
-              onClick={handleMicClick}
+            <label htmlFor="audio-upload" className="me-3">
+              <img
+                src={micIcon}
+                alt="Microphone Icon"
+                className="icon"
+                style={{ cursor: "pointer" }}
+                onClick={() => document.getElementById("audio-upload").click()} // Trigger file input
+              />
+            </label>
+            <input
+              id="audio-upload"
+              type="file"
+              accept="audio/*"
+              style={{ display: "none" }}
+              onChange={handleMediaUpload}
             />
-            {/* Calendar Icon */}
             <img
               src={calendarIcon}
               alt="Calendar Icon"
@@ -190,37 +177,41 @@ export default function PostGratitudeMessage() {
               onClick={handleCalendarClick}
             />
           </div>
-          {isRecording && (
-            <p className="text-center text-danger">Recording...</p>
-          )}
-          {transcript && (
+          {media.length > 0 && (
             <div className="text-center mt-3">
-              <p className="transcript">{transcript}</p>
-            </div>
-          )}
-          {image.length > 0 && (
-            <div className="text-center mt-3">
-              {image.map((image, index) => (
-                <img
-                  key={index}
-                  src={URL.createObjectURL(image)}
-                  alt={`Uploaded Preview ${index + 1}`}
-                  className="img-fluid rounded"
-                  style={{
-                    marginRight: "10px",
-                    marginBottom: "10px",
-                    height: "100px",
-                  }}
-                />
-              ))}
+              {media.map((file, index) => {
+                const fileURL = URL.createObjectURL(file);
+                return file.type.startsWith("image/") ? (
+                  <img
+                    key={index}
+                    src={fileURL}
+                    alt={`Uploaded Preview ${index + 1}`}
+                    className="img-fluid rounded"
+                    style={{
+                      marginRight: "10px",
+                      marginBottom: "10px",
+                      height: "100px",
+                    }}
+                  />
+                ) : file.type.startsWith("audio/") ? (
+                  <audio key={index} controls>
+                    <source src={fileURL} type="audio/*" />
+                    Your browser does not support the audio tag.
+                  </audio>
+                ) : file.type.startsWith("video/") ? (
+                  <video key={index} width="200" controls>
+                    <source src={fileURL} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                ) : null;
+              })}
             </div>
           )}
         </div>
       </div>
-
       <div className="col-lg-6 col-md-8 col-sm-10 mx-auto mt-5 mb-5 d-flex">
         <button
-          className="btn  flex-fill me-2 fw-bold"
+          className="btn flex-fill me-2 fw-bold"
           style={{ padding: "15px", background: "#D9D9D9", color: "gray" }}
         >
           Cancel

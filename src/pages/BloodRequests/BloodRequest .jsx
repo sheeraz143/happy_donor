@@ -12,6 +12,7 @@ import {
 } from "../../redux/product";
 import { Pagination } from "antd";
 import Modal from "react-modal";
+import { formatDate } from "../../utils/dateUtils";
 
 const BloodRequest = () => {
   // const { id } = useParams();
@@ -157,14 +158,10 @@ const BloodRequest = () => {
             />
           </div>
           <div className="request-details">
-            {/* <div
-              className="request-id text-start"
-              style={{ overflowWrap: "anywhere" }}
-            >
-              Request ID: {request.request_id}
-            </div> */}
             <div className="request-date text-start"> {request.name}</div>
-            <div className="request-date text-start"> {request.date}</div>
+            <div className="request-date text-start">
+              {formatDate(request.date)}
+            </div>
             <div className="request-units text-start">
               Units Required: {request.units_required}
             </div>
@@ -172,6 +169,17 @@ const BloodRequest = () => {
             <div className="request-status text-start">
               Status: {request.status}
             </div>
+            {/* Conditionally render the reason and additional comments for closed requests */}
+            {!isOpen && (
+              <>
+                <div className="request-units text-start">
+                  Reason: {request.reason}
+                </div>
+                <div className="request-units text-start">
+                  Additional Comments: {request.reason_comments}
+                </div>
+              </>
+            )}
           </div>
           {isOpen && (
             <div className="blood-group text-start">
@@ -184,7 +192,7 @@ const BloodRequest = () => {
           )}
         </div>
 
-        <div className="accept-donar-button justify-content-end">
+        <div className="accept-donar-button d-flex justify-content-center">
           {request.view_donors && (
             <button
               className="accepted-donors-btn"
@@ -200,21 +208,17 @@ const BloodRequest = () => {
 
   return (
     <>
-      <h3
-        className="mt-3 d-flex justify-content-between align-items-center"
-        style={{ width: "100%" }}
-      >
-        <span className="mx-auto">My Requests</span>
-        <button
-          className="btn btn-primary"
-          onClick={() => navigate("/request")}
-        >
-          Add New
-        </button>
-      </h3>
-
-      <div className="blood-request-container">
-        <div className="tabs mt-4">
+      <div className="blood-request-container mx-5">
+        <h3 className="mt-3 d-flex justify-content-between align-items-center">
+          <span className="mx-auto">My Requests</span>
+          <button
+            className="btn btn-primary"
+            onClick={() => navigate("/request")}
+          >
+            Add New
+          </button>
+        </h3>
+        <div className="tabs mt-4 ">
           <button
             className={`tab ${activeTab === "open" ? "active" : ""}`}
             onClick={() => setActiveTab("open")}
@@ -236,10 +240,10 @@ const BloodRequest = () => {
         </div>
         <div>
           {activeTab === "open" && openRequests.length === 0 && (
-            <h4 className="mx-auto mb-5">No Data available.</h4>
+            <h4 className="mx-auto mb-5 text-center">No Data available.</h4>
           )}
           {activeTab === "closed" && closedRequests.length === 0 && (
-            <h4 className="mx-auto mb-5">No Data available.</h4>
+            <h4 className="mx-auto mb-4 text-center">No Data available.</h4>
           )}
         </div>
         <Pagination
@@ -262,25 +266,30 @@ const BloodRequest = () => {
         className="Modal"
         overlayClassName="Overlay"
       >
-        <div className="d-flex flex-column align-items-center ">
-          <h3>Cancel Blood Request</h3>
-          <label className="text-start col-lg-6 col-md-6 col-sm-6">
-            Closure reason
+        <div className="d-flex flex-column align-items-center">
+          <h3 className="cancel_blood_req ">Close Request</h3>
+          <label className="text-start w-100">
+            Reason for closing the request
           </label>
-          <input
-            className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
-            value={closureReason}
+          <select
+            className="form-input w-100 mb-3"
             onChange={(e) => setClosureReason(e.target.value)}
-          />
-          <label className="text-start col-lg-6 col-md-6 col-sm-6">
-            Additional comments
-          </label>
-          <input
-            className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
+          >
+            <option value="">Select reason</option>
+            <option value="Request fulfilled">Request fulfilled</option>
+            <option value="Request canceled">Request canceled</option>
+            <option value="Found an alternate solution">
+              Found an alternate solution
+            </option>
+            <option value="Others">Others (please specify)</option>
+          </select>
+          <label className="text-start w-100">Additional comments</label>
+          <textarea
+            className="form-input w-100 mb-3"
             value={additionalComments}
             onChange={(e) => setAdditionalComments(e.target.value)}
           />
-          <div className="d-flex justify-content-evenly col-lg-6 col-md-6 col-sm-6">
+          <div className="d-flex justify-content-evenly w-100">
             <button onClick={closeModal} className="btn btn-primary">
               Close
             </button>

@@ -17,9 +17,10 @@ const LoginComponent = () => {
     if (auth) {
       navigate("/home");
     } else {
-      navigate("/login"); 
+      navigate("/login");
     }
   }, []);
+  
   const handleChange = (e) => {
     let value = e.target.value;
     // If the input value doesn't start with +91, add it

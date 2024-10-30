@@ -4,6 +4,8 @@ import profPicImg from "../../assets/profpic.png";
 import shareIcon from "../../assets/Share.png";
 import locationIcon from "../../assets/Mappoint.png";
 import { Link, useNavigate } from "react-router-dom";
+import { formatDate } from "../../utils/dateUtils";
+
 
 const BloodMedicalCamps = () => {
   const [activeTab, setActiveTab] = useState("open");
@@ -82,7 +84,7 @@ const BloodMedicalCamps = () => {
           <div className="text-start fw-bold"> {request.name}</div>
           <div className="text-start"> {request.hospital}</div>
           <div className="text-start">Blood units: {request.units}</div>
-          <div className="text-start"> {request.date}</div>
+          <div className="text-start"> {formatDate(request.date)}</div>
         </div>
         <div className="blood-group ms-auto">
           <img
@@ -125,7 +127,7 @@ const BloodMedicalCamps = () => {
         <div className="request-details ms-3">
           <div className="text-start fw-bold"> {request.name}</div>
           <div className="text-start">Blood units: {request.units}</div>
-          <div className="text-start"> {request.date}</div>
+          <div className="text-start"> {formatDate(request.date)}</div>
           <div className="text-start"> {request.Address}</div>
         </div>
         <div className="blood-group ms-auto">

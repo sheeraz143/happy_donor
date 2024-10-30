@@ -136,8 +136,23 @@ const EditProfilePage = () => {
     }
   };
 
+  const handleInput = (e) => {
+    let value = e.target.value.replace(/[^0-9+\s]/g, ""); // Remove non-numeric characters except + and spaces
+    const maxDigits = 10;
+
+    if (value.startsWith("+91")) {
+      value = "+91 " + value.slice(4, 4 + maxDigits); // Allow 10 digits after +91
+    } else if (value.startsWith("0")) {
+      value = "0" + value.slice(1, 1 + maxDigits); // Allow 10 digits after 0
+    } else {
+      value = value.slice(0, maxDigits); // Allow only 10 digits
+    }
+
+    e.target.value = value;
+  };
+
   const onSubmit = (data) => {
-    console.log("Received data: ", data); // Log the incoming data
+    // console.log("Received data: ", data); // Log the incoming data
 
     dispatch(setLoader(true)); // Start loading
     try {
@@ -161,9 +176,9 @@ const EditProfilePage = () => {
       // console.log("changedData: ", changedData);
 
       // Log formData for verification
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${typeof value} - ${value}`);
-      }
+      // for (let [key, value] of formData.entries()) {
+      //   console.log(`${key}: ${typeof value} - ${value}`);
+      // }
 
       // Dispatch action to update profile
       dispatch(
@@ -219,7 +234,8 @@ const EditProfilePage = () => {
         <label>Title</label>
         <select
           className="form-input"
-          {...register("title", { required: true })}
+          {...register("title", { required: false })}
+          disabled
         >
           <option value="">Select</option>
           <option value="Mr">Mr</option>
@@ -236,7 +252,8 @@ const EditProfilePage = () => {
         <input
           className="form-input"
           type="text"
-          {...register("first_name", { required: true })}
+          {...register("first_name", { required: false })}
+          readOnly
         />
         {errors.first_name && (
           <p className="error-message">First Name is required</p>
@@ -249,7 +266,8 @@ const EditProfilePage = () => {
         <input
           className="form-input"
           type="text"
-          {...register("last_name", { required: true })}
+          {...register("last_name", { required: false })}
+          readOnly
         />
         {errors.last_name && (
           <p className="error-message">Last Name is required</p>
@@ -262,11 +280,13 @@ const EditProfilePage = () => {
         <input
           className="form-input"
           type="tel"
-          readOnly
+          onInput={handleInput}
+          // readOnly
           {...register("phone_number", {
             required: true,
             // pattern: /^[0-9]{10}$/,
             pattern: {
+              // value: /^(?:\+91[-\s]?)?[0]?[123456789]\d{9}$/,
               value: /^(?:\+91[-\s]?)?[0]?[123456789]\d{9}$/,
               message: "Invalid phone number format",
             },
@@ -296,7 +316,8 @@ const EditProfilePage = () => {
         <label>Blood Group</label>
         <select
           className="form-input"
-          {...register("blood_group", { required: true })}
+          {...register("blood_group", { required: false })}
+          disabled
         >
           <option value="">Select</option>
           <option value="A+">A+</option>
@@ -323,7 +344,8 @@ const EditProfilePage = () => {
           onFocus={(e) => {
             e.target.showPicker();
           }}
-          {...register("date_of_birth", { required: true })}
+          {...register("date_of_birth", { required: false })}
+          readOnly
         />
         {errors.date_of_birth && (
           <p className="error-message">Date of Birth is required</p>
@@ -335,7 +357,8 @@ const EditProfilePage = () => {
         <label>Gender</label>
         <select
           className="form-input"
-          {...register("gender", { required: true })}
+          {...register("gender", { required: false })}
+          disabled
         >
           <option value="">Select</option>
           <option value="Male">Male</option>
@@ -380,7 +403,6 @@ const EditProfilePage = () => {
           className="form-input"
           defaultValue={location}
           onPlaceSelected={(place) => {
-            console.log(place);
             if (place.geometry) {
               setValue("address", place.formatted_address);
               setValue("lat", String(place.geometry.location.lat())); // Convert to string
@@ -393,7 +415,7 @@ const EditProfilePage = () => {
           }}
           // defaultValue="Amsterdam"
         />
-        ;
+
         {errors.address && (
           <p className="error-message">Location is required</p>
         )}

@@ -5,6 +5,9 @@ import { getProfile, setLoader } from "../redux/product";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import profilePic from "../assets/prof_img.png";
+import { IoMdNotificationsOutline } from "react-icons/io";
+// import { AiOutlineLogout } from "react-icons/ai";
+import { FaRegUserCircle } from "react-icons/fa";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -130,33 +133,52 @@ function Navbar() {
           </NavLink>
         )}
       </div>
-      <div
-        className="profile-container gap-3"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        <h5 style={{ margin: 0, color: "#fff" }}>
-          {data?.first_name == null
-            ? "Guest"
-            : `${data?.first_name} ${data?.last_name}`}
-        </h5>
-        <img
-          src={data?.profile_picture || profilePic}
-          alt="Profile"
-          className="profile-pic"
-        />
-        {showProfileMenu && (
-          <div className="profile-menu">
-            <p style={{ fontSize: "16px" }}>
-              {data?.name == null
-                ? "Guest"
-                : `${data?.first_name} ${data?.last_name}`}
-            </p>
-            <button onClick={handleLogout} style={{ background: "red" }}>
-              Logout
-            </button>
-          </div>
-        )}
+
+      <div className="d-flex align-items-center gap-2">
+        <div>
+          <IoMdNotificationsOutline
+            style={{ height: "20px", width: "20px", cursor: "pointer" }}
+          />
+        </div>
+        <div
+          className="profile-container gap-3 d-flex align-items-center"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <h5 style={{ margin: 0, color: "#fff", fontSize: "1rem" }}>
+            {data?.first_name == null
+              ? "Guest"
+              : ` ${data?.first_name} ${data?.last_name}`}
+          </h5>
+          <img
+            src={data?.profile_picture || profilePic}
+            alt="Profile"
+            className="profile-pic"
+          />
+          {showProfileMenu && (
+            <div className="profile-menu ">
+              <p style={{ fontSize: "16px" }}>
+                <FaRegUserCircle
+                  style={{ height: "20px", width: "20px" }}
+                  className="mx-2"
+                />
+                {data?.name == null
+                  ? "Guest"
+                  : `${data?.first_name} ${data?.last_name}`}
+              </p>
+              {/* <span className="border_bottom"></span>
+              <div className="d-flex align-items-center gap-2">
+                <AiOutlineLogout
+                  style={{ height: "20px", width: "20px" }}
+                  className="mt-3"
+                /> */}
+              <button onClick={handleLogout} style={{ background: "red" }}>
+                Logout
+              </button>
+            </div>
+            // </div>
+          )}
+        </div>
       </div>
     </nav>
   );

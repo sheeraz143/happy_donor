@@ -2,6 +2,8 @@ import "../../css/BloodrequestDetailPage.css";
 import { useLocation } from "react-router";
 import { useForm } from "react-hook-form";
 import bloodGroupImg from "../../assets/bloodimage.png";
+import { formatDate } from "../../utils/dateUtils";
+
 
 export default function ClosedRequests() {
   const {
@@ -31,8 +33,8 @@ export default function ClosedRequests() {
                 <img src={request.profilePic} alt="Profile" />
               </div>
               <div className="request-details ms-3">
-                <div className="text-start">Request ID: {request.id}</div>
-                <div className="text-start">Date:{request.date}</div>
+               
+                <div className="text-start">Date:{formatDate(request.date)}</div>
                 <div className="text-start">Units: {request.units}</div>
                 <div className="text-start">Address: {request.address}</div>
               </div>

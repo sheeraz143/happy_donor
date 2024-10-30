@@ -242,6 +242,57 @@ export const updateProfile =
     }
   };
 
+export const toggleAvailability =
+  (callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.patchData(
+        baseUrl + "app/profile/availability"
+      );
+
+      // const result = {
+      //   ...response.data,
+      //   code: response.status,
+      // };
+
+      // Handle success response
+      if (response.status === 200) {
+        callback({
+          status: true,
+          code: response.status,
+          data: response.data.user,
+          message: response.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+
+      // Check if err.response exists to avoid accessing undefined
+      if (err.response && err.response.data && err.response.data.errors) {
+        // Extract the first error message for each field
+        const errorMessages = Object.entries(err.response.data.errors).map(
+          ([field, messages]) => `${field}: ${messages[0]}`
+        );
+
+        callback({
+          status: false,
+          code: err.response.status,
+          message: errorMessages.length
+            ? errorMessages.join(", ") // Join messages for display
+            : "An unexpected error occurred.",
+        });
+      } else {
+        // Handle unexpected errors
+        callback({
+          status: false,
+          code: err.response?.status || 500,
+          message:
+            err.response?.data?.message || "An unexpected error occurred.",
+        });
+      }
+    }
+  };
+
 export const getProfile =
   (callback = () => {}) =>
   async () => {

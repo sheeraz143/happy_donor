@@ -30,12 +30,14 @@ function Home() {
   useEffect(() => {
     dispatch(setLoader(true)); // Start loading
     window.scrollTo(0, 0);
+
     try {
       dispatch(
         dashboardData((res) => {
           setData(res);
           // console.log("res: ", res.user_profile.usertype);
           localStorage.setItem("user_type", res.user_profile.usertype);
+          
           setBanners(res.banners);
           setRecentBloodRequest(res?.recent_blood_requests);
           if (res.errors) {
@@ -80,7 +82,7 @@ function Home() {
 
   const renderRequestCard = (request) => {
     return (
-      <div className="request-card" key={request.id}>
+      <div className="request-card col" key={request.id}>
         <div className="request-header d-flex align-items-center">
           <div className="align-content-center">
             <img
@@ -95,9 +97,7 @@ function Home() {
             />
           </div>
           <div className="request-details ms-3">
-            <div className="request-id text-start">
-              Request ID: {request?.id}
-            </div>
+           
             <div className="request-date text-start">
               Attender: {request?.attender_first_name}{" "}
               {request?.attender_last_name}
@@ -175,7 +175,7 @@ function Home() {
           style={{ cursor: "pointer" }}
         >
           <img src={requestblood} alt="Request Blood" />
-          <p>Request Blood</p>
+          <p style={{ color: "green" }}>Request For Blood</p>
         </div>
         <div
           className="card"
@@ -183,7 +183,7 @@ function Home() {
           style={{ cursor: "pointer" }}
         >
           <img src={donateblood} alt="Donate Blood" />
-          <p>Donate Blood</p>
+          <p style={{ color: "green" }}>Donate Blood</p>
         </div>
         <div
           className="card"
@@ -191,7 +191,7 @@ function Home() {
           style={{ cursor: "pointer" }}
         >
           <img src={medicalcamps} alt="Blood-Medical Camps/Events" />
-          <p>Blood-Medical Camps/Events</p>
+          <p style={{ color: "green" }}>Blood-Medical Camps/Events</p>
         </div>
         <div
           className="card"
@@ -199,15 +199,18 @@ function Home() {
           style={{ cursor: "pointer" }}
         >
           <img src={funddonation} alt="Fund Donation" />
-          <p>Fund Donation</p>
+          <p style={{ color: "green" }}>Fund Donation</p>
         </div>
         <div className="card">
           <img src={sos} alt="Emergency SOS" />
-          <p>Emergency SOS</p>
+          <p style={{ color: "green" }}>Emergency SOS</p>
         </div>
       </div>
       {/* Recent Blood Requests Section */}
-      <div className="recent-requests">
+      <div
+        className="recent-requests mt-4"
+        style={{ maxWidth: "1280px", margin: "0 auto" }}
+      >
         <h2 style={{ fontSize: "1.5rem" }}>
           Recent Blood Requests
           <div>

@@ -6,7 +6,7 @@ export default function PrivacyPolicy() {
   }, []);
   return (
     <div className="my-5">
-      <h5 className="mb-3">Privacy Policy</h5>
+      <h4 className="mb-3 text-center">Privacy Policy</h4>
 
       {/* Privacy Policy Sections in a Single Column */}
       <div className="row justify-content-center">

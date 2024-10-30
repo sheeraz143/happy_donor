@@ -9,6 +9,7 @@ import { BloodDonateList, DonateAccept, setLoader } from "../redux/product";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { Pagination } from "antd";
+import { formatDate } from "../utils/dateUtils";
 
 function Donate() {
   const [activeTab, setActiveTab] = useState("matched");
@@ -61,7 +62,7 @@ function Donate() {
 
   useEffect(() => {
     fetchData(activeTab, currentPage);
-  }, [activeTab, currentPage,refresh]);
+  }, [activeTab, currentPage, refresh]);
 
   const handleCardClick = (request) => {
     // console.log("request: ", request);
@@ -104,14 +105,14 @@ function Donate() {
           <div className="text-start">
             Blood units: {request?.units_required}
           </div>
-          <div className="text-start">{request?.date}</div>
+          <div className="text-start">{formatDate(request.date)}</div>
         </div>
         <div className="blood-group">
           <img src={bloodGroupImg} alt="Blood Group" />
         </div>
       </div>
 
-      <div className="accept-donar-button">
+      <div className="accept-donar-button d-flex justify-content-around">
         <div className="icon-container">
           <Link to="#" className="share-link">
             <img src={shareIcon} alt="Share" className="icon-img" />
@@ -203,7 +204,7 @@ function Donate() {
           <div className="text-start">
             Blood units: {request?.units_required}
           </div>
-          <div className="text-start">{request?.date}</div>
+          <div className="text-start">{formatDate(request.date)}</div>
         </div>
         <div className="blood-group ms-auto">
           <img src={bloodGroupImg} alt="Blood Group" />
@@ -230,11 +231,14 @@ function Donate() {
 
   return (
     <>
-      <h3 className="mt-3" style={{ color: "black" }}>
-        Donate Blood
+      <h3
+        className="mt-3 d-flex justify-content-between align-items-center"
+        style={{ maxWidth: "1280px" }}
+      >
+        <span className="mx-auto"> Donate Blood</span>
       </h3>
       <div className="blood-request-container">
-        <div className="tabs mt-4">
+        <div className="tabs mt-4 mx-3">
           <button
             className={`tab ${activeTab === "matched" ? "active" : ""}`}
             onClick={() => setActiveTab("matched")}
@@ -248,18 +252,18 @@ function Donate() {
             Other requests ({requestCount.unmatched || 0})
           </button>
         </div>
-        <div className="requests mb-5">
+        <div className="requests mb-5 mx-3">
           {activeTab === "matched" &&
             openRequests.map((request) => renderRequestCard(request, true))}
           {activeTab === "unmatched" &&
             closedRequests.map((request) => renderOthersCard(request, false))}
         </div>
-        <div>
+        <div className="d-flex">
           {activeTab === "matched" && openRequests.length === 0 && (
             <h4 className="mx-auto mb-5">No Data available.</h4>
           )}
           {activeTab === "unmatched" && closedRequests.length === 0 && (
-            <h4 className="mx-auto mb-5">No Data available.</h4>
+            <h4 className="mx-auto mb-3 ">No Data available.</h4>
           )}
         </div>
         <Pagination

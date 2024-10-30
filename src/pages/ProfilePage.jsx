@@ -67,6 +67,21 @@ const Profile = () => {
     }
   }, [dispatch, setValue]);
 
+  const handleInput = (e) => {
+    let value = e.target.value.replace(/[^0-9+\s]/g, ""); // Remove non-numeric characters except + and spaces
+    const maxDigits = 10;
+
+    if (value.startsWith("+91")) {
+      value = "+91 " + value.slice(4, 4 + maxDigits); // Allow 10 digits after +91
+    } else if (value.startsWith("0")) {
+      value = "0" + value.slice(1, 1 + maxDigits); // Allow 10 digits after 0
+    } else {
+      value = value.slice(0, maxDigits); // Allow only 10 digits
+    }
+
+    e.target.value = value;
+  };
+
   // Function to handle form submission
   const onSubmit = (data) => {
     // dispatch(setLoader(true)); // Start loading
@@ -83,9 +98,10 @@ const Profile = () => {
         address: data?.address,
         location: data?.location,
         last_blood_donation_date: data?.lastDonationDate,
-        lat: "93.1232", // Consider using actual lat/lon values
+        lat: "93.1232",
         lon: "92.32323",
-        availability: data?.availability !== null ? data.availability : false,
+        // availability: data?.availability !== null ? data.availability : false,
+        availability: true,
         terms_accepted: data?.terms,
       };
 
@@ -95,10 +111,7 @@ const Profile = () => {
           if (res.code === 200) {
             // Handle success
             toast.success(res.message);
-            localStorage.setItem(
-              "is_profile_update",
-              res.user?.profile_verified
-            );
+            localStorage.setItem("is_profile_update", "1");
             navigate("/home");
           } else {
             toast.error(res.message);
@@ -111,7 +124,6 @@ const Profile = () => {
       toast.error(error);
       dispatch(setLoader(false));
     }
-    navigate("/home");
   };
 
   return (
@@ -172,9 +184,11 @@ const Profile = () => {
           className="form-input"
           type="tel"
           readOnly
+          onInput={handleInput}
           {...register("phoneNumber", {
             required: true,
             pattern: {
+              // value: /^(?:\+91[-\s]?)?[0]?[123456789]\d{9}$/,
               value: /^(?:\+91[-\s]?)?[0]?[123456789]\d{9}$/,
               message: "Invalid phone number format",
             },
@@ -271,7 +285,7 @@ const Profile = () => {
             componentRestrictions: { country: "IN" },
           }}
         />
-        ;
+
         {errors.address && (
           <p className="error-message">Location is required</p>
         )}
@@ -309,7 +323,7 @@ const Profile = () => {
       </div>
 
       {/* Availability Toggle Switch */}
-      <div className=" switch-container">
+      {/* <div className=" switch-container">
         <label className="switch-label">Availability</label>
         <label className="switch">
           <input
@@ -319,7 +333,7 @@ const Profile = () => {
           />
           <span className="slider round"></span>
         </label>
-      </div>
+      </div> */}
 
       {/* Terms and Conditions */}
       <div className="text-start">
@@ -329,7 +343,8 @@ const Profile = () => {
           className="form-checkbox"
         />
         <label>
-          I have read and agree to terms of service and privacy policy
+          I have read and agree to the <Link to="/terms">terms of service</Link>
+          and <Link to="/privacypolicy">privacy policy</Link>
         </label>
         {errors.terms && (
           <p className="error-message">You must agree to the terms</p>

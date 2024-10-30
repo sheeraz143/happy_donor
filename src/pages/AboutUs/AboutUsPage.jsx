@@ -7,7 +7,7 @@ const AboutUs = () => {
   }, []);
   return (
     <div className="my-5">
-      <h5 className="mb-3">About Us</h5>
+      <h4 className="mb-3 text-center">About Us</h4>
 
       {/* Logo and Header */}
       <div className="text-center mb-4">

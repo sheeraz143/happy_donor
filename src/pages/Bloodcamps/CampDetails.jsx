@@ -3,6 +3,8 @@ import shareIcon from "../../assets/Share.png";
 import locationIcon from "../../assets/Mappoint.png";
 import { Link, useLocation } from "react-router-dom";
 import MapComponent from "../../components/map/MapComponent";
+import { formatDate } from "../../utils/dateUtils";
+
 
 export default function CampDetails() {
   const location = useLocation();
@@ -26,7 +28,7 @@ export default function CampDetails() {
           <h4 className="text-start fw-bold" style={{ color: "green" }}>
             Camp1:
           </h4>
-          <div className="text-start">Date: {request.date}</div>
+          <div className="text-start">Date:{formatDate(request.date)}</div>
           <div className="text-start">Location: {request.location}</div>
           <div className="text-start">Time: {request.time}</div>
           <div className="text-start">Blood Type: {request.BloodType}</div>

@@ -5,7 +5,7 @@ export default function Terms() {
   }, []);
   return (
     <div className="my-5">
-      <h5 className="mb-3">Terms Of Service</h5>
+      <h4 className="mb-3 text-center">Terms Of Service</h4>
 
       {/* Privacy Policy Sections in a Single Column */}
       <div className="row justify-content-center">

@@ -84,14 +84,14 @@ export default function ConfirmDonation() {
         style={{ color: "#097E14" }}
       >
         <div className="">Name: {data?.name}</div>
-        <div>Request ID:{data?.request_id}</div>
+     
         <div>Blood Type:{data?.blood_group}</div>
         <div>Quantity Needed: {data?.units_required}</div>
         <div>Location: {data?.location}</div>
         <div>Donation Date:{data?.date}</div>
         <div>Quantity Donated: {data?.units_required}</div>
       </div>
-      <h5 style={{ color: "blue" }}>
+      <h5 style={{ color: "blue" }} className="text-center">
         Please confirm that the donation for this request has been fulfilled
       </h5>
 

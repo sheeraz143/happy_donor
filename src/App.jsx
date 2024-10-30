@@ -54,14 +54,12 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-
     if (location.pathname === "/") {
       window.location.href = "/app.html";
-  }
-  
-    document.body.className = darkMode ? "dark-mode" : "";
-  }, [darkMode]);
+    }
 
+    document.body.className = darkMode ? "dark-mode" : "";
+  }, [darkMode, location.pathname]);
 
   const hideNavbarAndFooter =
     location.pathname === "/login" ||
@@ -78,7 +76,7 @@ function App() {
         <Route path="/login" element={<LoginComponent />} />
         <Route path="/otp" element={<OTPVerificationComponent />} />
         <Route element={<ProtectedRoute />}>
-        <Route path="/home" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/viewprofile" element={<ViewProfilepage />} />
           <Route path="/approvals" element={<Approvals />} />

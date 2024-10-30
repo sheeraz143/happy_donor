@@ -1,7 +1,7 @@
 .icon {
-  width: 30px; /* Set icon width */
-  height: 30px; /* Set icon height */
-  cursor: pointer; /* Custom cursor for icons */
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
 }
 
 .cursor-pointer {
