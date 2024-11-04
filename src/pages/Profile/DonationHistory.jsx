@@ -11,7 +11,6 @@ import { Pagination } from "antd";
 import { formatDate } from "../../utils/dateUtils";
 import Modal from "react-modal";
 
-
 function DonationHistory() {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -32,42 +31,15 @@ function DonationHistory() {
     setSelectedDonor(null);
   };
 
-  // const openRequests = [
-  //   {
-  //     id: 12345,
-  //     name: "sheeraz",
-  //     date: "2024-07-16",
-  //     profilePic: profPicImg,
-  //     bloodGroupImage: bloodGroupImg,
-  //     requestType: "gratitude",
-  //   },
-  //   {
-  //     id: 45645,
-  //     date: "2024-07-16",
-  //     name: "virat",
-  //     profilePic: profPicImg,
-  //     bloodGroupImage: bloodGroupImg,
-  //     requestType: "report",
-  //   },
-  //   {
-  //     id: 34512,
-  //     date: "2024-07-16",
-  //     name: "shariq",
-  //     profilePic: profPicImg,
-  //     bloodGroupImage: bloodGroupImg,
-  //     requestType: "gratitude",
-  //   },
-  // ];
-
   useEffect(() => {
     dispatch(setLoader(true));
     try {
       dispatch(
         DonateHistory((res) => {
           if (res.code === 200) {
-            console.log(res.requests);
-            setOpenRequests(res.requests);
-            setTotalRequests(res.pagination.total);
+            console.log(res?.requests);
+            setOpenRequests(res?.requests);
+            setTotalRequests(res?.pagination?.total);
           } else {
             toast.error(res.message);
           }
@@ -89,7 +61,7 @@ function DonationHistory() {
   // };
 
   const renderRequestCard = (request) => (
-    <div className="request-card" key={request.request_id}>
+    <div className="request-card" key={request?.request_id}>
       <div className="request-header d-flex align-items-center">
         <div className="align-content-center">
           <img
@@ -165,11 +137,11 @@ function DonationHistory() {
       <h2 className="text-center">Donation History</h2>
       <div className="blood-request-container">
         <div className="requests mt-5">
-          {openRequests.map(renderRequestCard)}
+          {openRequests?.map(renderRequestCard)}
         </div>
       </div>
       <div>
-        {openRequests.length === 0 && (
+        {openRequests?.length === 0 && (
           <h4 className="mx-auto mb-5">No Data available.</h4>
         )}
       </div>

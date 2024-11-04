@@ -53,3 +53,53 @@
   cursor: pointer;
   font-size: 16px;
 }
+
+/* Add this to LoginComponent.css */
+
+.toggleContainer {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.toggleContainer button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.toggleContainer button.active {
+  background-color: #1976d2; /* Blue for the active button */
+  color: #ffffff;
+}
+
+.input {
+  margin: 10px 0;
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+}
+
+
+.passwordContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #4caf50; /* Color for the eye icon */
+}
+
+.input {
+  padding-right: 30px; /* Add space for the eye icon */
+}

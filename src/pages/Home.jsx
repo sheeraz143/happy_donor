@@ -26,6 +26,7 @@ function Home() {
   const [recentBloodRequest, setRecentBloodRequest] = useState([]);
 
   const isProfileUpdate = localStorage.getItem("is_profile_update");
+  const storedUserType = localStorage.getItem("user_type");
 
   useEffect(() => {
     dispatch(setLoader(true)); // Start loading
@@ -37,7 +38,7 @@ function Home() {
           setData(res);
           // console.log("res: ", res.user_profile.usertype);
           localStorage.setItem("user_type", res.user_profile.usertype);
-          
+
           setBanners(res.banners);
           setRecentBloodRequest(res?.recent_blood_requests);
           if (res.errors) {
@@ -97,7 +98,6 @@ function Home() {
             />
           </div>
           <div className="request-details ms-3">
-           
             <div className="request-date text-start">
               Attender: {request?.attender_first_name}{" "}
               {request?.attender_last_name}
@@ -177,14 +177,19 @@ function Home() {
           <img src={requestblood} alt="Request Blood" />
           <p style={{ color: "green" }}>Request For Blood</p>
         </div>
-        <div
-          className="card"
-          onClick={() => handleNavigation("/donate")}
-          style={{ cursor: "pointer" }}
-        >
-          <img src={donateblood} alt="Donate Blood" />
-          <p style={{ color: "green" }}>Donate Blood</p>
-        </div>
+        {storedUserType == 5 ? (
+          ""
+        ) : (
+          <div
+            className="card"
+            onClick={() => handleNavigation("/donate")}
+            style={{ cursor: "pointer" }}
+          >
+            <img src={donateblood} alt="Donate Blood" />
+            <p style={{ color: "green" }}>Donate Blood</p>
+          </div>
+        )}
+
         <div
           className="card"
           onClick={() => navigate("/bloodcamps")}
@@ -201,38 +206,50 @@ function Home() {
           <img src={funddonation} alt="Fund Donation" />
           <p style={{ color: "green" }}>Fund Donation</p>
         </div>
-        <div className="card">
-          <img src={sos} alt="Emergency SOS" />
-          <p style={{ color: "green" }}>Emergency SOS</p>
-        </div>
+        {storedUserType == 5 ? (
+          ""
+        ) : (
+          <div className="card">
+            <img src={sos} alt="Emergency SOS" />
+            <p style={{ color: "green" }}>Emergency SOS</p>
+          </div>
+        )}
       </div>
       {/* Recent Blood Requests Section */}
-      <div
-        className="recent-requests mt-4"
-        style={{ maxWidth: "1280px", margin: "0 auto" }}
-      >
-        <h2 style={{ fontSize: "1.5rem" }}>
-          Recent Blood Requests
-          <div>
-            <Link
-              to="/donate"
-              className="seeall"
-              style={{ fontSize: "1.25rem" }}
-            >
-              See all
-            </Link>
+
+      {storedUserType == 5 ? (
+        ""
+      ) : (
+        <>
+          <div
+            className="recent-requests mt-4"
+            style={{ maxWidth: "1280px", margin: "0 auto" }}
+          >
+            <h2 style={{ fontSize: "1.5rem" }}>
+              Recent Blood Requests
+              <div>
+                <Link
+                  to="/donate"
+                  className="seeall"
+                  style={{ fontSize: "1.25rem" }}
+                >
+                  See all
+                </Link>
+              </div>
+            </h2>
           </div>
-        </h2>
-      </div>
-      <div className="blood-request-container">
-        <div className="requests mt-5">
-          {recentBloodRequest?.length > 0 ? (
-            recentBloodRequest.map((request) => renderRequestCard(request))
-          ) : (
-            <p>No recent blood requests found.</p>
-          )}
-        </div>
-      </div>
+          <div className="blood-request-container">
+            <div className="requests mt-5">
+              {recentBloodRequest?.length > 0 ? (
+                recentBloodRequest.map((request) => renderRequestCard(request))
+              ) : (
+                <p>No recent blood requests found.</p>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+
       {/* Contribution Section */}
       <div className="Contribution-container mt-5">
         <div className="Contribution-card">

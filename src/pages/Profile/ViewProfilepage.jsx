@@ -21,6 +21,7 @@ export default function ViewProfilepage() {
   const dispatch = useDispatch();
   const [getData, setData] = useState({});
   const [refresh, setRefresh] = useState(false);
+  const userType = localStorage.getItem("user_type");
   useEffect(() => {
     window.scrollTo(0, 0);
     dispatch(setLoader(true)); // Start loading
@@ -66,10 +67,16 @@ export default function ViewProfilepage() {
             </div>
             <div className="text-start text-nowrap">{getData?.email}</div>
             <div className="text-start">
-              DOB: {formatDate(getData?.date_of_birth)}
+              DOB:
+              {getData?.date_of_birth
+                ? formatDate(getData.date_of_birth)
+                : "Date not updated"}
             </div>
             <div className="text-start">
-              LDD: {formatDate(getData?.last_blood_donation_date)}
+              LDD:
+              {getData?.last_blood_donation_date
+                ? formatDate(getData?.last_blood_donation_date)
+                : "Date not updated"}
             </div>
           </div>
           <div className="blood-group">
@@ -77,7 +84,7 @@ export default function ViewProfilepage() {
               src={getData?.bloodGroupImage || bloodGroupImg}
               alt="Blood Group"
               className="Blood_Group_img"
-            />{" "}
+            />
             {/* Fallback to default blood group image */}
           </div>
         </div>
@@ -149,9 +156,13 @@ export default function ViewProfilepage() {
           <img src={User} alt="profile" style={{ cursor: "pointer" }} />
           <label className="switch-label">Edit Profile</label>
         </div>
+
         <div
           className="formpf-container mb-3"
-          style={{ cursor: "pointer" }}
+          style={{
+            cursor: "pointer",
+            display: userType == 4 || userType == 5 ? "none" : "flex",
+          }}
           onClick={() => {
             navigate("/donationhistory");
           }}
@@ -161,7 +172,10 @@ export default function ViewProfilepage() {
         </div>
         <div
           className="formpf-container mb-3"
-          style={{ cursor: "pointer" }}
+          style={{
+            cursor: "pointer",
+            display: userType == 4 || userType == 5 ? "none" : "flex",
+          }}
           onClick={() => {
             navigate("/bloodrequest");
           }}
