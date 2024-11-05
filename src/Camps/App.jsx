@@ -3,8 +3,6 @@ import {
   Route,
   Routes,
   useLocation,
-  // Navigate,
-  // useNavigate,
 } from "react-router-dom";
 import Home from "./pages/Home";
 import Donate from "./pages/Donate";
@@ -52,17 +50,10 @@ import ApproveDonors from "./pages/Approvals/ApproveDonors";
 import ProtectedRoute from "./ProtectedRoute";
 import Camps from "./Camps/Camps";
 import CampsList from "./Camps/CampsList";
-import CampsrequestDetailPage from "./Camps/CampsrequestDetailPage";
-// import Dashboard from "./Camps/Dashboard";
-import AcceptedCampList from "./Camps/AcceptedCampList";
-import ConfirmCampDonation from "./Camps/ConfirmCampDonation";
-import RegisterOrg from "./pages/RegisterOrg";
-import LoginOrg from "./Camps/LoginOrg";
 
 function App() {
   const darkMode = useSelector((state) => state.theme.darkMode);
   const location = useLocation();
-  // const navigate = useNavigate();
 
   useEffect(() => {
     if (location.pathname === "/") {
@@ -76,13 +67,7 @@ function App() {
     location.pathname === "/login" ||
     location.pathname === "/otp" ||
     location.pathname === "/map" ||
-    location.pathname === "/profile" ||
-    location.pathname === "/register/organisation" ||
-    location.pathname === "/login/organisation" ||
-    location.pathname === "/terms" ||
-    location.pathname === "/privacypolicy";
-  // const storedUserType = localStorage.getItem("user_type");
-  // const storedUserType = localStorage.getItem("user_type");
+    location.pathname === "/profile";
 
   return (
     <>
@@ -91,26 +76,9 @@ function App() {
       {!hideNavbarAndFooter && <Navbar />}
       <Routes>
         <Route path="/login" element={<LoginComponent />} />
-        <Route path="/login/organisation" element={<LoginOrg />} />
         <Route path="/otp" element={<OTPVerificationComponent />} />
-        <Route path="/register/organisation" element={<RegisterOrg />} />
-        <Route path="/privacypolicy" element={<PrivacyPolicy />} />
-        <Route path="/terms" element={<Terms />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<Home />} />
-          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-          <Route element={<ProtectedRoute />}>
-            {/* <Route
-              path="/home"
-              element={storedUserType == 5 ? <Dashboard /> : <Home />}
-            />
-            <Route
-              path="/dashboard"
-              element={
-                storedUserType == 5 ? <Dashboard /> : <Navigate to="/home" />
-              }
-            /> */}
-          </Route>
           <Route path="/profile" element={<Profile />} />
           <Route path="/viewprofile" element={<ViewProfilepage />} />
           <Route path="/approvals" element={<Approvals />} />
@@ -128,7 +96,9 @@ function App() {
           <Route path="/modesetting" element={<ModeSetting />} />
           <Route path="/emergencycontact" element={<EmergenctContact />} />
           <Route path="/aboutus" element={<AboutUs />} />
-
+          <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/faqs" element={<Faqs />} />
           <Route path="/writetoUs" element={<WriteToUs />} />
           <Route path="/gratitude" element={<GratitudePage />} />
           <Route path="/report" element={<TTIReport />} />
@@ -148,18 +118,12 @@ function App() {
             path="/postgratitudemesage"
             element={<PostGratitudeMesage />}
           />
-          <Route path="/faqs" element={<Faqs />} />
+
           <Route path="/camps" element={<Camps />} />
           <Route path="/camps/list" element={<CampsList />} />
           <Route
             path="/campsrequestdetail/:id"
             element={<CampsrequestDetailPage />}
-          />
-          <Route path="/camplist/:id" element={<AcceptedCampList />} />
-          <Route path="/confirmcamp/:id" element={<ConfirmCampDonation />} />
-          <Route
-            path="/gratitudecampmesage"
-            element={<PostGratitudeMesage />}
           />
         </Route>
       </Routes>

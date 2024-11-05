@@ -103,16 +103,27 @@ function Navbar() {
             e.preventDefault();
             handleNavigation("/donate");
           }}
+          style={{ display: userType == 5 ? "none" : "block" }}
         >
           Donate
         </NavLink>
         <NavLink
-          to="/request"
+          to={userType == 5 ? "/camps/list" : ""}
           className={activeLink === "/bloodrequest" ? "active" : "inactive"}
           onClick={(e) => {
             e.preventDefault();
-            handleNavigation("/bloodrequest");
+            handleNavigation(userType == 5 ? "/camps/list" : "");
           }}
+        >
+          {userType == 5 ? "Camps" : ""}
+        </NavLink>
+        <NavLink
+          to="/bloodrequest"
+          className={activeLink === "/bloodrequest" ? "active" : "inactive"}
+          // onClick={(e) => {
+          //   e.preventDefault();
+          //   handleNavigation(userType == 5 ? "/camps/list" : "/bloodrequest");
+          // }}
         >
           Request
         </NavLink>
@@ -137,7 +148,12 @@ function Navbar() {
       <div className="d-flex align-items-center gap-2">
         <div>
           <IoMdNotificationsOutline
-            style={{ height: "20px", width: "20px", cursor: "pointer" }}
+            style={{
+              height: "20px",
+              width: "20px",
+              cursor: "pointer",
+              color: "#fff",
+            }}
           />
         </div>
         <div

@@ -137,18 +137,25 @@ const EditProfilePage = () => {
   };
 
   const handleInput = (e) => {
-    let value = e.target.value.replace(/[^0-9+\s]/g, ""); // Remove non-numeric characters except + and spaces
-    const maxDigits = 10;
+    let value = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
 
-    if (value.startsWith("+91")) {
-      value = "+91 " + value.slice(4, 4 + maxDigits); // Allow 10 digits after +91
-    } else if (value.startsWith("0")) {
-      value = "0" + value.slice(1, 1 + maxDigits); // Allow 10 digits after 0
-    } else {
-      value = value.slice(0, maxDigits); // Allow only 10 digits
+    // Restore +91 if the user tries to delete it
+    if (!value.startsWith("91")) {
+      value = `91${value}`; // Keep +91 prefix
     }
 
-    e.target.value = value;
+    if (value.startsWith("91")) {
+      value = `+91${value.slice(2, 12)}`; // Format as +91 XXXXXXXXXX
+    }
+
+    // Limit to 10 digits after +91
+    if (value.length > 13) {
+      value = value.slice(0, 14); // +91 followed by 10 digits
+    }
+
+    // Update the state to keep the input controlled
+    // setPhoneNumber(value);
+    e.target.value = value; // Reflect the value in the input
   };
 
   const onSubmit = (data) => {

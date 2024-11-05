@@ -3,35 +3,51 @@ import shareIcon from "../../assets/Share.png";
 import locationIcon from "../../assets/Mappoint.png";
 import { Link, useLocation } from "react-router-dom";
 import MapComponent from "../../components/map/MapComponent";
-import { formatDate } from "../../utils/dateUtils";
-
+// import { formatDate } from "../../utils/dateUtils";
+import { useEffect, useState } from "react";
+import { setLoader, ViewCampsRequest } from "../../redux/product";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 export default function CampDetails() {
   const location = useLocation();
-  const { request } = location.state || {}; // Retrieve the passed request object
-  console.log("data: ", request);
-  const openRequests = [
-    {
-      id: 1,
-      date: "2024.07.16,05:30",
-      location: "City park",
-      time: "10:00AM - 4:00PM",
-      BloodType: "A+,B+",
-      bloodGroupImage: BloodCamps,
-    },
-  ];
+  console.log("location: ", location);
+  const id = location.state.request || {}; // Retrieve the passed request object
+  const dispatch = useDispatch();
+  const [data, setData] = useState({});
 
-  const renderRequestCard = (request) => (
-    <div className="request-card" key={request.id}>
-      <div className=" d-flex align-items-start">
+  useEffect(() => {
+    dispatch(setLoader(true));
+    try {
+      dispatch(
+        ViewCampsRequest(id, (res) => {
+          if (res.code === 200) {
+            setData(res);
+          } else {
+            toast.error(res.message);
+          }
+          dispatch(setLoader(false));
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "Error fetching requests");
+      dispatch(setLoader(false));
+    }
+  }, []);
+
+  const renderRequestCard = (camp) => (
+    <div className="request-card" key={camp.camp_id}>
+      <div className="d-flex align-items-start">
         <div className="request-details ms-3">
           <h4 className="text-start fw-bold" style={{ color: "green" }}>
-            Camp1:
+            {camp.title || "Camp"}
           </h4>
-          <div className="text-start">Date:{formatDate(request.date)}</div>
-          <div className="text-start">Location: {request.location}</div>
-          <div className="text-start">Time: {request.time}</div>
-          <div className="text-start">Blood Type: {request.BloodType}</div>
+          <div className="text-start">Date: {camp.date}</div>
+          <div className="text-start">Location: {camp.location}</div>
+          <div className="text-start">Time: {camp.time || "Not specified"}</div>
+          <div className="text-start">
+            Blood Types Needed: {camp.blood_types_needed || "Not specified"}
+          </div>
         </div>
       </div>
 
@@ -40,15 +56,23 @@ export default function CampDetails() {
           <Link to="#" className="share-link me-2">
             <img src={shareIcon} alt="Share" className="icon-img" />
           </Link>
-          <Link to="#" className="location-link">
+          <a
+            href={`https://www.google.com/maps?q=${camp.latitude},${camp.longitude}`}
+            className="location-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <img src={locationIcon} alt="Location" className="icon-img" />
-          </Link>
+          </a>
         </div>
         <button
-          className="accepted-donors-btn btn btn-primary mx-5"
+          className={`accepted-donors-btn btn ${
+            camp.is_accepted ? "btn-secondary" : "btn-primary"
+          }`}
           style={{ width: "7.5rem" }}
+          disabled={camp.is_accepted}
         >
-          Accept
+          {camp.is_accepted ? "Accepted" : "Accept"}
         </button>
       </div>
     </div>
@@ -56,16 +80,28 @@ export default function CampDetails() {
 
   return (
     <>
-      <h3 className="mt-3 mb-4">Camps Details</h3>
-      <div className="blood-group ms-auto mb-4">
-        <img src={BloodCamps} alt="Blood Group" />
+      <h3 className="mt-3 mb-4 text-center">Camp Details</h3>
+      <div className="d-flex justify-content-center ms-auto mb-4">
+        <img
+          src={data?.camp_image || BloodCamps}
+          alt="Camp"
+          style={{ maxWidth: "100%", maxHeight: "200px" }}
+        />
       </div>
       <div className="col-lg-6 col-md-8 col-sm-8 mx-auto">
         <div className="mb-2">
-          {openRequests.map((request) => renderRequestCard(request))}
+          {data ? renderRequestCard(data) : <p>No camp details available.</p>}
         </div>
         <div className="mb-5">
-          <MapComponent />
+          {/* <MapComponent latitude={data?.latitude} longitude={data?.longitude} /> */}
+          <MapComponent
+            path={[
+              {
+                lat: parseFloat(data.latitude),
+                lng: parseFloat(data.longitude),
+              },
+            ]}
+          />
         </div>
       </div>
     </>

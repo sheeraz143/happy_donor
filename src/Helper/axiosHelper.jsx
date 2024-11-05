@@ -27,6 +27,23 @@ const helper = {
         return err;
       });
   },
+  postDataOrg: async function (url, data) {
+    let axiosConfig = {
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        // Authorization: localStorage.getItem("oAuth"),
+      },
+    };
+
+    return await axios
+      .post(url, data, axiosConfig)
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        return err;
+      });
+  },
 
   putData: async function (url, data) {
     let axiosConfig = {
