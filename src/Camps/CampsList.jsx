@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import "../css/BloodRequest.css";
-import bloodGroupImg from "../assets/bloodgroup.png";
-import profPicImg from "../assets/prof_img.png";
+import bloodGroupImg from "../../src/assets/BloodCamps.png";
+// import profPicImg from "../assets/prof_img.png";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -95,7 +95,7 @@ const CampsList = () => {
 
   const handleAcceptedDonorsClick = (request, event) => {
     event.stopPropagation();
-    navigate(`/donarlist/${request.request_id}`);
+    navigate(`/camplist/${request.camp_id}`);
   };
 
   const handleSubmit = () => {
@@ -143,7 +143,7 @@ const CampsList = () => {
         onClick={() => handleCardClick(request)}
       >
         <div className="request-header">
-          <div className="align-content-center">
+          {/* <div className="align-content-center">
             <img
               src={request.profile_picture || profPicImg}
               alt="Profile"
@@ -153,7 +153,7 @@ const CampsList = () => {
                 e.target.src = profPicImg; // Set to default image on error
               }}
             />
-          </div>
+          </div> */}
           <div className="request-details">
             <div className="request-date text-start"> {request?.title}</div>
             <div className="request-date text-start">
@@ -177,15 +177,22 @@ const CampsList = () => {
               Status: {request.status}
             </div>
           </div>
-          {isOpen && (
-            <div className="blood-group text-start">
-              <img
-                src={bloodGroupImg}
-                alt="Blood Group"
-                onClick={(event) => openModal(request, event)}
-              />
-            </div>
-          )}
+          {/* {isOpen && ( */}
+          <div className="blood-group text-start">
+            <img
+              // src={bloodGroupImg}
+              style={{ maxWidth: "200px" }}
+              className="img_fluid"
+              src={request.camp_image || bloodGroupImg}
+              alt="Blood Group"
+              onClick={(event) => openModal(request, event)}
+              onError={(e) => {
+                e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
+                e.target.src = bloodGroupImg; // Set to default image on error
+              }}
+            />
+          </div>
+          {/* )} */}
         </div>
 
         <div className="accept-donar-button d-flex justify-content-center">

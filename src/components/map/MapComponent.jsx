@@ -5,11 +5,13 @@ import {
   Marker,
 } from "@react-google-maps/api";
 import PropTypes from "prop-types"; // Import PropTypes
+import helper from "../../Helper/axiosHelper";
 
 const MapComponent = ({ path }) => {
+  const gmapApikey = helper.googleMapsApiKey();
   const { isLoaded } = useJsApiLoader({
     // googleMapsApiKey: "AIzaSyDfsJx7wDFEfu0_jKXwVHQBjFyLm8nfKvQ",
-    googleMapsApiKey: "AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0",
+    googleMapsApiKey: gmapApikey,
   });
 
   if (!isLoaded) return <div>Loading...</div>;
@@ -17,8 +19,7 @@ const MapComponent = ({ path }) => {
   // Set map center to the first point in the polyline path or a default center
   const center =
     path && path.length > 0 ? path[0] : { lat: 12.9716, lng: 77.5946 };
-    // path && path.length > 0 ? path[0] : { lat: path[0]?.lat, lng: path[0]?.lng};
-
+  // path && path.length > 0 ? path[0] : { lat: path[0]?.lat, lng: path[0]?.lng};
 
   return (
     <GoogleMap

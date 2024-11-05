@@ -28,6 +28,7 @@ function Camps() {
     register,
     handleSubmit,
     setValue,
+    trigger,
     formState: { errors },
   } = useForm();
 
@@ -40,25 +41,27 @@ function Camps() {
     console.log("data: ", data);
     const formData = new FormData();
 
-     // Append each field to FormData
-  for (const key in data) {
-    if (key === "camp_image") {
-      // Check if there's a file selected
-      if (data.camp_image.length > 0) {
-        // Append only the first file in case of multiple selections
-        formData.append("camp_image", data.camp_image[0]);
-        console.log("Uploaded image file: ", data.camp_image[0]);
+    // Append each field to FormData
+    for (const key in data) {
+      if (key === "camp_image") {
+        // Check if there's a file selected
+        const file = data?.camp_image[0];
+        console.log("file: ", file);
+        if (file) {
+          formData.append("camp_image", file);
+          console.log("Uploaded image file: ", file);
+        } else {
+          console.error("No file selected for camp_image.");
+        }
       } else {
-        console.error("No file selected for camp_image.");
+        formData.append(key, data[key]);
       }
-    } else {
-      formData.append(key, data[key]);
     }
-  }
-    // console.log("data.camp_image[0]: ", data.camp_image[0]);
+
     for (let [key, value] of formData.entries()) {
       console.log(key, value);
     }
+
     // return;
 
     dispatch(setLoader(true));
@@ -145,6 +148,7 @@ function Camps() {
         <input
           className="form-input"
           type="number"
+          onWheel={(e) => e.target.blur()}
           {...register("expected_participants", { required: false })}
         />
         {errors.expected_participants && (
@@ -158,6 +162,7 @@ function Camps() {
         <input
           className="form-input"
           type="number"
+          onWheel={(e) => e.target.blur()}
           {...register("expected_units", { required: false })}
         />
         {errors.expected_units && (
@@ -166,19 +171,37 @@ function Camps() {
       </div>
 
       {/* Image Upload Field */}
-      {/* Image Upload Field */}
-      
+      <div className="form-group">
+        <label>Upload Camp Image</label>
+        <input
+          className="form-input"
+          type="file"
+          {...register("camp_image", { required: false })}
+          accept="image/*"
+          // onChange={handleFileChange}
+        />
+        {/* {errors.camp_image && (
+          <p className="error-message">Camp Image is required</p>
+        )} */}
+      </div>
+
       {/* Location */}
       <div className="form-group">
         <label>Location</label>
         <Autocomplete
           apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
           onPlaceSelected={(place) => {
-            console.log(place);
             if (place.geometry) {
-              setValue("location", place.formatted_address);
-              setValue("lat", String(place.geometry.location.lat())); // Convert to string
-              setValue("lon", String(place.geometry.location.lng())); // Convert to string
+              setValue("location", place.formatted_address, {
+                shouldValidate: true,
+              });
+              setValue("lat", String(place.geometry.location.lat()), {
+                shouldValidate: true,
+              });
+              setValue("lon", String(place.geometry.location.lng()), {
+                shouldValidate: true,
+              });
+              trigger(["location", "lat", "lon"]); // Manually trigger validation
             }
           }}
           className="form-input"

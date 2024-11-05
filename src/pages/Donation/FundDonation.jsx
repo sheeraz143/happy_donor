@@ -39,6 +39,7 @@ export default function FundDonation() {
           <option value="Mr">Mr</option>
           <option value="Ms">Ms</option>
           <option value="Mrs">Mrs</option>
+          <option value="Dr">Dr</option>
         </select>
         {errors.title && <p className="error-message">Title is required</p>}
       </div>
@@ -101,22 +102,24 @@ export default function FundDonation() {
 
       {/* Amount */}
       <div className="form-group">
-        <label>Amount</label>
+        <label>Donate For</label>
         <select
           className="form-input"
-          {...register("amount", { required: true })}
+          {...register("donateFor", { required: false })}
         >
           <option value="">Select</option>
           <option value="HappyDonarTrust">Happy Donar Trust</option>
         </select>
-        {errors.Amount && <p className="error-message">Amount is required</p>}
+        {errors.donateFor && (
+          <p className="error-message">Donate For is required</p>
+        )}
       </div>
 
       {/* Donate for */}
       <div className="form-group">
-        <label>Donate For</label>
-        <input className="form-input" type="text" {...register("donateFor")} />
-        {/* {errors.address && <p className="error-message">Address is required</p>} */}
+        <label>Amount</label>
+        <input className="form-input" type="text" {...register("amount")} />
+        {errors.amount && <p className="error-message">Amount is required</p>}
       </div>
 
       {/* Address */}
@@ -133,8 +136,12 @@ export default function FundDonation() {
       {/*pan*/}
       <div className="form-group">
         <label>PAN[For 80G]</label>
-        <input className="form-input" type="text" {...register("pan")} />
-        {/* {errors.address && <p className="error-message">Address is required</p>} */}
+        <input
+          className="form-input"
+          type="text"
+          {...register("pan", { required: true })}
+        />
+        {errors.pan && <p className="error-message">PAN is required</p>}
       </div>
 
       {/* Submit Button */}

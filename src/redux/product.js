@@ -161,6 +161,54 @@ export const updateProfile =
     }
   };
 
+export const registerOrg =
+  (data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(
+        baseUrl + `auth/register-organization`,
+        data
+      );
+      console.log("response: ", response);
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+      console.log("result: ", result);
+
+      // If response is 200, send the data
+      if (response.status === 201) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message || "An error occurred.",
+          error: response?.response?.data.errors,
+        });
+      }
+    } catch (err) {
+      console.error("Request failed: ", err);
+
+      let errorMessage = "An unexpected error occurred.";
+      if (err.response) {
+        if (err.response.status === 422) {
+          errorMessage = err.response.data.message || "Validation error.";
+        } else {
+          errorMessage = err.response.data.message || errorMessage;
+        }
+      }
+
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: errorMessage,
+      });
+    }
+  };
+
 export const toggleAvailability =
   (callback = () => {}) =>
   async () => {
@@ -310,7 +358,7 @@ export const CreateCamp =
   (data, callback = () => {}) =>
   async () => {
     try {
-      const response = await Helper.postData(
+      const response = await Helper.formData(
         baseUrl + "app/blood-camps/create",
         data
       );
@@ -914,6 +962,39 @@ export const ViewCampsRequest =
     try {
       const response = await Helper.getData(
         baseUrl + `app/blood-camps/matched/${id}/view`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const ViewSinglecamp =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(
+        baseUrl + `app/blood-camps/${id}/view`
       );
 
       const result = {

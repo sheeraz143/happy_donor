@@ -37,8 +37,8 @@ function DonationHistory() {
       dispatch(
         DonateHistory((res) => {
           if (res.code === 200) {
-            console.log(res?.requests);
-            setOpenRequests(res?.requests);
+            // console.log(res?.requests);
+            setOpenRequests(res?.donors);
             setTotalRequests(res?.pagination?.total);
           } else {
             toast.error(res.message);
@@ -73,12 +73,15 @@ function DonationHistory() {
         <div className="request-details ms-3">
           {/* Bootstrap's `ms-3` adds left margin */}
 
-          <div className="request-date text-start">{request?.patient_name}</div>
+          <div className="request-date text-start">
+            {request?.patient_name ?? request?.donor_name}
+          </div>
           <div className="request-date text-start">
             {formatDate(request?.date)}
           </div>
           <div className="request-date text-start" style={{ color: "blue" }}>
-            {request?.donation_status}
+            {request?.donation_status ??
+              `Contributed amount: ${request?.contributed_amount ?? 0}`}
           </div>
         </div>
         <div className="blood-group ms-auto">
@@ -96,35 +99,32 @@ function DonationHistory() {
             : "TTI Report"}
         </button> */}
         <div className="accept-donar-button d-flex justify-content-end gap-3 mt-2">
-          {request.donation_status == "In Progress" && (
-            <button
-              className="accepted-donors-btn"
-              // onClick={() => markAsDonated(donor, donor.donor_id)}
-            >
-              Mark As Donated
-            </button>
-          )}
           {(request.donation_status === "Completed" ||
-            request.donation_status === "Donated") && (
+            request.donation_status === "Donated" ||
+            request.status === "completed") && (
             <>
               <button className="accepted-donors-btn btn-secondary" disabled>
                 Donated
               </button>
-              {request.gratitude_msg !== "" ? (
-                <button
-                  className="accepted-donors-btn"
-                  onClick={() => openModal(request)}
-                >
-                  View Gratitude Message
-                </button>
-              ) : (
-                <button
-                  className="accepted-donors-btn"
-                  // onClick={() => navigateToGratitude(requestId, donor.donor_id)}
-                >
-                  Post Gratitude Message
-                </button>
-              )}
+
+              {request?.type == "BloodRequestDonor" &&
+                request?.gratitude_msg !== "" && (
+                  <button
+                    className="accepted-donors-btn"
+                    onClick={() => openModal(request)}
+                  >
+                    View Gratitude Message
+                  </button>
+                )}
+              {request?.type == "CampDonor" &&
+                request?.gratitude_msg !== "" && (
+                  <button
+                    className="accepted-donors-btn"
+                    onClick={() => openModal(request)}
+                  >
+                    View TTI Report
+                  </button>
+                )}
             </>
           )}
         </div>

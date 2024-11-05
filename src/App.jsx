@@ -58,6 +58,8 @@ import AcceptedCampList from "./Camps/AcceptedCampList";
 import ConfirmCampDonation from "./Camps/ConfirmCampDonation";
 import RegisterOrg from "./pages/RegisterOrg";
 import LoginOrg from "./Camps/LoginOrg";
+import Registerbloodbank from "./pages/Bloodbanks/RegisterBloodbank";
+import LoginBloodBank from "./pages/Bloodbanks/LoginBloodBank";
 
 function App() {
   const darkMode = useSelector((state) => state.theme.darkMode);
@@ -78,7 +80,9 @@ function App() {
     location.pathname === "/map" ||
     location.pathname === "/profile" ||
     location.pathname === "/register/organisation" ||
+    location.pathname === "/register/bloodbank" ||
     location.pathname === "/login/organisation" ||
+    location.pathname === "/login/bloodbank" ||
     location.pathname === "/terms" ||
     location.pathname === "/privacypolicy";
   // const storedUserType = localStorage.getItem("user_type");
@@ -92,8 +96,10 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginComponent />} />
         <Route path="/login/organisation" element={<LoginOrg />} />
+        <Route path="/login/bloodbank" element={<LoginBloodBank />} />
         <Route path="/otp" element={<OTPVerificationComponent />} />
         <Route path="/register/organisation" element={<RegisterOrg />} />
+        <Route path="/register/bloodbank" element={<Registerbloodbank />} />
         <Route path="/privacypolicy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<Terms />} />
         <Route element={<ProtectedRoute />}>

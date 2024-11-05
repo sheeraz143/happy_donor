@@ -9,7 +9,7 @@ import MapComponent from "../components/map/MapComponent";
 // import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { CancelCamp, setLoader, ViewCampsRequest } from "../redux/product";
+import { CancelCamp, setLoader, ViewSinglecamp } from "../redux/product";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
 
@@ -34,7 +34,7 @@ export default function CampsrequestDetailPage() {
     dispatch(setLoader(true));
     try {
       dispatch(
-        ViewCampsRequest(id, (res) => {
+        ViewSinglecamp(id, (res) => {
           console.log("res: ", res);
           if (res.code == 200) {
             setData(res);
@@ -150,7 +150,7 @@ export default function CampsrequestDetailPage() {
                   />
                 </div>
               </div>
-              {data?.view_donors == false && (
+              {data?.view_donors && (
                 <div className="d-flex justify-content-center mt-3">
                   <button
                     className="btn btn-primary"
