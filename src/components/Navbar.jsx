@@ -72,7 +72,7 @@ function Navbar() {
     localStorage.removeItem("user_type");
     localStorage.removeItem("is_profile_update");
     localStorage.removeItem("oAuth");
-    navigate("/login");
+    navigate("/");
   };
 
   const handleMouseEnter = () => {
@@ -109,7 +109,7 @@ function Navbar() {
         </NavLink>
         <NavLink
           to={userType == 5 ? "/camps/list" : ""}
-          className={activeLink === "/bloodrequest" ? "active" : "inactive"}
+          className={activeLink === "/camps/list" ? "active" : "inactive"}
           onClick={(e) => {
             e.preventDefault();
             handleNavigation(userType == 5 ? "/camps/list" : "");

@@ -1,9 +1,9 @@
 import { useLocation, useNavigate, useParams } from "react-router";
-import { MarkCampDonated, setLoader } from "../redux/product";
+import { MarkCampDonated, setLoader, ViewSinglecamp } from "../redux/product";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { ViewCampsRequest } from "../redux/product";
+// import { ViewCampsRequest } from "../redux/product";
 
 export default function ConfirmCampDonation() {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export default function ConfirmCampDonation() {
     dispatch(setLoader(true));
     try {
       dispatch(
-        ViewCampsRequest(id, (res) => {
+        ViewSinglecamp(id, (res) => {
           if (res.code === 200) {
             setData(res);
           } else {
@@ -68,12 +68,12 @@ export default function ConfirmCampDonation() {
         className="card col-lg-8 col-md-8  col-sm-8 mx-auto align-items-start mt-5 mb-5 gap-3"
         style={{ color: "#097E14" }}
       >
-        <div className="">Name: {data?.name}</div>
+        <div className="">Title: {data?.title}</div>
         <div>Time:{data?.time}</div>
-        <div>Quantity Needed: {data?.units_required}</div>
+        {/* <div>Quantity Needed: {data?.units_required}</div> */}
         <div>Location: {data?.location}</div>
         <div>Donation Date:{data?.date}</div>
-        <div>Quantity Donated: {data?.units_required}</div>
+        {/* <div>Quantity Donated: {data?.units_required}</div> */}
       </div>
       <h5 style={{ color: "blue" }} className="text-center">
         Please confirm that the donation for this request has been fulfilled

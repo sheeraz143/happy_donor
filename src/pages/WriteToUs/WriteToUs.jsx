@@ -38,6 +38,7 @@ export default function WriteToUs() {
           <option value="Mr">Mr</option>
           <option value="Ms">Ms</option>
           <option value="Mrs">Mrs</option>
+          <option value="Dr">Dr</option>
         </select>
         {errors.title && <p className="error-message">Title is required</p>}
       </div>

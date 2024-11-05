@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import uploadIcon from "../../assets/Image-upload.png";
-import micIcon from "../../assets/Microphone.png";
-import calendarIcon from "../../assets/Clapperboard.png";
+import uploadIcon from "../../assets/Image-upload.png"; // Upload icon for PDF
 import { useLocation, useNavigate } from "react-router";
 import {
-  SendGratitudeMessage,
+  SendGratitudeCampMessage,
   setLoader,
   ViewBloodRequest,
 } from "../../redux/product";
@@ -12,7 +10,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 
 export default function PostGratitudeMessage() {
-  const [media, setMedia] = useState([]); // State for all media types
+  const [media, setMedia] = useState([]); // State for media files (only PDFs)
   const [textMessage, setTextMessage] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -40,27 +38,16 @@ export default function PostGratitudeMessage() {
       toast.error(error.message || "Error fetching requests");
       dispatch(setLoader(false));
     }
-  }, []);
+  }, [dispatch, requestId]);
 
   const handleMediaUpload = (event) => {
     const files = Array.from(event.target.files);
     setMedia((prev) => [...prev, ...files]); // Add new files to existing media
   };
 
-  const handleCalendarClick = () => {
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "video/*"; // Accept video files only
-    fileInput.onchange = (e) => {
-      const files = Array.from(e.target.files);
-      setMedia((prev) => [...prev, ...files]); // Add video files to media
-    };
-    fileInput.click();
-  };
-
   const handleSubmit = () => {
     const formData = new FormData();
-    formData.append("request_id", requestId);
+    formData.append("camp_id", requestId);
     formData.append("donor_id", donorId);
     formData.append("message", textMessage);
 
@@ -71,7 +58,7 @@ export default function PostGratitudeMessage() {
     dispatch(setLoader(true));
     try {
       dispatch(
-        SendGratitudeMessage(formData, (res) => {
+        SendGratitudeCampMessage(formData, (res) => {
           dispatch(setLoader(false));
 
           // Check for 422 status code
@@ -96,7 +83,7 @@ export default function PostGratitudeMessage() {
           } else if (res.code === 404) {
             toast.error(res.message);
           } else if (res.code === 200) {
-            navigate(`/donarlist/${requestId}`);
+            navigate(`/camplist/${requestId}`);
             toast.success(res.message);
           }
         })
@@ -149,61 +136,22 @@ export default function PostGratitudeMessage() {
             <input
               id="file-upload"
               type="file"
-              accept="image/*,audio/*" // Accept images and audio files
+              accept=".pdf" // Accept PDF files only
               style={{ display: "none" }}
               onChange={handleMediaUpload}
-            />
-            <label htmlFor="audio-upload" className="me-3">
-              <img
-                src={micIcon}
-                alt="Microphone Icon"
-                className="icon"
-                style={{ cursor: "pointer" }}
-                onClick={() => document.getElementById("audio-upload").click()} // Trigger file input
-              />
-            </label>
-            <input
-              id="audio-upload"
-              type="file"
-              accept="audio/*"
-              style={{ display: "none" }}
-              onChange={handleMediaUpload}
-            />
-            <img
-              src={calendarIcon}
-              alt="Calendar Icon"
-              className="icon"
-              style={{ cursor: "pointer" }}
-              onClick={handleCalendarClick}
             />
           </div>
           {media.length > 0 && (
             <div className="text-center mt-3">
               {media.map((file, index) => {
                 const fileURL = URL.createObjectURL(file);
-                return file.type.startsWith("image/") ? (
-                  <img
-                    key={index}
-                    src={fileURL}
-                    alt={`Uploaded Preview ${index + 1}`}
-                    className="img-fluid rounded"
-                    style={{
-                      marginRight: "10px",
-                      marginBottom: "10px",
-                      height: "100px",
-                    }}
-                  />
-                ) : file.type.startsWith("audio/") ? (
-                  <audio key={index} controls>
-                    <source src={fileURL} type="audio/*" />
-                    Your browser does not support the audio tag.
-                  </audio>
-                ) : file.type.startsWith("video/") ? (
-                  <video key={index} width="200" controls>
-                    <source src={fileURL} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                ) : null;
+                return (
+                  <div key={index} className="mb-2">
+                    <a href={fileURL} target="_blank" rel="noopener noreferrer">
+                      {file.name} (PDF)
+                    </a>
+                  </div>
+                );
               })}
             </div>
           )}
@@ -227,3 +175,4 @@ export default function PostGratitudeMessage() {
     </div>
   );
 }
+ 

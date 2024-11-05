@@ -108,8 +108,12 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { useRazorpay } from "react-razorpay";
 import { useEffect, useState } from "react";
+import helper from "../../Helper/axiosHelper";
 
 export default function ContributeFund() {
+  const razorKey = helper.razorPayKey();
+  // console.log("razorKey: ", razorKey);
+
   const navigate = useNavigate();
   const {
     register,
@@ -136,7 +140,7 @@ export default function ContributeFund() {
 
     if (value.startsWith("91")) {
       value = `+91${value.slice(2, 12)}`; // Format as +91 XXXXXXXXXX
-      console.log('value: ', value);
+      console.log("value: ", value);
     }
 
     // Limit to 10 digits after +91
@@ -158,7 +162,7 @@ export default function ContributeFund() {
   // Function to handle form submission
   const onSubmit = async (data) => {
     const options = {
-      key: "rzp_test_1DP5mmOlF5G5ag", // Replace with your test Key ID
+      key: razorKey, // Replace with your test Key ID
       amount: data.amount * 100, // Amount in paisa
       currency: "INR",
       name: "Happy Donors NGO",
@@ -298,7 +302,7 @@ export default function ContributeFund() {
         className="submit-button"
         disabled={loading || isLoading}
       >
-        {loading  ? "Loading Razorpay..." : "Pay Online"}
+        {loading ? "Loading Razorpay..." : "Pay Online"}
       </button>
 
       {error && (

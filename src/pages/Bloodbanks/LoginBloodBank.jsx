@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
-import logo from "../assets/logo.png";
-import "../css/LoginComponent.css";
+import logo from "../../assets/logo.png";
+import "../../css/LoginComponent.css";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { setLoader, OrgLogin } from "../redux/product";
-import { Link } from "react-router-dom";
+import { setLoader, OrgLogin } from "../../redux/product";
 
-const LoginOrg = () => {
+const LoginBloodBank = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // const [inputValue, setInputValue] = useState("+91");
@@ -22,7 +21,7 @@ const LoginOrg = () => {
     if (auth) {
       navigate("/home");
     } else {
-      navigate("/login/organisation");
+      navigate("/login/bloodbank");
     }
   }, []);
 
@@ -53,9 +52,8 @@ const LoginOrg = () => {
       dispatch(
         OrgLogin(orgData, (res) => {
           console.log("res: ", res);
-          // return;
           if (res.code === 200) {
-            localStorage.setItem("user_type", res.user_type);
+            localStorage.setItem("user_type", 5);
             localStorage.setItem(
               "is_profile_update",
               res?.data?.is_profile_update
@@ -106,15 +104,16 @@ const LoginOrg = () => {
         <button className="button" onClick={onSubmit}>
           Login
         </button>
-        <p className="login-option text-center mt-3">
-          Dont have an account?
-          <Link to="/register/organisation" className="login-link">
-            Register here
-          </Link>
-        </p>
+        {/* <p
+          // onClick={() => setIsOrganizationLogin(false)}
+          className="mt-3"
+          style={{ color: "blue", cursor: "pointer" }}
+        >
+          click here login as User
+        </p> */}
       </div>
     </div>
   );
 };
 
-export default LoginOrg;
+export default LoginBloodBank;

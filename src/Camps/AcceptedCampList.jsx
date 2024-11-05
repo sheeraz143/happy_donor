@@ -45,6 +45,7 @@ const AcceptedCampList = () => {
   };
 
   const openModal = (donor) => {
+    console.log("donor: ", donor);
     setSelectedDonor(donor);
     setModalIsOpen(true);
   };
@@ -64,7 +65,7 @@ const AcceptedCampList = () => {
         <div className="request-header">
           <div className="align-content-center">
             <img
-              src={donor.camp_image || profPicImg}
+              src={donor.profile_picture || profPicImg}
               alt="Profile"
               style={{
                 width: "100px",
@@ -79,6 +80,7 @@ const AcceptedCampList = () => {
             />
           </div>
           <div className="request-details">
+            {/* <div className="request-date text-start">{donor?.title}</div> */}
             <div className="request-date text-start">{donor?.donor_name}</div>
             <div className="request-units text-start">
               {formatDate(donor?.date)}
@@ -92,12 +94,16 @@ const AcceptedCampList = () => {
             </div>
           </div>
           <div className="blood-group">
-            <img src={bloodGroupImg} alt="Blood Group" />
+            <img
+              src={donor?.camp_image || bloodGroupImg}
+              alt="Blood Group"
+              style={{ maxWidth: "180px" }}
+            />
           </div>
         </div>
 
         <div className="accept-donar-button d-flex justify-content-end gap-3 mt-2">
-          {donor.status == "Approved" && (
+          {donor.status == "Accepted" && (
             <button
               className="accepted-donors-btn"
               onClick={() => markAsDonated(donor, donor.camp_id)}
@@ -105,13 +111,12 @@ const AcceptedCampList = () => {
               Mark As Donated
             </button>
           )}
-          {(donor.donation_status === "Completed" ||
-            donor.donation_status === "Donated") && (
+          {(donor.status === "Completed" || donor.status === "Active") && (
             <>
               <button className="accepted-donors-btn btn-secondary" disabled>
                 Donated
               </button>
-              {donor.gratitude_msg !== "" ? (
+              {donor.media !== null ? (
                 <button
                   className="accepted-donors-btn"
                   onClick={() => openModal(donor)}
@@ -121,7 +126,7 @@ const AcceptedCampList = () => {
               ) : (
                 <button
                   className="accepted-donors-btn"
-                  onClick={() => navigateToGratitude(requestId, donor.camp_id)}
+                  onClick={() => navigateToGratitude(requestId, donor.donor_id)}
                 >
                   Post Gratitude Message
                 </button>
@@ -155,30 +160,22 @@ const AcceptedCampList = () => {
       >
         {selectedDonor && (
           <div className="d-flex flex-column align-items-center ">
-            <h2>Gratitude Message</h2>
-            <p>{selectedDonor.gratitude_msg}</p>
+            <h2>TTI Report</h2>
+            <p>{selectedDonor?.message}</p>
 
-            {selectedDonor.media_type === "video" && (
-              <video width="320" height="240" controls className="mb-4">
-                <source src={selectedDonor.media} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            )}
-
-            {selectedDonor.media_type === "image" && (
-              <img
-                src={selectedDonor.media}
-                alt="Gratitude"
-                className="img-fluid rounded mb-4"
-                style={{ maxWidth: "100%", height: "150px" }}
-              />
-            )}
-
-            {selectedDonor.media_type === "audio" && (
-              <audio controls className="mb-4">
-                <source src={selectedDonor.media} type="audio/mpeg" />
-                Your browser does not support the audio element.
-              </audio>
+            {/* Instructional text for the PDF button */}
+            {selectedDonor.media && selectedDonor.media.endsWith(".pdf") && (
+              <div className="text-center mb-3">
+                <p className="text-muted">
+                  Click the button below to view the PDF document.
+                </p>
+                <button
+                  className="btn btn-link text-primary mb-4"
+                  onClick={() => window.open(selectedDonor.media, "_blank")} // Open PDF in new tab
+                >
+                  Preview PDF
+                </button>
+              </div>
             )}
 
             <button onClick={closeModal} className="btn btn-primary">
