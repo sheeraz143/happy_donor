@@ -45,7 +45,6 @@ const AcceptedCampList = () => {
   };
 
   const openModal = (donor) => {
-    console.log("donor: ", donor);
     setSelectedDonor(donor);
     setModalIsOpen(true);
   };
@@ -116,19 +115,20 @@ const AcceptedCampList = () => {
               <button className="accepted-donors-btn btn-secondary" disabled>
                 Donated
               </button>
-              {donor.media !== null ? (
-                <button
-                  className="accepted-donors-btn"
-                  onClick={() => openModal(donor)}
-                >
-                  View Gratitude Message
-                </button>
-              ) : (
+              {/* {(!donor.media || donor.media.trim() === "") && */}
+              {!donor.message || donor.message.trim() === "" ? (
                 <button
                   className="accepted-donors-btn"
                   onClick={() => navigateToGratitude(requestId, donor.donor_id)}
                 >
                   Post Gratitude Message
+                </button>
+              ) : (
+                <button
+                  className="accepted-donors-btn"
+                  onClick={() => openModal(donor)}
+                >
+                  View Gratitude Message
                 </button>
               )}
             </>
