@@ -4,7 +4,7 @@ import micIcon from "../assets/Microphone.png";
 import calendarIcon from "../assets/Clapperboard.png";
 import { useLocation, useNavigate } from "react-router";
 import {
-  SendGratitudeCampMessage,
+  SendGratitudeMessage,
   setLoader,
   ViewBloodRequest,
 } from "../redux/product";
@@ -72,7 +72,7 @@ export default function PostGratitudeCampMesage() {
     dispatch(setLoader(true));
     try {
       dispatch(
-        SendGratitudeCampMessage(formData, (res) => {
+        SendGratitudeMessage(formData, (res) => {
           dispatch(setLoader(false));
 
           // Check for 422 status code

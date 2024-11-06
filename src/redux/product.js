@@ -989,6 +989,122 @@ export const ViewCampsRequest =
       });
     }
   };
+export const ViewNotifications =
+  (callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(baseUrl + `app/notifications`);
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const deleteAllNotifications =
+  (callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.deleteDataNew(baseUrl + `app/notifications`);
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+// Define markAllAsRead function
+export const markAllAsRead =
+  (callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.putData(
+        baseUrl + `app/notifications/mark-all-as-read`
+      );
+      const result = {
+        code: response.status,
+        data: response.data,
+      };
+
+      if (response.status === 200) {
+        callback({ status: true, data: result });
+      } else {
+        callback({ status: false, message: response.data.message });
+      }
+    } catch (err) {
+      console.error("Mark all as read error: ", err);
+      callback({
+        status: false,
+        message: err.response?.data?.message || "An error occurred.",
+      });
+    }
+  };
+
+// Define deleteNotification function
+export const deleteNotification =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.deleteDataNew(
+        baseUrl + `app/notifications/${id}`
+      );
+      const result = {
+        code: response.status,
+        data: response.data,
+      };
+
+      if (response.status === 200) {
+        callback({ status: true, data: result });
+      } else {
+        callback({ status: false, message: response.response.data.message });
+      }
+    } catch (err) {
+      console.error("Delete notification error: ", err);
+      callback({
+        status: false,
+        message: err.response?.data?.message || "An error occurred.",
+      });
+    }
+  };
+
 export const ViewSinglecamp =
   (id, callback = () => {}) =>
   async () => {

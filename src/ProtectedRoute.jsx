@@ -11,8 +11,8 @@ ProtectedRoute.propTypes = {
   redirectPath: PropTypes.string,
 };
 
-ProtectedRoute.defaultProps = {
-  redirectPath: "/",
-};
+// ProtectedRoute.defaultProps = {
+//   redirectPath: "/",
+// };
 
 export default ProtectedRoute;

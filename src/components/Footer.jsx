@@ -68,12 +68,12 @@
 
 // export default Footer;
 import "./Footer.css";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
     <footer className="footer">
-      <div className="footer-container">
+      {/* <div className="footer-container">
         <div className="footer-section text-start">
           <h3>Happydonors</h3>
           <p>Ashok Nagar</p>
@@ -95,7 +95,6 @@ const Footer = () => {
           <h3>Quick Links</h3>
           <ul>
             <li>
-              {/* <Link to="">Home</Link> */}
               <a
                 href="/app.html"
                 style={{ color: "#fff", textDecoration: "none" }}
@@ -104,7 +103,6 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              {/* <Link to="/">About</Link> */}
               <a
                 href="/about-us.html"
                 style={{ color: "#fff", textDecoration: "none" }}
@@ -113,7 +111,6 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              {/* <Link to="/">Services</Link> */}
               <a
                 href="/app.html"
                 style={{ color: "#fff", textDecoration: "none" }}
@@ -151,7 +148,7 @@ const Footer = () => {
             </a>
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="footer-bottom">
         <p>Copyright 2024 - Happy Donors. All Rights Reserved.</p>
       </div>

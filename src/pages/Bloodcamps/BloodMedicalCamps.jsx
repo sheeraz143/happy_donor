@@ -23,6 +23,7 @@ const BloodMedicalCamps = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchCampsAndEvents = async () => {
       const handleResponse = (result, type) => {
         if (result.code === 200) {
@@ -277,6 +278,14 @@ const BloodMedicalCamps = () => {
             camps.map((request) => renderRequestCard(request))}
           {activeTab === "unmatched" &&
             events?.map((request) => renderOthersCard(request))}
+        </div>
+        <div>
+          {activeTab === "matched" && camps?.length === 0 && (
+            <h4 className="mx-auto mb-5 text-center">No Data available.</h4>
+          )}
+          {activeTab === "unmatched" && events?.length === 0 && (
+            <h4 className="mx-auto mb-5 text-center">No Data available.</h4>
+          )}
         </div>
         <Pagination
           align="center"

@@ -5,8 +5,10 @@ import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { setLoader, OrgLogin } from "../../redux/product";
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
-const LoginBloodBank = () => {
+const LoginBloodBank = ({ onRefreshNavbar }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // const [inputValue, setInputValue] = useState("+91");
@@ -42,6 +44,11 @@ const LoginBloodBank = () => {
       return;
     }
 
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return;
+    }
+
     // Organization login API call
     dispatch(setLoader(true));
     const orgData = {
@@ -51,9 +58,9 @@ const LoginBloodBank = () => {
     try {
       dispatch(
         OrgLogin(orgData, (res) => {
-          console.log("res: ", res);
+          // return;
           if (res.code === 200) {
-            localStorage.setItem("user_type", 5);
+            localStorage.setItem("user_type", res.data?.user_type);
             localStorage.setItem(
               "is_profile_update",
               res?.data?.is_profile_update
@@ -61,6 +68,7 @@ const LoginBloodBank = () => {
             localStorage.setItem("oAuth", `Bearer ${res?.data?.token}`);
             navigate("/home");
             toast.success(res.message);
+            onRefreshNavbar();
           } else {
             toast.error(res.message);
           }
@@ -76,9 +84,11 @@ const LoginBloodBank = () => {
   return (
     <div className="container">
       <img src={logo} alt="Happy Donors" className="donar-logo" />
-      <h2 className="welcomeText">Welcome Back! Saving Lives Starts Here</h2>
+      {/* <h2 className="welcomeText">Welcome Back! Saving Lives Starts Here</h2> */}
 
       <div className="inputContainer flex-column col-lg-4">
+        <h2 className="welcomeText">Blood Bank Login</h2>
+
         <input
           type="email"
           value={email}
@@ -104,16 +114,18 @@ const LoginBloodBank = () => {
         <button className="button" onClick={onSubmit}>
           Login
         </button>
-        {/* <p
-          // onClick={() => setIsOrganizationLogin(false)}
-          className="mt-3"
-          style={{ color: "blue", cursor: "pointer" }}
-        >
-          click here login as User
-        </p> */}
+        <p className="login-option text-center mt-3">
+          Dont have an account?
+          <Link to="/register/bloodbank" className="login-link">
+            Register here
+          </Link>
+        </p>
       </div>
     </div>
   );
 };
 
+LoginBloodBank.propTypes = {
+  onRefreshNavbar: PropTypes.func.isRequired,
+};
 export default LoginBloodBank;

@@ -48,23 +48,22 @@ const CampsList = () => {
           CampsLists(
             tab,
             (res) => {
-              console.log("res: ", res);
               dispatch(setLoader(false));
 
               if (res.errors) {
                 toast.error(res.errors);
               } else {
                 if (tab === "open") {
-                  setOpenRequests(res.camps);
+                  setOpenRequests(res?.camps);
                   setRequestCount((prevCount) => ({
                     ...prevCount,
-                    matched: res.pagination.total,
+                    matched: res?.pagination?.total,
                   }));
                 } else {
                   setClosedRequests(res.camps);
                   setRequestCount((prevCount) => ({
                     ...prevCount,
-                    unmatched: res.pagination.total,
+                    unmatched: res?.pagination?.total,
                   }));
                 }
               }
@@ -134,11 +133,11 @@ const CampsList = () => {
     }
   };
 
-  const renderRequestCard = (request, isOpen) => {
+  const renderRequestCard = (request, isOpen, index) => {
     return (
       <div
         className="request-card"
-        key={request.request_id}
+        key={`${request.request_id}-${index}`}
         style={{ cursor: "pointer" }}
         onClick={() => handleCardClick(request)}
       >
@@ -156,6 +155,7 @@ const CampsList = () => {
           </div> */}
           <div className="request-details">
             <div className="request-date text-start"> {request?.title}</div>
+            <div className="request-date text-start"> {request?.date}</div>
             <div className="request-date text-start">
               {formatDate(request?.date)}
             </div>
@@ -237,15 +237,19 @@ const CampsList = () => {
         </div>
         <div className="requests mb-5">
           {activeTab === "open" &&
-            openRequests.map((request) => renderRequestCard(request, true))}
+            openRequests?.map((request, index) =>
+              renderRequestCard(request, true, index)
+            )}
           {activeTab === "closed" &&
-            closedRequests.map((request) => renderRequestCard(request, false))}
+            closedRequests?.map((request, index) =>
+              renderRequestCard(request, false, index)
+            )}
         </div>
         <div>
-          {activeTab === "open" && openRequests.length === 0 && (
+          {activeTab === "open" && openRequests?.length === 0 && (
             <h4 className="mx-auto mb-5 text-center">No Data available.</h4>
           )}
-          {activeTab === "closed" && closedRequests.length === 0 && (
+          {activeTab === "closed" && closedRequests?.length === 0 && (
             <h4 className="mx-auto mb-4 text-center">No Data available.</h4>
           )}
         </div>

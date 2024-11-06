@@ -8,10 +8,13 @@ import profilePic from "../assets/prof_img.png";
 import { IoMdNotificationsOutline } from "react-icons/io";
 // import { AiOutlineLogout } from "react-icons/ai";
 import { FaRegUserCircle } from "react-icons/fa";
+import PropTypes from "prop-types";
 
-function Navbar() {
+function Navbar({ refreshNavbar }) {
+  const [userType, setUserType] = useState(localStorage.getItem("user_type"));
+
   const [isOpen, setIsOpen] = useState(false);
-  const [userType, setUserType] = useState(null);
+  // const [userType, setUserType] = useState(null);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [data, setData] = useState({});
   const [profileVerified, setProfileVerified] = useState(null);
@@ -25,7 +28,7 @@ function Navbar() {
     const profileVerified = localStorage.getItem("is_profile_update");
     setUserType(storedUserType);
     setProfileVerified(profileVerified);
-  }, []);
+  }, [refreshNavbar]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -115,7 +118,6 @@ function Navbar() {
             handleNavigation(userType == 5 ? "/camps/list" : "");
           }}
           style={{ display: userType == 5 ? "block" : "none" }}
-
         >
           {userType == 5 ? "Camps" : ""}
         </NavLink>
@@ -201,5 +203,8 @@ function Navbar() {
     </nav>
   );
 }
+Navbar.propTypes = {
+  refreshNavbar: PropTypes.bool.isRequired, // Specify that refreshNavbar is required and must be a boolean
+};
 
 export default Navbar;
