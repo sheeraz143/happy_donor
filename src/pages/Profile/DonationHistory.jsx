@@ -79,6 +79,7 @@ function DonationHistory() {
           <div className="request-date text-start">
             {formatDate(request?.date)}
           </div>
+          <div className="request-date text-start">{request?.location}</div>
           <div className="request-date text-start" style={{ color: "blue" }}>
             {request?.donation_status ??
               `Contributed amount: ${request?.contributed_amount ?? 0}`}

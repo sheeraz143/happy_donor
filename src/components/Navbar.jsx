@@ -114,6 +114,8 @@ function Navbar() {
             e.preventDefault();
             handleNavigation(userType == 5 ? "/camps/list" : "");
           }}
+          style={{ display: userType == 5 ? "block" : "none" }}
+
         >
           {userType == 5 ? "Camps" : ""}
         </NavLink>

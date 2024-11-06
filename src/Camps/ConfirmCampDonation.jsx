@@ -71,8 +71,8 @@ export default function ConfirmCampDonation() {
         <div className="">Title: {data?.title}</div>
         <div>Time:{data?.time}</div>
         {/* <div>Quantity Needed: {data?.units_required}</div> */}
-        <div>Location: {data?.location}</div>
-        <div>Donation Date:{data?.date}</div>
+        <div>{data?.date}</div>
+        <div> {data?.location}</div>
         {/* <div>Quantity Donated: {data?.units_required}</div> */}
       </div>
       <h5 style={{ color: "blue" }} className="text-center">
