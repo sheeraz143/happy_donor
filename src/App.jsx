@@ -25,7 +25,7 @@ import SelectLanguage from "./pages/Profile/SelectLanguage";
 import NotificationSettings from "./pages/Profile/NotificationSettings";
 import ModeSetting from "./pages/Profile/ModeSetting";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import EmergenctContact from "./pages/Profile/EmergenctContact";
 import AboutUs from "./pages/AboutUs/AboutUsPage";
 import PrivacyPolicy from "./pages/Policy/PrivacyPolicy";
@@ -60,6 +60,8 @@ import RegisterOrg from "./pages/RegisterOrg";
 import LoginOrg from "./Camps/LoginOrg";
 import Registerbloodbank from "./pages/Bloodbanks/RegisterBloodbank";
 import LoginBloodBank from "./pages/Bloodbanks/LoginBloodBank";
+import PostGratitudeCampMesage from "./Camps/PostGratitudeCampMesage";
+import NotificationPage from "./pages/Notification/NotificationPage";
 
 function App() {
   const darkMode = useSelector((state) => state.theme.darkMode);
@@ -88,18 +90,36 @@ function App() {
   // const storedUserType = localStorage.getItem("user_type");
   // const storedUserType = localStorage.getItem("user_type");
 
+  const [refreshNavbar, setRefreshNavbar] = useState(false);
+
+  const handleRefreshNavbar = () => {
+    setRefreshNavbar((prev) => !prev);
+  };
+
   return (
     <>
       <Tost />
       <SimpleBackdrop />
-      {!hideNavbarAndFooter && <Navbar />}
+      {!hideNavbarAndFooter && <Navbar refreshNavbar={refreshNavbar} />}
       <Routes>
         <Route path="/login" element={<LoginComponent />} />
-        <Route path="/login/organisation" element={<LoginOrg />} />
-        <Route path="/login/bloodbank" element={<LoginBloodBank />} />
+        <Route
+          path="/login/organisation"
+          element={<LoginOrg onRefreshNavbar={handleRefreshNavbar} />}
+        />
+        <Route
+          path="/login/bloodbank"
+          element={<LoginBloodBank onRefreshNavbar={handleRefreshNavbar} />}
+        />
+        <Route
+          path="/register/bloodbank"
+          element={<Registerbloodbank onRefreshNavbar={handleRefreshNavbar} />}
+        />
         <Route path="/otp" element={<OTPVerificationComponent />} />
-        <Route path="/register/organisation" element={<RegisterOrg />} />
-        <Route path="/register/bloodbank" element={<Registerbloodbank />} />
+        <Route
+          path="/register/organisation"
+          element={<RegisterOrg onRefreshNavbar={handleRefreshNavbar} />}
+        />
         <Route path="/privacypolicy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<Terms />} />
         <Route element={<ProtectedRoute />}>
@@ -151,7 +171,7 @@ function App() {
           <Route path="/donarlist/:id" element={<AcceptDonorList />} />
           <Route path="/confirmdonation/:id" element={<ConfirmDonation />} />
           <Route
-            path="/postgratitudemesage"
+            path="gratitudecampmesage/"
             element={<PostGratitudeMesage />}
           />
           <Route path="/faqs" element={<Faqs />} />
@@ -164,9 +184,11 @@ function App() {
           <Route path="/camplist/:id" element={<AcceptedCampList />} />
           <Route path="/confirmcamp/:id" element={<ConfirmCampDonation />} />
           <Route
-            path="/gratitudecampmesage"
-            element={<PostGratitudeMesage />}
+            path="/postgratitudemesage"
+            element={<PostGratitudeCampMesage />}
           />
+          <Route path="/notification" element={<NotificationPage />} />
+
         </Route>
       </Routes>
       {!hideNavbarAndFooter && <Footer />}

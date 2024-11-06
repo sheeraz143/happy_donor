@@ -71,7 +71,6 @@ const EditProfilePage = () => {
       dispatch(
         getProfile((res) => {
           const user = res?.user;
-          console.log("user: ", user);
           setProfileImage(res?.user?.profile_picture || logo);
           setValue("title", user?.title);
           setValue("first_name", user?.first_name);
@@ -118,7 +117,6 @@ const EditProfilePage = () => {
       try {
         dispatch(
           profilePicUpdate(formData, (res) => {
-            console.log("res: ", res);
             if (res.errors) {
               toast.error(res.errors);
             } else {
@@ -190,7 +188,6 @@ const EditProfilePage = () => {
       // Dispatch action to update profile
       dispatch(
         updateProfile(formData, (res) => {
-          console.log("Response: ", res);
           dispatch(setLoader(false)); // Stop loading
 
           // Check for response status

@@ -6,8 +6,9 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { setLoader, OrgLogin } from "../redux/product";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
-const LoginOrg = () => {
+const LoginOrg = ({ onRefreshNavbar }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // const [inputValue, setInputValue] = useState("+91");
@@ -57,10 +58,9 @@ const LoginOrg = () => {
     try {
       dispatch(
         OrgLogin(orgData, (res) => {
-          console.log("res: ", res);
           // return;
           if (res.code === 200) {
-            localStorage.setItem("user_type", res.user_type);
+            localStorage.setItem("user_type", res.data?.user_type);
             localStorage.setItem(
               "is_profile_update",
               res?.data?.is_profile_update
@@ -68,6 +68,7 @@ const LoginOrg = () => {
             localStorage.setItem("oAuth", `Bearer ${res?.data?.token}`);
             navigate("/home");
             toast.success(res.message);
+            onRefreshNavbar();
           } else {
             toast.error(res.message);
           }
@@ -83,9 +84,11 @@ const LoginOrg = () => {
   return (
     <div className="container">
       <img src={logo} alt="Happy Donors" className="donar-logo" />
-      <h2 className="welcomeText">Welcome Back! Saving Lives Starts Here</h2>
+      {/* <h2 className="welcomeText">Welcome Back! Saving Lives Starts Here</h2> */}
 
       <div className="inputContainer flex-column col-lg-4">
+        <h2 className="welcomeText">Organisation Login</h2>
+
         <input
           type="email"
           value={email}
@@ -122,4 +125,7 @@ const LoginOrg = () => {
   );
 };
 
+LoginOrg.propTypes = {
+  onRefreshNavbar: PropTypes.func.isRequired,
+};
 export default LoginOrg;
