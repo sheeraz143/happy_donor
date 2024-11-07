@@ -63,9 +63,15 @@ import LoginBloodBank from "./pages/Bloodbanks/LoginBloodBank";
 import PostGratitudeCampMesage from "./Camps/PostGratitudeCampMesage";
 import NotificationPage from "./pages/Notification/NotificationPage";
 
+// import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+import { requestForToken } from "./pushnotification/firebase";
+
 function App() {
   const darkMode = useSelector((state) => state.theme.darkMode);
   const location = useLocation();
+  // const [notification, setNotification] = useState({ title: "", body: "" });
+
   // const navigate = useNavigate();
 
   useEffect(() => {
@@ -75,6 +81,35 @@ function App() {
 
     document.body.className = darkMode ? "dark-mode" : "";
   }, [darkMode, location.pathname]);
+
+  useEffect(() => {
+    // console.log("notification: ", notification);
+
+    // Request permission and get FCM token
+    requestForToken()
+      .then((token) => {
+        if (token) {
+          localStorage.setItem("fcmToken", token);
+          // console.log("FCM Token:", token);
+          // Optionally, send the token to your backend for later use
+        }
+      })
+      .catch((err) => console.log("Notification permission denied:", err));
+
+    // // Listen for foreground messages
+    // onMessageListener()
+    //   .then((payload) => {
+    //     console.log("Received notification:", payload);
+    //     setNotification({
+    //       title: payload.notification.title,
+    //       body: payload.notification.body,
+    //     });
+    //     toast.info(
+    //       `${payload.notification.title}: ${payload.notification.body}`
+    //     );
+    //   })
+    //   .catch((err) => console.log("Failed to receive message:", err));
+  }, []);
 
   const hideNavbarAndFooter =
     location.pathname === "/login" ||
@@ -106,7 +141,7 @@ function App() {
         <Route
           path="/login/organisation"
           element={<LoginOrg onRefreshNavbar={handleRefreshNavbar} />}
-        />
+        /> 
         <Route
           path="/login/bloodbank"
           element={<LoginBloodBank onRefreshNavbar={handleRefreshNavbar} />}
@@ -187,8 +222,10 @@ function App() {
             path="/postgratitudemesage"
             element={<PostGratitudeCampMesage />}
           />
-          <Route path="/notification" element={<NotificationPage />} />
-
+          <Route
+            path="/notification"
+            element={<NotificationPage onRefreshNavbar={handleRefreshNavbar} />}
+          />
         </Route>
       </Routes>
       {!hideNavbarAndFooter && <Footer />}

@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { setLoader, OrgLogin } from "../redux/product";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const LoginOrg = ({ onRefreshNavbar }) => {
   const navigate = useNavigate();
@@ -108,7 +109,7 @@ const LoginOrg = ({ onRefreshNavbar }) => {
             className="eyeIcon"
             onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? "🙈" : "👁️"}
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
           </span>
         </div>
         <button className="button" onClick={onSubmit}>

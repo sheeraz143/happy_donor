@@ -97,7 +97,7 @@
   right: 10px;
   cursor: pointer;
   font-size: 18px;
-  color: #4caf50; /* Color for the eye icon */
+  color: #000; /* Color for the eye icon */
 }
 
 .input {

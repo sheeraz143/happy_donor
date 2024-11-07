@@ -22,6 +22,7 @@ function DonationHistory() {
   const [selectedDonor, setSelectedDonor] = useState(null);
 
   const openModal = (donor) => {
+    console.log("donor: ", donor);
     setSelectedDonor(donor);
     setModalIsOpen(true);
   };
@@ -168,7 +169,11 @@ function DonationHistory() {
       >
         {selectedDonor && (
           <div className="d-flex flex-column align-items-center ">
-            <h2>Gratitude Message</h2>
+            <h2>
+              {selectedDonor?.type == "BloodRequestDonor"
+                ? "Gratitude Message"
+                : "TTI Report"}
+            </h2>
             <p>{selectedDonor.gratitude_msg}</p>
 
             {selectedDonor.media_type === "video" && (
@@ -185,6 +190,17 @@ function DonationHistory() {
                 className="img-fluid rounded mb-4"
                 style={{ maxWidth: "100%", height: "150px" }}
               />
+            )}
+
+            {selectedDonor.media.endsWith("pdf") && (
+              <div className="pdf-container">
+                <p>{selectedDonor.message}</p>
+                <iframe
+                  src={selectedDonor.media}
+                  title="PDF Preview"
+                  className="pdf-preview rounded mb-4"
+                ></iframe>
+              </div>
             )}
 
             {selectedDonor.media_type === "audio" && (

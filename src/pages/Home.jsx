@@ -13,7 +13,7 @@ import profPicImg from "../assets/profpic.png";
 import shareIcon from "../assets/Share.png";
 import locationIcon from "../assets/Mappoint.png";
 import { Link, useNavigate } from "react-router-dom";
-import { dashboardData, setLoader } from "../redux/product";
+import { dashboardData, sendSOS, setLoader } from "../redux/product";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -24,6 +24,7 @@ function Home() {
   const [getData, setData] = useState({});
   const [banners, setBanners] = useState([]);
   const [recentBloodRequest, setRecentBloodRequest] = useState([]);
+  const [coordinates, setCoordinates] = useState({ lat: null, lon: null });
 
   const isProfileUpdate = localStorage.getItem("is_profile_update");
   const storedUserType = localStorage.getItem("user_type");
@@ -55,6 +56,57 @@ function Home() {
       dispatch(setLoader(false));
     }
   }, [dispatch]);
+
+  useEffect(() => {
+    // Function to get the user's current position
+    const getCurrentPosition = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setCoordinates({
+              lat: position.coords.latitude,
+              lon: position.coords.longitude,
+            });
+          },
+          (error) => {
+            console.error("Error getting geolocation:", error);
+            toast.error("Unable to retrieve your location.");
+          }
+        );
+      } else {
+        toast.error("Geolocation is not supported by this browser.");
+      }
+    };
+
+    getCurrentPosition();
+  }, []);
+
+  const handleSubmit = () => {
+    const data = {
+      lat: String(coordinates.lat),
+      lon: String(coordinates.lon),
+    };
+    dispatch(setLoader(true));
+    try {
+      dispatch(
+        sendSOS(data, (res) => {
+          dispatch(setLoader(false));
+
+          // Check for response status
+          if (res.code === 200) {
+            toast.success(res.message);
+            // navigate("#");
+          } else {
+            const errorMessages = res.message || "An error occurred.";
+            toast.error(errorMessages);
+          }
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "An unexpected error occurred.");
+      dispatch(setLoader(false)); // Stop loading
+    }
+  };
 
   const sliderSettings = {
     dots: true,
@@ -209,7 +261,7 @@ function Home() {
         {storedUserType == 5 ? (
           ""
         ) : (
-          <div className="card">
+          <div className="card cursor-pointer" onClick={() => handleSubmit()}>
             <img src={sos} alt="Emergency SOS" />
             <p style={{ color: "green" }}>Emergency SOS</p>
           </div>

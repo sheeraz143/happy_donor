@@ -17,7 +17,7 @@ function Navbar({ refreshNavbar }) {
   // const [userType, setUserType] = useState(null);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [data, setData] = useState({});
-  const [count, setCount] = useState({});
+  const [count, setCount] = useState([]);
   const [profileVerified, setProfileVerified] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -60,22 +60,21 @@ function Navbar({ refreshNavbar }) {
     dispatch(setLoader(true));
     dispatch(
       ViewNotifications((res) => {
-        console.log("res: ", res);
         dispatch(setLoader(false));
         if (res.errors) {
           toast.error(res.errors);
         } else {
           setCount(res.pagination?.total);
-          console.log("res.pagination?.total: ", res.pagination?.total);
         }
       })
     ).catch((error) => {
       toast.error(error.message || "Error fetching notifications");
       dispatch(setLoader(false));
     });
-  }, [dispatch]);
+  }, [dispatch, refreshNavbar]);
 
   const handleNavigation = (path) => {
+    console.log("path: ", path);
     if (profileVerified === null || profileVerified === "0") {
       toast.error("Please update your profile");
       navigate("/profile");
@@ -135,10 +134,12 @@ function Navbar({ refreshNavbar }) {
         <NavLink
           to={userType == 4 || userType == 5 ? "/camps/list" : ""}
           className={activeLink === "/camps/list" ? "active" : "inactive"}
-          onClick={(e) => {
-            e.preventDefault();
-            handleNavigation(userType == 4 || userType == 5 ? "/camps/list" : "");
-          }}
+          // onClick={(e) => {
+          //   e.preventDefault();
+          //   handleNavigation(
+          //     userType == 4 || userType == 5 ? "/camps/list" : ""
+          //   );
+          // }}
           style={{ display: userType == 4 || userType == 5 ? "block" : "none" }}
         >
           {userType == 4 || userType == 5 ? "Camps" : ""}
@@ -183,7 +184,7 @@ function Navbar({ refreshNavbar }) {
             className="notify_bell"
             onClick={() => navigate("/notification")}
           />
-          {count > 0 && <span className="notification-count">{count}</span>}
+          {<span className="notification-count">{count}</span>}
         </div>
         <div
           className="profile-container gap-3 d-flex align-items-center"

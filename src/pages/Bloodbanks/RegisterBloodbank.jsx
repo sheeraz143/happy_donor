@@ -276,10 +276,6 @@ const Registerbloodbank = () => {
                   value: 8,
                   message: "Password must be at least 8 characters",
                 },
-                // maxLength: {
-                //   value: 8,
-                //   message: "Password cannot be more than 8 characters",
-                // },
               })}
             />
             <span

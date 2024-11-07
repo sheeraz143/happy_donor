@@ -11,6 +11,7 @@ const OTPVerificationComponent = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const phoneNum = location.state?.inputValue || {};
+  const fcmToken = localStorage.getItem("fcmToken");
 
   const handleChange = (element, index) => {
     const value = element.value.replace(/[^0-9]/g, ""); // Restrict to numbers only
@@ -51,6 +52,7 @@ const OTPVerificationComponent = () => {
     const data = {
       phone_number: phoneNum,
       otp_code: otpString,
+      fcm_token: fcmToken,
     };
 
     try {
