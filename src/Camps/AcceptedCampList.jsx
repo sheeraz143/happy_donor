@@ -121,14 +121,14 @@ const AcceptedCampList = () => {
                   className="accepted-donors-btn"
                   onClick={() => navigateToGratitude(requestId, donor.donor_id)}
                 >
-                  Post Gratitude Message
+                  Post TTI Report
                 </button>
               ) : (
                 <button
                   className="accepted-donors-btn"
                   onClick={() => openModal(donor)}
                 >
-                  View Gratitude Message
+                  View TTI Report
                 </button>
               )}
             </>
@@ -160,7 +160,7 @@ const AcceptedCampList = () => {
       >
         {selectedDonor && (
           <div className="d-flex flex-column align-items-center ">
-            <h2>TTI Report</h2>
+            <h3>TTI Report</h3>
             <p>{selectedDonor?.message}</p>
 
             {/* Instructional text for the PDF button */}

@@ -36,34 +36,6 @@ const EditProfilePage = () => {
     setValue,
   } = useForm();
 
-  // const fetchAddress = useCallback(
-  //   async (lat, lon) => {
-  //     if (lat !== null) {
-  //       const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0`;
-  //       const response = await fetch(geocodeUrl);
-  //       const data = await response.json();
-
-  //       if (data.results && data.results.length > 0) {
-  //         const address = data.results[0].formatted_address;
-  //         setLocation(address);
-  //         setValue("location", address);
-  //       }
-  //     }
-  //   },
-  //   [setValue]
-  // ); // Add dependencies if any
-
-  // const handlePlaceSelected = (place) => {
-  //   console.log("place: ", place);
-  //   console.log("lat: ", String(place.geometry.location.lat()));
-  //   console.log("lng: ", String(place.geometry.location.lng()));
-  //   if (place.geometry) {
-  //     setValue("address", place.formatted_address);
-  //     setValue("lat", String(place.geometry.location.lat())); // Convert to string
-  //     setValue("lon", String(place.geometry.location.lng())); // Convert to string
-  //   }
-  // };
-
   useEffect(() => {
     window.scrollTo(0, 0);
     dispatch(setLoader(true)); // Start loading

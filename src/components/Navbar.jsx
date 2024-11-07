@@ -1,7 +1,7 @@
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import "./NavBar.css";
 import { useEffect, useState } from "react";
-import { getProfile, setLoader } from "../redux/product";
+import { getProfile, setLoader, ViewNotifications } from "../redux/product";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import profilePic from "../assets/prof_img.png";
@@ -17,6 +17,7 @@ function Navbar({ refreshNavbar }) {
   // const [userType, setUserType] = useState(null);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [data, setData] = useState({});
+  const [count, setCount] = useState({});
   const [profileVerified, setProfileVerified] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -54,6 +55,25 @@ function Navbar({ refreshNavbar }) {
   useEffect(() => {
     setActiveLink(location.pathname);
   }, [location.pathname]);
+
+  useEffect(() => {
+    dispatch(setLoader(true));
+    dispatch(
+      ViewNotifications((res) => {
+        console.log("res: ", res);
+        dispatch(setLoader(false));
+        if (res.errors) {
+          toast.error(res.errors);
+        } else {
+          setCount(res.pagination?.total);
+          console.log("res.pagination?.total: ", res.pagination?.total);
+        }
+      })
+    ).catch((error) => {
+      toast.error(error.message || "Error fetching notifications");
+      dispatch(setLoader(false));
+    });
+  }, [dispatch]);
 
   const handleNavigation = (path) => {
     if (profileVerified === null || profileVerified === "0") {
@@ -106,20 +126,22 @@ function Navbar({ refreshNavbar }) {
             e.preventDefault();
             handleNavigation("/donate");
           }}
-          style={{ display: userType == 5 ? "none" : "block" }}
+          style={{
+            display: userType == 4 || userType == 5 ? "none" : "block",
+          }}
         >
           Donate
         </NavLink>
         <NavLink
-          to={userType == 5 ? "/camps/list" : ""}
+          to={userType == 4 || userType == 5 ? "/camps/list" : ""}
           className={activeLink === "/camps/list" ? "active" : "inactive"}
           onClick={(e) => {
             e.preventDefault();
-            handleNavigation(userType == 5 ? "/camps/list" : "");
+            handleNavigation(userType == 4 || userType == 5 ? "/camps/list" : "");
           }}
-          style={{ display: userType == 5 ? "block" : "none" }}
+          style={{ display: userType == 4 || userType == 5 ? "block" : "none" }}
         >
-          {userType == 5 ? "Camps" : ""}
+          {userType == 4 || userType == 5 ? "Camps" : ""}
         </NavLink>
         <NavLink
           to="/bloodrequest"
@@ -150,15 +172,18 @@ function Navbar({ refreshNavbar }) {
       </div>
 
       <div className="d-flex align-items-center gap-2">
-        <div>
+        <div className="notification-icon-wrapper">
           <IoMdNotificationsOutline
             style={{
-              height: "20px",
-              width: "20px",
+              height: "25px",
+              width: "25px",
               cursor: "pointer",
               color: "#fff",
             }}
+            className="notify_bell"
+            onClick={() => navigate("/notification")}
           />
+          {count > 0 && <span className="notification-count">{count}</span>}
         </div>
         <div
           className="profile-container gap-3 d-flex align-items-center"

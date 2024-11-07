@@ -215,8 +215,25 @@ nav a.inactive {
   border: none;
   border-radius: 5px;
 }
-.border_bottom{
+.border_bottom {
   border-bottom: 2px solid black;
+}
+
+.notification-icon-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.notification-count {
+  position: absolute;
+  top: -6px;
+  right: -2px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 0px 4px;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 @media (max-width: 767px) {
@@ -225,6 +242,9 @@ nav a.inactive {
   }
   .profile-container h5 {
     display: none !important;
+  }
+  .notify_bell {
+    color: unset !important;
   }
 
   .navbar {

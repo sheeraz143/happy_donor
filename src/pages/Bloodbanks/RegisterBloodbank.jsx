@@ -95,8 +95,8 @@ const Registerbloodbank = () => {
         lat: data?.lat,
         lon: data?.lat,
         terms: true,
-        password: "HappyDonors@123",
-        password_confirmation: "HappyDonors@123",
+        password: data?.password,
+        password_confirmation: data?.password,
         user_type_id: 4,
       };
 
@@ -276,10 +276,10 @@ const Registerbloodbank = () => {
                   value: 8,
                   message: "Password must be at least 8 characters",
                 },
-                maxLength: {
-                  value: 8,
-                  message: "Password cannot be more than 8 characters",
-                },
+                // maxLength: {
+                //   value: 8,
+                //   message: "Password cannot be more than 8 characters",
+                // },
               })}
             />
             <span
