@@ -51,7 +51,6 @@ export const verifytOTP =
   async () => {
     try {
       const response = await Helper.postData(baseUrl + "auth/verify-otp", data);
-      console.log("response: ", response);
 
       const result = {
         ...response.data,
@@ -85,7 +84,6 @@ export const OrgLogin =
   async () => {
     try {
       const response = await Helper.postDataOrg(baseUrl + "auth/login", data);
-      console.log("response: ", response);
 
       // If response is 200, send the data
       if (response.status === 200) {
@@ -1024,7 +1022,9 @@ export const deleteAllNotifications =
   (callback = () => {}) =>
   async () => {
     try {
-      const response = await Helper.deleteDataNew(baseUrl + `app/notifications`);
+      const response = await Helper.deleteDataNew(
+        baseUrl + `app/notifications`
+      );
 
       const result = {
         ...response.data,
@@ -1298,6 +1298,36 @@ export const DonateHistory =
           status: false,
           code: response.status,
           message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const writeToUs =
+  (data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(baseUrl + `app/submissions`, data);
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 201) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.data.message,
         });
       }
     } catch (err) {

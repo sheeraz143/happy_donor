@@ -84,7 +84,7 @@ export default function NotificationPage() {
   };
 
   return (
-    <div className="notification-page">
+    <div className="notification-page mb-5 mt-4">
       <h2 className="notification-header">Notifications</h2>
       <div className="notification-actions">
         <button className="mark-read-button" onClick={handleMarkAllAsRead}>
@@ -92,30 +92,34 @@ export default function NotificationPage() {
         </button>
         <button
           className="delete-all-button"
-          onClick={handleDeleteAllNotifications} // Call the delete all handler
+          onClick={handleDeleteAllNotifications}
         >
           <FaTrash /> Delete all Notifications
         </button>
       </div>
-      {data.map((notification) => (
-        <div key={notification.id} className="notification-card">
-          <div className="notification-content">
-            <p className="notification-title">{notification.title}</p>
-            <p className="notification-subtitle">{notification.message}</p>
-            <p className="notification-time">
-              {formatDistanceToNow(new Date(notification.updated_at), {
-                addSuffix: true,
-              })}
-            </p>
+      {data.length === 0 ? (
+        <h4 className="text-center">No data available</h4>
+      ) : (
+        data.map((notification) => (
+          <div key={notification.id} className="notification-card">
+            <div className="notification-content">
+              <p className="notification-title">{notification.title}</p>
+              <p className="notification-subtitle">{notification.message}</p>
+              <p className="notification-time">
+                {formatDistanceToNow(new Date(notification.updated_at), {
+                  addSuffix: true,
+                })}
+              </p>
+            </div>
+            <button
+              className="delete-button"
+              onClick={() => handleDeleteNotification(notification.id)}
+            >
+              <FaTrash />
+            </button>
           </div>
-          <button
-            className="delete-button"
-            onClick={() => handleDeleteNotification(notification.id)}
-          >
-            <FaTrash />
-          </button>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 }

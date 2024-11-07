@@ -14,6 +14,11 @@ export default function PostGratitudeMessage() {
   const [textMessage, setTextMessage] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isAbnormal, setIsAbnormal] = useState(false);
+
+  const handleCheckboxChange = (event) => {
+    setIsAbnormal(event.target.checked);
+  };
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -46,10 +51,15 @@ export default function PostGratitudeMessage() {
   };
 
   const handleSubmit = () => {
+    if (!textMessage) {
+      toast.error("The message field is required.");
+      return;
+    }
     const formData = new FormData();
     formData.append("camp_id", requestId);
     formData.append("donor_id", donorId);
     formData.append("message", textMessage);
+    formData.append("abnormal", isAbnormal);
 
     media.forEach((file) => {
       formData.append("media[]", file); // Append all media files
@@ -113,6 +123,14 @@ export default function PostGratitudeMessage() {
         Dear Donors,
       </h5>
       <div className="col-lg-7 col-md-8 col-sm-8 mx-auto mt-4">
+        <div className="d-flex gap-1 mb-2">
+          <input
+            type="checkbox"
+            checked={isAbnormal}
+            onChange={handleCheckboxChange}
+          />
+          <label>abnormal</label>
+        </div>
         <div className="border p-3 rounded shadow-sm bg-white d-flex flex-column">
           <input
             className="col-lg-8 col-md-8 col-sm-8 mb-4"
@@ -175,4 +193,3 @@ export default function PostGratitudeMessage() {
     </div>
   );
 }
- 
