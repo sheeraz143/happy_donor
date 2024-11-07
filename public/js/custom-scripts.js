@@ -473,11 +473,11 @@ jQuery(function ($) {
         if( bg_effect_val === true ) {
            
             $slider_animation.on('translated.owl.carousel',function(e){
-               $(".active .slide-bg").addClass("slidezoom");
+               $(".active .slide-bg").addClass("slidezoom1");
            }); 
 
            $slider_animation.on('translate.owl.carousel',function(e){
-               $(".active .slide-bg").removeClass("slidezoom");
+               $(".active .slide-bg").removeClass("slidezoom1");
            });
         
         }
@@ -1069,7 +1069,7 @@ jQuery(function ($) {
                         nav: false
                     },
                     1000: {
-                        items: items_val
+                        items: 3
                     }
                 }
             });
