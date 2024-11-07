@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import { formatDistanceToNow } from "date-fns";
 import { FaCheck, FaTrash } from "react-icons/fa";
 
-export default function NotificationPage() {
+export default function NotificationPage({ onRefreshNavbar }) {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [refresh, setRefresh] = useState(false);
@@ -27,7 +27,8 @@ export default function NotificationPage() {
         if (res.errors) {
           toast.error(res.errors);
         } else {
-          setData(res.notifications);
+          setData(res?.notifications);
+          onRefreshNavbar();
         }
       })
     ).catch((error) => {
@@ -41,9 +42,9 @@ export default function NotificationPage() {
     dispatch(
       markAllAsRead((response) => {
         if (response.status) {
-          setData(
-            data.map((notification) => ({ ...notification, read: true }))
-          ); // Update local state
+          // setData(
+          //   data.map((notification) => ({ ...notification, read: true }))
+          // ); // Update local state
           toast.success(response.data?.data?.message);
           setRefresh(!refresh);
         } else {
@@ -57,9 +58,9 @@ export default function NotificationPage() {
   const handleDeleteAllNotifications = () => {
     dispatch(
       deleteAllNotifications((response) => {
-        if (response.status) {
-          setData([]); // Clear all notifications from local state
-          toast.success(response.data?.data?.message);
+        if (response.code == 200) {
+          // setData([]); // Clear all notifications from local state
+          toast.success(response.message);
           setRefresh(!refresh);
         } else {
           toast.error(response.message || "Failed to delete all notifications");
@@ -73,7 +74,7 @@ export default function NotificationPage() {
     dispatch(
       deleteNotification(id, (response) => {
         if (response.status) {
-          setData(data.filter((notification) => notification.id !== id)); // Update local state
+          // setData(data.filter((notification) => notification.id !== id)); // Update local state
           toast.success(response.data?.data?.message);
           setRefresh(!refresh);
         } else {

@@ -109,6 +109,9 @@ export default function FundDonation() {
         >
           <option value="">Select</option>
           <option value="HappyDonarTrust">Happy Donar Trust</option>
+          <option value="RecentSeries">Recent Series</option>
+          <option value="Camps/Events">Camps/Events</option>
+          <option value="CSR Contribution">CSR Contribution</option>
         </select>
         {errors.donateFor && (
           <p className="error-message">Donate For is required</p>

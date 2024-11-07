@@ -198,8 +198,10 @@ export default function WriteToUs() {
         >
           <option value="">Select</option>
           <option value="Query">Query</option>
-          <option value="Intermediate">Intermediate</option>
-          <option value="Experienced">Experienced</option>
+          <option value="Feedbacks">Feedbacks</option>
+          <option value="Suggestions">Suggestions</option>
+          <option value="Experience">Experience</option>
+          <option value="Others">Others</option>
         </select>
         {errors.topic && <p className="error-message">Topic is required</p>}
       </div>

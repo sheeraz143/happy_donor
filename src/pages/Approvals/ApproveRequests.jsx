@@ -25,7 +25,7 @@ export default function ApproveRequests() {
   const [refresh, setRefresh] = useState(false);
 
   const openModal = (request_id) => {
-    console.log("request_id: ", request_id);
+    // console.log("request_id: ", request_id);
     setModalIsOpen(true);
     setRequestId(request_id);
   };
@@ -49,8 +49,9 @@ export default function ApproveRequests() {
               if (res.errors) {
                 toast.error(res.errors);
               } else {
-                setRequests(res.requests);
-                setTotalRequests(res.pagination.total);
+                setRequests(res?.requests);
+                console.log('res?.requests: ', res?.requests);
+                setTotalRequests(res?.pagination?.total);
               }
             },
             currentPage,
@@ -123,68 +124,78 @@ export default function ApproveRequests() {
   return (
     <div className="cards-container my-5 mx-5">
       <div className="row">
-        {requests?.map((request) => (
-          <div
-            className="col-lg-4 col-md-6 col-sm-12 mb-4"
-            key={request.request_id}
-          >
-            <div className="card h-100 p-3">
-              {request.is_critical && (
-                <div className="emergency-tag position-absolute">Emergency</div>
-              )}
-              <div className="d-flex mt-3">
-                <img
-                  src={request?.profile_picture || profImg}
-                  alt="Profile"
-                  className="profile_img"
-                />
-                <div className="request-details">
-                  <div className="text-start">
-                    <p className="card-text ">Name: {request.patient_name}</p>
-                    <p className="card-text ">
-                      Attender Name: {request.attender_name}
-                    </p>
-                    <p className="card-text ">
-                      Attender Mobile: {request.attender_mobile_number}
-                    </p>
-                    <p className="card-text ">
-                      Willing to arrange transport:{" "}
-                      {request?.willing_to_arrange_transport == true
-                        ? "Yes"
-                        : "No"}
-                    </p>
-
-                    <p className="card-text ">
-                      Date: {formatDate(request.date)}
-                    </p>
-                    <p className="card-text ">
-                      Units Required: {request.units_required}
-                    </p>
-                    <p className="card-text ">Address: {request.address}</p>
+        {requests?.length === 0 ? (
+          <h4 className="text-center mb-5">No Data Available</h4>
+        ) : (
+          requests?.map((request) => (
+            <div
+              className="col-lg-4 col-md-6 col-sm-12 mb-4"
+              key={request.request_id}
+            >
+              <div className="card h-100 p-3">
+                {request.is_critical && (
+                  <div className="emergency-tag position-absolute">
+                    Emergency
                   </div>
-                </div>
-                {/* <div className="blood-group">
+                )}
+                <div className="d-flex mt-3">
+                  <img
+                    src={request?.profile_picture || profImg}
+                    alt="Profile"
+                    className="profile_img"
+                    onError={(e) => {
+                      e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
+                      e.target.src = profImg; // Set to default image on error
+                    }}
+                  />
+                  <div className="request-details">
+                    <div className="text-start">
+                      <p className="card-text ">Name: {request.patient_name}</p>
+                      <p className="card-text ">
+                        Attender Name: {request.attender_name}
+                      </p>
+                      <p className="card-text ">
+                        Attender Mobile: {request.attender_mobile_number}
+                      </p>
+                      <p className="card-text ">
+                        Willing to arrange transport:{" "}
+                        {request?.willing_to_arrange_transport == true
+                          ? "Yes"
+                          : "No"}
+                      </p>
+
+                      <p className="card-text ">
+                        Date: {formatDate(request.date)}
+                      </p>
+                      <p className="card-text ">
+                        Units Required: {request.units_required}
+                      </p>
+                      <p className="card-text ">Address: {request.address}</p>
+                    </div>
+                  </div>
+                  {/* <div className="blood-group">
                   <img src={bloodGroupImg} alt="Blood Group" />
                 </div> */}
-              </div>
+                </div>
 
-              <div className="d-flex  mt-2 gap-3 ">
-                <button
-                  className="btn btn-danger"
-                  onClick={() => openModal(request.request_id)}
-                >
-                  Reject
-                </button>
-                <button
-                  className="btn btn-success"
-                  onClick={() => handleApprove(request.request_id)}
-                >
-                  Approve
-                </button>
+                <div className="d-flex  mt-2 gap-3 ">
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => openModal(request.request_id)}
+                  >
+                    Reject
+                  </button>
+                  <button
+                    className="btn btn-success"
+                    onClick={() => handleApprove(request.request_id)}
+                  >
+                    Approve
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
         <Pagination
           align="center"
           className="mb-4"

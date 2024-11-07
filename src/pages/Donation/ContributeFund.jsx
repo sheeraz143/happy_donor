@@ -105,16 +105,24 @@
 
 // import React from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useRazorpay } from "react-razorpay";
 import { useEffect, useState } from "react";
 import helper from "../../Helper/axiosHelper";
+import { paymentInitiate, paymentStatus, setLoader } from "../../redux/product";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 export default function ContributeFund() {
   const razorKey = helper.razorPayKey();
   // console.log("razorKey: ", razorKey);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const location = useLocation();
+
+  const eventData = location?.state?.request || {};
+  console.log("eventData: ", eventData);
   const {
     register,
     handleSubmit,
@@ -140,7 +148,6 @@ export default function ContributeFund() {
 
     if (value.startsWith("91")) {
       value = `+91${value.slice(2, 12)}`; // Format as +91 XXXXXXXXXX
-      console.log("value: ", value);
     }
 
     // Limit to 10 digits after +91
@@ -161,40 +168,88 @@ export default function ContributeFund() {
   };
   // Function to handle form submission
   const onSubmit = async (data) => {
-    const options = {
-      key: razorKey, // Replace with your test Key ID
-      amount: data.amount * 100, // Amount in paisa
-      currency: "INR",
-      name: "Happy Donors NGO",
-      description: "Donation",
-      // order_id: "order_9A33XWu170gUtm", // This should come from your server
-      handler: (response) => {
-        console.log("Payment successful", response);
-        alert("Payment Successful!");
-        setLoading(false); // Stop loading
-        navigate("#");
-      },
-      prefill: {
-        name: data.firstName,
-        email: data.email,
-        contact: data.phoneNumber,
-      },
-      modal: {
-        ondismiss: () => {
-          console.log("Payment modal closed");
-          setLoading(false);
-        },
-      },
-      theme: {
-        color: "#3399cc",
-      },
+    const modifiedData = {
+      ...data,
+      event_id: eventData?.id,
     };
 
-    if (Razorpay) {
-      const razorpayInstance = new Razorpay(options);
-      razorpayInstance.open();
-    } else {
-      setLoading(false); // Reset loading if Razorpay is not available
+    dispatch(setLoader(true));
+
+    try {
+      dispatch(
+        paymentInitiate(modifiedData, (res) => {
+          console.log("res: ", res);
+          if (res.code === 201) {
+            const transaction_id = res.transaction_id;
+            // console.log("transaction_id: ", transaction_id);
+            const amountInPaise = Math.max(Math.round(data.amount * 100), 100); // Ensure amount in paise and minimum of ₹1
+
+            const options = {
+              key: razorKey,
+              amount: amountInPaise,
+              currency: "INR",
+              name: "Happy Donors NGO",
+              description: "Donation",
+              order_id: res.order_id,
+              handler: () => {
+                // console.log("response handler: ", response);
+                dispatch(setLoader(true));
+                const paymentStatusData = {
+                  transaction_id,
+                  status: "success",
+                };
+                // console.log("paymentStatusData: ", paymentStatusData);
+                dispatch(
+                  paymentStatus(paymentStatusData, (statusRes) => {
+                    if (statusRes.code === 200) {
+                      toast.success(statusRes.message);
+                      navigate("/bloodcamps");
+                    } else {
+                      toast.error(statusRes.message);
+                    }
+                    dispatch(setLoader(false));
+                  })
+                );
+              },
+              prefill: {
+                name: data.firstName,
+                email: data.email,
+                contact: data.phoneNumber,
+              },
+              modal: {
+                ondismiss: () => {
+                  console.log("Payment modal closed");
+                  setLoading(false);
+                  dispatch(setLoader(false));
+                },
+              },
+              theme: {
+                color: "#3399cc",
+              },
+            };
+
+            if (Razorpay) {
+              try {
+                const razorpayInstance = new Razorpay(options);
+                razorpayInstance.open();
+              } catch (error) {
+                console.error("Razorpay initialization error:", error);
+                toast.error("Something went wrong while initiating payment.");
+                dispatch(setLoader(false));
+              }
+            } else {
+              toast.error("Razorpay SDK is not available");
+              dispatch(setLoader(false));
+            }
+          } else {
+            toast.error(res.message);
+            dispatch(setLoader(false));
+          }
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "Error initiating payment");
+      dispatch(setLoader(false));
     }
   };
 
@@ -212,25 +267,23 @@ export default function ContributeFund() {
         <input
           className="form-input"
           type="text"
-          {...register("firstName", { required: true })}
+          {...register("name", { required: true })}
         />
-        {errors.firstName && (
-          <p className="error-message">First Name is required</p>
-        )}
+        {errors.name && <p className="error-message">First Name is required</p>}
       </div>
 
       <div className="form-group">
         <label>Gender</label>
         <select
           className="form-input"
-          {...register("title", { required: true })}
+          {...register("gender", { required: true })}
         >
           <option value="">Select</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
           <option value="Others">Others</option>
         </select>
-        {errors.title && <p className="error-message">Title is required</p>}
+        {errors.gender && <p className="error-message">Title is required</p>}
       </div>
 
       <div className="form-group">
@@ -268,7 +321,7 @@ export default function ContributeFund() {
           value={phoneNumber} // Use controlled input
           onInput={handleInput}
           onBlur={handleBlur}
-          {...register("phoneNumber", {
+          {...register("contact", {
             required: true,
             pattern: {
               // value: /^(?:\+91[-\s]?)?[0]?[123456789]\d{9}$/,
@@ -277,23 +330,24 @@ export default function ContributeFund() {
             },
           })}
         />
-        {errors.phoneNumber && (
-          <p className="error-message">Valid Phone Number is required</p>
+        {errors.contact && (
+          <p className="error-message">Phone Number is required</p>
         )}
       </div>
 
       <div className="form-group">
         <label>Amount</label>
-        <select
-          className="form-input"
+        <input
           {...register("amount", { required: true })}
-        >
+          className="form-input"
+        />
+        {/* <select className="form-input">
           <option value="">Select</option>
           <option value="1">1 INR</option>
           <option value="500">500 INR</option>
           <option value="1000">1000 INR</option>
           <option value="2000">2000 INR</option>
-        </select>
+        </select> */}
         {errors.amount && <p className="error-message">Amount is required</p>}
       </div>
 

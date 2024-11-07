@@ -121,43 +121,50 @@ export default function ApproveDonors() {
   return (
     <div className="cards-container my-5 mx-5">
       <div className="row">
-        {requests?.map((request) => (
-          <div
-            className="col-lg-4 col-md-6 col-sm-12 mb-4"
-            key={request.request_id}
-          >
-            <div className="card h-100 p-3">
-              {request.is_critical && (
-                <div className="emergency-tag position-absolute">Emergency</div>
-              )}
-              <div className="text-start">
-                <p className="card-text">Name: {request.patient_name}</p>
-                <p className="card-text">
-                  Attender Name: {request.attender_name}
-                </p>
-                <p className="card-text">
-                  Attender Mobile: {request.attender_mobile_number}
-                </p>
+        {requests.length === 0 ? (
+          <h4 className="text-center mb-5">No Data Available</h4>
+        ) : (
+          requests?.map((request) => (
+            <div
+              className="col-lg-4 col-md-6 col-sm-12 mb-4"
+              key={request.request_id}
+            >
+              <div className="card h-100 p-3">
+                {request.is_critical && (
+                  <div className="emergency-tag position-absolute">
+                    Emergency
+                  </div>
+                )}
+                <div className="text-start">
+                  <p className="card-text">Name: {request.patient_name}</p>
+                  <p className="card-text">
+                    Attender Name: {request.attender_name}
+                  </p>
+                  <p className="card-text">
+                    Attender Mobile: {request.attender_mobile_number}
+                  </p>
 
-                <p className="card-text">Date: {formatDate(request.date)}</p>
-              </div>
-              <div className="d-flex  mt-4 gap-3">
-                <button
-                  className="btn btn-danger"
-                  onClick={() => handleSubmit(request)}
-                >
-                  Reject  
-                </button>
-                <button
-                  className="btn btn-success"
-                  onClick={() => handleApprove(request.request_id)}
-                >
-                  Approve
-                </button>
+                  <p className="card-text">Date: {formatDate(request.date)}</p>
+                </div>
+                <div className="d-flex  mt-4 gap-3">
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => handleSubmit(request)}
+                  >
+                    Reject
+                  </button>
+                  <button
+                    className="btn btn-success"
+                    onClick={() => handleApprove(request)}
+                  >
+                    Approve
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
+
         <Pagination
           align="center"
           className="mb-4"
