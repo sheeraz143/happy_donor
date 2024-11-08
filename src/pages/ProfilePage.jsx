@@ -84,7 +84,9 @@ const Profile = () => {
 
   // Function to handle form submission
   const onSubmit = (data) => {
-    // dispatch(setLoader(true)); // Start loading
+    // console.log("data: ", data);
+    // return;
+    dispatch(setLoader(true)); // Start loading
     try {
       const payload = {
         title: data?.title,
@@ -103,6 +105,8 @@ const Profile = () => {
         // availability: data?.availability !== null ? data.availability : false,
         availability: true,
         terms_accepted: data?.terms,
+        aadhar_id: data?.aadhar_id,
+        abhid: data?.abhid,
       };
 
       dispatch(
@@ -319,6 +323,47 @@ const Profile = () => {
         />
         {errors.lastDonationDate && (
           <p className="error-message">Last Donation Date is required</p>
+        )}
+      </div>
+
+      {/* Aadhar Number */}
+      <div className="form-group">
+        <label>Aadhar ID </label>
+        <input
+          className="form-input"
+          type="text"
+          inputMode="numeric"
+          maxLength="16"
+          {...register("aadhar_id", {
+            required: false,
+            pattern: {
+              value: /^\d{16}$/,
+              message: "Aadhar Number must be exactly 16 digits",
+            },
+          })}
+        />
+        {errors.aadhar_id && (
+          <p className="error-message">{errors.aadhar_id.message}</p>
+        )}
+      </div>
+      {/* Aadhar Number */}
+      <div className="form-group">
+        <label>Abha ID </label>
+        <input
+          className="form-input"
+          type="text"
+          inputMode="numeric"
+          maxLength="14"
+          {...register("abhid", {
+            required: false,
+            pattern: {
+              value: /^\d{14}$/,
+              message: "Abha Number must be exactly 14 digits",
+            },
+          })}
+        />
+        {errors.abhid && (
+          <p className="error-message">{errors.abhid.message}</p>
         )}
       </div>
 

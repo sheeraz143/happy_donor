@@ -16,11 +16,13 @@ const LoginOrg = ({ onRefreshNavbar }) => {
   // const [isOrganizationLogin, setIsOrganizationLogin] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fcmToken, setFcmToken] = useState("");
   const [showPassword, setShowPassword] = useState(false); // State for password visibility
 
   useEffect(() => {
     const auth = localStorage.getItem("oAuth");
-
+    const token = localStorage.getItem("fcmToken");
+    setFcmToken(token);
     if (auth) {
       navigate("/home");
     } else {
@@ -55,6 +57,7 @@ const LoginOrg = ({ onRefreshNavbar }) => {
     const orgData = {
       email,
       password,
+      fcmToken,
     };
     try {
       dispatch(

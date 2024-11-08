@@ -57,6 +57,7 @@ function Navbar({ refreshNavbar }) {
   }, [location.pathname]);
 
   useEffect(() => {
+    console.log("Navbar useEffect triggered! Refreshing notifications..."); 
     dispatch(setLoader(true));
     dispatch(
       ViewNotifications((res) => {
@@ -71,7 +72,7 @@ function Navbar({ refreshNavbar }) {
       toast.error(error.message || "Error fetching notifications");
       dispatch(setLoader(false));
     });
-  }, [dispatch, refreshNavbar]);
+  }, [refreshNavbar]);
 
   const handleNavigation = (path) => {
     console.log("path: ", path);
