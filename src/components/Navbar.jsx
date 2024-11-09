@@ -149,10 +149,10 @@ function Navbar({ refreshNavbar }) {
         <NavLink
           to="/bloodrequest"
           className={activeLink === "/bloodrequest" ? "active" : "inactive"}
-          onClick={(e) => {
-            e.preventDefault();
-            handleNavigation(userType == 4 || userType == 5 ? "/camps/list" : "/bloodrequest");
-          }}
+          // onClick={(e) => {
+          //   e.preventDefault();
+          //   handleNavigation(userType == 4 || userType == 5 ? "/camps/list" : "/bloodrequest");
+          // }}
         >
           Request
         </NavLink>
