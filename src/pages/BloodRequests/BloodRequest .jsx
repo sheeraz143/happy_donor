@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import "../../css/BloodRequest.css";
-import bloodGroupImg from "../../assets/bloodgroup.png";
+// import bloodGroupImg from "../../assets/bloodgroup.png";
 import profPicImg from "../../assets/prof_img.png";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
@@ -163,11 +163,19 @@ const BloodRequest = () => {
         </div>
         {isOpen && (
           <div className="blood-group text-start">
-            <img
+            {/* <img
               src={bloodGroupImg}
               alt="Blood Group"
               onClick={(event) => openModal(request, event)}
-            />
+            /> */}
+            <h3
+              className="blood-group"
+              style={{ color: "red" }}
+              onClick={(event) => openModal(request, event)}
+            >
+              {request.blood_group || "Unknown"}
+            </h3>{" "}
+            {/* Show blood group text */}
           </div>
         )}
       </div>

@@ -65,7 +65,8 @@ function Navbar({ refreshNavbar }) {
         if (res.errors) {
           toast.error(res.errors);
         } else {
-          setCount(res.pagination?.total);
+          setCount(res?.total);
+          console.log('res: ', res);
         }
       })
     ).catch((error) => {
@@ -148,10 +149,10 @@ function Navbar({ refreshNavbar }) {
         <NavLink
           to="/bloodrequest"
           className={activeLink === "/bloodrequest" ? "active" : "inactive"}
-          // onClick={(e) => {
-          //   e.preventDefault();
-          //   handleNavigation(userType == 5 ? "/camps/list" : "/bloodrequest");
-          // }}
+          onClick={(e) => {
+            e.preventDefault();
+            handleNavigation(userType == 4 || userType == 5 ? "/camps/list" : "/bloodrequest");
+          }}
         >
           Request
         </NavLink>

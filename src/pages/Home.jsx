@@ -8,12 +8,17 @@ import donateblood from "../assets/donateblood.png";
 import medicalcamps from "../assets/medicalcamps.png";
 import funddonation from "../assets/funddonation.png";
 import sos from "../assets/sos.png";
-import bloodGroupImg from "../assets/bloodimage.png";
+// import bloodGroupImg from "../assets/bloodimage.png";
 import profPicImg from "../assets/profpic.png";
 import shareIcon from "../assets/Share.png";
 import locationIcon from "../assets/Mappoint.png";
 import { Link, useNavigate } from "react-router-dom";
-import { dashboardData, sendSOS, setLoader } from "../redux/product";
+import {
+  dashboardData,
+  DonateAccept,
+  sendSOS,
+  setLoader,
+} from "../redux/product";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -25,6 +30,7 @@ function Home() {
   const [banners, setBanners] = useState([]);
   const [recentBloodRequest, setRecentBloodRequest] = useState([]);
   const [coordinates, setCoordinates] = useState({ lat: null, lon: null });
+  const [refresh, setRefresh] = useState(false);
 
   const isProfileUpdate = localStorage.getItem("is_profile_update");
   const storedUserType = localStorage.getItem("user_type");
@@ -55,7 +61,7 @@ function Home() {
       toast.error(error);
       dispatch(setLoader(false));
     }
-  }, [dispatch]);
+  }, [dispatch, refresh]);
 
   useEffect(() => {
     // Function to get the user's current position
@@ -108,6 +114,30 @@ function Home() {
     }
   };
 
+  const handleCardClick = (request) => {
+    console.log("request: ", request);
+    // navigate(`/request/${request?.request_id}`, { state: { request } });
+
+    dispatch(setLoader(true));
+
+    try {
+      dispatch(
+        DonateAccept(request?.id, (res) => {
+          if (res.code === 200) {
+            toast.success(res.message);
+            setRefresh(!refresh);
+          } else {
+            toast.error(res.message);
+          }
+          dispatch(setLoader(false));
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "An unexpected error occurred.");
+      dispatch(setLoader(false));
+    }
+  };
+
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -119,10 +149,16 @@ function Home() {
   };
 
   const handleNavigation = (path) => {
+    console.log('path: ', path);
+    console.log('isProfileUpdate: ', isProfileUpdate);
     if (isProfileUpdate == 0) {
       if (path === "/request") {
         navigate("/profile");
         toast.error("Please update your profile to see requests");
+      }
+      if (path === "/bloodcamps") {
+        navigate("/profile");
+        toast.error("Please update your profile to see Camps");
       }
       if (path === "/donate") {
         navigate("/profile");
@@ -151,8 +187,8 @@ function Home() {
           </div>
           <div className="request-details ms-3">
             <div className="request-date text-start">
-              Attender: {request?.attender_first_name}{" "}
-              {request?.attender_last_name}
+              Attender: {request?.username}{" "}
+              {/* {request?.attender_last_name} */}
             </div>
             <div className="request-units text-start">
               Units Required: {request?.quantity_units}
@@ -160,12 +196,26 @@ function Home() {
             <div className="request-address text-start">
               Address: {request?.delivery_address}
             </div>
+            <label>Phone Number: </label>
+            <Link
+              to="#"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href = `tel:${request?.phone_number}`;
+              }}
+            >
+              {request?.phone_number}
+            </Link>
           </div>
           <div className="blood-group ms-auto">
-            <img
+            {/* <img
               src={request.bloodGroupImage || bloodGroupImg}
               alt="Blood Group"
-            />
+            /> */}
+            <h3 className="blood-group" style={{ color: "red" }}>
+              {request.blood_group || "Unknown"}
+            </h3>{" "}
+            {/* Show blood group text */}
           </div>
         </div>
 
@@ -186,13 +236,22 @@ function Home() {
               <img src={locationIcon} alt="Location" className="icon-img" />
             </Link>
           </div>
-          <button
+          {/* <button
             className="accepted-donors-btn btn btn-primary"
             onClick={() => {
               navigate(`/request/${request.id}`, { state: { request } });
             }}
           >
             Accept
+          </button> */}
+          <button
+            className={`accepted-donors-btn btn ${
+              request?.is_accepted ? "btn-secondary" : "btn-primary"
+            }`}
+            onClick={() => handleCardClick(request)}
+            disabled={request?.is_accepted}
+          >
+            {request?.is_accepted ? "Accepted" : "Accept"}
           </button>
         </div>
       </div>
@@ -229,7 +288,7 @@ function Home() {
           <img src={requestblood} alt="Request Blood" />
           <p style={{ color: "green" }}>Request For Blood</p>
         </div>
-        {storedUserType == 5 ? (
+        {storedUserType == 4 || storedUserType == 5 ? (
           ""
         ) : (
           <div
@@ -244,7 +303,8 @@ function Home() {
 
         <div
           className="card"
-          onClick={() => navigate("/bloodcamps")}
+          // onClick={() => navigate("/bloodcamps")}
+          onClick={() => handleNavigation("/bloodcamps")}
           style={{ cursor: "pointer" }}
         >
           <img src={medicalcamps} alt="Blood-Medical Camps/Events" />
@@ -258,7 +318,7 @@ function Home() {
           <img src={funddonation} alt="Fund Donation" />
           <p style={{ color: "green" }}>Fund Donation</p>
         </div>
-        {storedUserType == 5 ? (
+        {storedUserType == 4 || storedUserType == 5 ? (
           ""
         ) : (
           <div className="card cursor-pointer" onClick={() => handleSubmit()}>
@@ -269,7 +329,7 @@ function Home() {
       </div>
       {/* Recent Blood Requests Section */}
 
-      {storedUserType == 5 ? (
+      {storedUserType == 4 || storedUserType == 5 ? (
         ""
       ) : (
         <>

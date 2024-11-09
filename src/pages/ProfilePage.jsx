@@ -100,8 +100,8 @@ const Profile = () => {
         address: data?.address,
         location: data?.location,
         last_blood_donation_date: data?.lastDonationDate,
-        lat: "93.1232",
-        lon: "92.32323",
+        lat: data?.lat,
+        lon: data?.lon,
         // availability: data?.availability !== null ? data.availability : false,
         availability: true,
         terms_accepted: data?.terms,
@@ -133,7 +133,7 @@ const Profile = () => {
   return (
     <form className="form-container" onSubmit={handleSubmit(onSubmit)}>
       {/* Title */}
-      <div className="d-flex align-items-center justify-content-around">
+      <div className="d-flex align-items-center justify-content-between">
         <h3>Complete profile</h3>
         <Link to="/home" className="skip">
           Skip
@@ -388,8 +388,8 @@ const Profile = () => {
           className="form-checkbox"
         />
         <label>
-          I have read and agree to the <Link to="/terms">terms of service</Link>
-          and <Link to="/privacypolicy">privacy policy</Link>
+          I have read and agree to the <Link to="/terms"target="_blank" >terms of service</Link>
+          and <Link to="/privacypolicy" target="_blank">privacy policy</Link>
         </label>
         {errors.terms && (
           <p className="error-message">You must agree to the terms</p>

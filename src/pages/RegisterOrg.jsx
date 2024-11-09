@@ -414,11 +414,10 @@ const RegisterOrg = () => {
               {...register("terms", { required: true })}
               className="form-checkbox"
             />
-            <label>
-              I have read and agree to the{" "}
-              <Link to="/terms">terms of service</Link>
-              and <Link to="/privacypolicy">privacy policy</Link>
-            </label>
+             <label>
+          I have read and agree to the <Link to="/terms"target="_blank" >terms of service</Link>
+          and <Link to="/privacypolicy" target="_blank">privacy policy</Link>
+        </label>
             {errors.terms && (
               <p className="error-message">You must agree to the terms</p>
             )}

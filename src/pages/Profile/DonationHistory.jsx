@@ -1,6 +1,6 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import bloodGroupImage from "../../assets/bloodimage.png";
+// import bloodGroupImage from "../../assets/bloodimage.png";
 // import profilePic from "../../assets/profpic.png";
 // import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
@@ -87,7 +87,9 @@ function DonationHistory() {
           </div>
         </div>
         <div className="blood-group ms-auto">
-          <img src={bloodGroupImage} alt="Blood Group" />
+          {/* <img src={bloodGroupImage} alt="Blood Group" /> */}
+          <h3 className="blood-group" style={{color:"red"}}>{request.blood_group || ''}</h3> {/* Show blood group text */}
+
         </div>
       </div>
 
