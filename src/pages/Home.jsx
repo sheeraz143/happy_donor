@@ -151,23 +151,28 @@ function Home() {
   const handleNavigation = (path) => {
     console.log('path: ', path);
     console.log('isProfileUpdate: ', isProfileUpdate);
+    console.log('userType: ', storedUserType);
+  
     if (isProfileUpdate == 0) {
-      if (path === "/request") {
-        navigate("/profile");
-        toast.error("Please update your profile to see requests");
-      }
-      if (path === "/bloodcamps") {
-        navigate("/profile");
-        toast.error("Please update your profile to see Camps");
-      }
-      if (path === "/donate") {
-        navigate("/profile");
-        toast.error("Please update your profile to donation list");
+      if (storedUserType == 4 || storedUserType == 5) {
+        navigate(path);
+      } else {
+        if (path === "/request") {
+          navigate("/profile");
+          toast.error("Please update your profile to see requests");
+        } else if (path === "/bloodcamps") {
+          navigate("/profile");
+          toast.error("Please update your profile to see Camps");
+        } else if (path === "/donate") {
+          navigate("/profile");
+          toast.error("Please update your profile to see donation list");
+        }
       }
     } else {
       navigate(path);
     }
   };
+  
 
   const renderRequestCard = (request) => {
     return (
@@ -213,7 +218,7 @@ function Home() {
               alt="Blood Group"
             /> */}
             <h3 className="blood-group" style={{ color: "red" }}>
-              {request.blood_group || "Unknown"}
+              {request.blood_group || ""}
             </h3>{" "}
             {/* Show blood group text */}
           </div>
