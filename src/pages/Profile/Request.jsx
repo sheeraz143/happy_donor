@@ -28,15 +28,8 @@ function Request() {
     handleSubmit,
     setValue,
     formState: { errors },
+    trigger,
   } = useForm();
-
-  // const handlePlaceSelected = (place) => {
-  //   if (place.geometry) {
-  //     setValue("location", place.formatted_address);
-  //     setValue("lat", place.geometry.location.lat());
-  //     setValue("lon", place.geometry.location.lng());
-  //   }
-  // };
 
   const handleChange = (e) => {
     let value = e.target.value;
@@ -251,9 +244,16 @@ function Request() {
           onPlaceSelected={(place) => {
             console.log(place);
             if (place.geometry) {
-              setValue("address", place.formatted_address);
-              setValue("lat", String(place.geometry.location.lat())); // Convert to string
-              setValue("lon", String(place.geometry.location.lng())); // Convert to string
+              setValue("address", place.formatted_address, {
+                shouldValidate: true,
+              });
+              setValue("lat", String(place.geometry.location.lat()), {
+                shouldValidate: true,
+              });
+              setValue("lon", String(place.geometry.location.lng()), {
+                shouldValidate: true,
+              });
+              trigger(["address", "lat", "lon"]); // Manually trigger validation for these fields
             }
           }}
           className="form-input"

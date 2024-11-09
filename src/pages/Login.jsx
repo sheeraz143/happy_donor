@@ -17,9 +17,10 @@ const LoginComponent = () => {
     if (auth) {
       navigate("/home");
     } else {
-      navigate("/login"); 
+      navigate("/login");
     }
   }, []);
+
   const handleChange = (e) => {
     let value = e.target.value;
     // If the input value doesn't start with +91, add it
@@ -69,7 +70,7 @@ const LoginComponent = () => {
     <div className="container">
       <img src={logo} alt="Happy Donors" className="donar-logo" />
       <h2 className="welcomeText">Welcome Back! Saving Lives Starts Here</h2>
-      {/* Phone Number Input */}
+
       <div className="inputContainer">
         <span className="icon">📞</span>
         <input
@@ -78,10 +79,10 @@ const LoginComponent = () => {
           value={inputValue}
           onChange={handleChange}
           placeholder="Enter up to 10 digits"
+          style={{ margin: "0", border: "unset", padding: "0" }}
         />
       </div>
 
-      {/* Get OTP Button */}
       <button className="button" onClick={onSubmit}>
         Get OTP
       </button>

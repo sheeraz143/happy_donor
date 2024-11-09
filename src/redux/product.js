@@ -19,34 +19,6 @@ export const { setLoader } = counterSlice.actions;
 
 export default counterSlice.reducer;
 
-// export const updateProfile =
-//   (data, callback = () => {}) =>
-//   async () => {
-//     try {
-//       var result = await Helper.patchData(
-//         baseUrl + "app/profile/update",
-
-//         data
-//       )
-//         .then((response) => {
-//           if (response.data) {
-//             return response.data;
-//           } else {
-//             return {
-//               status: false,
-//               code: 401,
-//               message:
-//                 response.response.data.message + " Please login and proceed",
-//             };
-//           }
-//         })
-//         .catch((err) => err);
-//       callback(result);
-//     } catch (err) {
-//       console.log("err: ", err);
-//     }
-//   };
-
 export const requestOTP =
   (data, callback = () => {}) =>
   async () => {
@@ -74,35 +46,11 @@ export const requestOTP =
     }
   };
 
-// export const verifytOTP =
-//   (data, callback = () => {}) =>
-//   async () => {
-//     try {
-//       const response = await Helper.postData(baseUrl + "auth/verify-otp", data);
-//       console.log("response: ", response);
-
-//       const result = {
-//         ...response.data.response.message,
-//         code: response.status,
-//       };
-
-//       callback(result);
-//     } catch (err) {
-//       console.error("Update profile error: ", err);
-//       callback({
-//         status: false,
-//         code: err.response?.status || 500,
-//         message: err.response?.data?.message || "An unexpected error occurred.",
-//       });
-//     }
-//   };
-
 export const verifytOTP =
   (data, callback = () => {}) =>
   async () => {
     try {
       const response = await Helper.postData(baseUrl + "auth/verify-otp", data);
-      console.log("response: ", response);
 
       const result = {
         ...response.data,
@@ -131,65 +79,39 @@ export const verifytOTP =
       });
     }
   };
+export const OrgLogin =
+  (data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postDataOrg(baseUrl + "auth/login", data);
 
-// export const updateProfile =
-//   (data, callback = () => {}) =>
-//   async () => {
-//     try {
-//       const response = await Helper.patchData(
-//         baseUrl + "app/profile/update",
-//         data
-//       );
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback({
+          status: true,
+          code: response.status,
+          data: response.data,
+        });
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.response.status,
+          message: response.response.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Verify OTP error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message:
+          err.response?.response?.data?.message ||
+          "An unexpected error occurred.",
+      });
+    }
+  };
 
-//       const result = {
-//         ...response.data,
-//         code: response.status,
-//       };
-
-//       callback(result);
-//     } catch (err) {
-//       console.error("Update profile error: ", err);
-//       callback({
-//         status: false,
-//         code: err.response?.status || 500, // Default to 500 if status is not available
-//         message: err.response?.data?.message || "An unexpected error occurred.",
-//       });
-//     }
-//   };
-
-// export const updateProfile =
-//   (data, callback = () => {}) =>
-//   async () => {
-//     try {
-//       const response = await Helper.patchData(
-//         baseUrl + "app/profile/update",
-//         data
-//       );
-//       const result = {
-//         ...response.data,
-//         code: response.status,
-//       };
-
-//       // If response is 200, send the data
-//       if (response.status === 200) {
-//         callback(result);
-//       } else {
-//         // If not 200, send an error message
-//         callback({
-//           status: false,
-//           code: response.status,
-//           message: response?.response?.data.errors,
-//         });
-//       }
-//     } catch (err) {
-//       console.error("Update profile error: ", err);
-//       callback({
-//         status: false,
-//         code: err.response?.status || 500,
-//         message: err.response?.data?.message || "An unexpected error occurred.",
-//       });
-//     }
-//   };
 export const updateProfile =
   (data, callback = () => {}) =>
   async () => {
@@ -197,6 +119,99 @@ export const updateProfile =
       const response = await Helper.patchData(
         baseUrl + "app/profile/update",
         data
+      );
+
+      // Handle success response
+      if (response.status === 200) {
+        callback({
+          status: true,
+          code: response.status,
+          data: response.data.user,
+          message: response.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+
+      // Check if err.response exists to avoid accessing undefined
+      if (err.response && err.response.data && err.response.data.errors) {
+        // Extract the first error message for each field
+        const errorMessages = Object.entries(err.response.data.errors).map(
+          ([field, messages]) => `${field}: ${messages[0]}`
+        );
+
+        callback({
+          status: false,
+          code: err.response.status,
+          message: errorMessages.length
+            ? errorMessages.join(", ") // Join messages for display
+            : "An unexpected error occurred.",
+        });
+      } else {
+        // Handle unexpected errors
+        callback({
+          status: false,
+          code: err.response?.status || 500,
+          message:
+            err.response?.data?.message || "An unexpected error occurred.",
+        });
+      }
+    }
+  };
+
+export const registerOrg =
+  (data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(
+        baseUrl + `auth/register-organization`,
+        data
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+      console.log("result: ", result);
+
+      // If response is 200, send the data
+      if (response.status === 201) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message || "An error occurred.",
+          error: response?.response?.data.errors,
+        });
+      }
+    } catch (err) {
+      console.error("Request failed: ", err);
+
+      let errorMessage = "An unexpected error occurred.";
+      if (err.response) {
+        if (err.response.status === 422) {
+          errorMessage = err.response.data.message || "Validation error.";
+        } else {
+          errorMessage = err.response.data.message || errorMessage;
+        }
+      }
+
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: errorMessage,
+      });
+    }
+  };
+
+export const toggleAvailability =
+  (callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.patchData(
+        baseUrl + "app/profile/availability"
       );
 
       // const result = {
@@ -336,6 +351,41 @@ export const requestBlood =
     }
   };
 
+export const CreateCamp =
+  (data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.formData(
+        baseUrl + "app/blood-camps/create",
+        data
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 201) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+
 export const donateBloods =
   (type, callback = () => {}) =>
   async () => {
@@ -360,6 +410,39 @@ export const donateBloods =
     }
   };
 
+export const CampsLists =
+  (type, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(
+        baseUrl + `app/blood-camps/${type}`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
 export const donateApprove =
   (type, callback = () => {}) =>
   async () => {
@@ -406,6 +489,58 @@ export const BloodDonateList =
       });
     }
   };
+export const CampsList =
+  (type, callback = () => {}) =>
+  async () => {
+    try {
+      var url;
+      if (type == "matched") {
+        url = baseUrl + `app/blood-camps/matched`;
+      } else {
+        url = baseUrl + `app/events/matched`;
+      }
+      const response = await Helper.getData(url);
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      callback(result);
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+// export const CampsList =
+//   (type, callback = () => {}) =>
+//   async () => {
+//     try {
+//       const url =
+//         type === "matched"
+//           ? `${baseUrl}/app/blood-camps/matched`
+//           : `${baseUrl}/app/events/matched`;
+//       const response = await Helper.get(url);
+
+//       const result = {
+//         ...response.data,
+//         code: response.status,
+//       };
+
+//       callback(result);
+//     } catch (err) {
+//       console.error("Update profile error: ", err);
+//       callback({
+//         status: false,
+//         code: err.response?.status || 500,
+//         message: err.response?.data?.message || "An unexpected error occurred.",
+//       });
+//     }
+//   };
 
 export const AcceptedDonors =
   (id, callback = () => {}) =>
@@ -431,6 +566,71 @@ export const AcceptedDonors =
     }
   };
 
+export const AcceptedCamps =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(
+        baseUrl + `app/blood-camps/${id}/accepted-donors`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const MarkCampDonated =
+  (data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(
+        baseUrl + `app/blood-camps/confirm-donation`,
+        data
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
 export const MarkDonated =
   (data, callback = () => {}) =>
   async () => {
@@ -499,7 +699,107 @@ export const DonateAccept =
       });
     }
   };
+export const DonateAcceptCamp =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(
+        baseUrl + `app/blood-camps/${id}/accept`
+      );
 
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const ParticipateAccept =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(
+        baseUrl + `app/events/${id}/participate`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+
+export const CancelCamp =
+  (id, data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(
+        baseUrl + `app/blood-camps/${id}/cancel`,
+        data
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
 export const CancelBloodRequest =
   (id, data, callback = () => {}) =>
   async () => {
@@ -535,6 +835,40 @@ export const CancelBloodRequest =
     }
   };
 
+export const CancelBloodCamp =
+  (id, data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(
+        baseUrl + `app/blood-camps/${id}/cancel`,
+        data
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
 export const SendGratitudeMessage =
   (data, callback = () => {}) =>
   async () => {
@@ -560,6 +894,41 @@ export const SendGratitudeMessage =
     }
   };
 
+export const SendGratitudeCampMessage =
+  (data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.formData(
+        baseUrl + `app/blood-camps/gratitude`,
+        data
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+
 export const ViewBloodRequest =
   (id, callback = () => {}) =>
   async () => {
@@ -574,6 +943,223 @@ export const ViewBloodRequest =
       };
 
       callback(result);
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+
+export const ViewCampsRequest =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(
+        baseUrl + `app/blood-camps/matched/${id}/view`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const ViewNotifications =
+  (callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(baseUrl + `app/notifications`);
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const deleteAllNotifications =
+  (callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.deleteDataNew(
+        baseUrl + `app/notifications`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+// Define markAllAsRead function
+export const markAllAsRead =
+  (callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.putData(
+        baseUrl + `app/notifications/mark-all-as-read`
+      );
+      const result = {
+        code: response.status,
+        data: response.data,
+      };
+
+      if (response.status === 200) {
+        callback({ status: true, data: result });
+      } else {
+        callback({ status: false, message: response.data.message });
+      }
+    } catch (err) {
+      console.error("Mark all as read error: ", err);
+      callback({
+        status: false,
+        message: err.response?.data?.message || "An error occurred.",
+      });
+    }
+  };
+
+// Define deleteNotification function
+export const deleteNotification =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.deleteDataNew(
+        baseUrl + `app/notifications/${id}`
+      );
+      const result = {
+        code: response.status,
+        data: response.data,
+      };
+
+      if (response.status === 200) {
+        callback({ status: true, data: result });
+      } else {
+        callback({ status: false, message: response.response.data.message });
+      }
+    } catch (err) {
+      console.error("Delete notification error: ", err);
+      callback({
+        status: false,
+        message: err.response?.data?.message || "An error occurred.",
+      });
+    }
+  };
+
+export const ViewSinglecamp =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(
+        baseUrl + `app/blood-camps/${id}/view`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const ViewEventRequest =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(
+        baseUrl + `app/events/matched/${id}/view`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
     } catch (err) {
       console.error("Update profile error: ", err);
       callback({
@@ -710,6 +1296,229 @@ export const DonateHistory =
           status: false,
           code: response.status,
           message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const writeToUs =
+  (data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(baseUrl + `app/submissions`, data);
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 201) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.data.message,
+        });
+      }
+    } catch (err) {
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const addEmergency =
+  (data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(
+        baseUrl + `app/emergency-contacts`,
+        data
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 201) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.data.message,
+        });
+      }
+    } catch (err) {
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+
+export const updateEmergency =
+  (data, id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.patchData(
+        baseUrl + `app/emergency-contacts/${id}`,
+        data
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 201) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.data.message,
+        });
+      }
+    } catch (err) {
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const sendSOS =
+  (data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(baseUrl + `app/send-sos`, data);
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.data.message,
+        });
+      }
+    } catch (err) {
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const paymentInitiate =
+  (data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(
+        baseUrl + `app/payment/initiate`,
+        data
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 201) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.data.message,
+        });
+      }
+    } catch (err) {
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const paymentStatus =
+  (data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(
+        baseUrl + `app/payment/update-status`,
+        data
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.data.message,
+        });
+      }
+    } catch (err) {
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const viewEmergency =
+  (callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(baseUrl + `app/emergency-contacts`);
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.data.message,
         });
       }
     } catch (err) {

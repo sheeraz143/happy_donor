@@ -1,0 +1,121 @@
+.card-component {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #ffffff;
+  margin: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.card-component:hover {
+  transform: translateY(-5px);
+}
+
+.card-content {
+  display: flex;
+  align-items: center;
+}
+
+.card-icon {
+  font-size: 2rem;
+  margin-right: 15px;
+}
+
+.card-details {
+  text-align: left;
+}
+
+.card-title {
+  font-size: 1rem;
+  color: #555555;
+  margin: 0;
+}
+
+.card-count {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.card-arrow {
+  font-size: 1.5rem;
+  color: #555555;
+}
+
+/* Additional styling for specific cards */
+.total-request {
+  border-left: 5px solid #3b82f6;
+}
+
+.pending {
+  border-left: 5px solid #f59e0b;
+}
+
+.approved {
+  border-left: 5px solid #10b981;
+}
+
+.completed {
+  border-left: 5px solid #3b82f6;
+}
+
+.total-donors {
+  border-left: 5px solid #3b82f6;
+}
+
+.total-blood-banks {
+  border-left: 5px solid #10b981;
+}
+
+.total-organisations {
+  border-left: 5px solid #3b82f6;
+}
+
+.change-request {
+  border-left: 5px solid #f59e0b;
+}
+
+.total-pending {
+  border-left: 5px solid #f59e0b;
+}
+
+.total-approved {
+  border-left: 5px solid #ef4444;
+}
+
+.dashboard {
+  /* display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #f9fafb; */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+  justify-content: space-between;
+
+  padding: 20px;
+  background-color: #f9fafb;
+}
+
+.card-component {
+  flex: 1 1 calc(33% - 20px);
+  margin: 10px;
+}
+
+@media (max-width: 768px) {
+  .card-component {
+    flex: 1 1 calc(50% - 20px);
+  }
+}
+
+@media (max-width: 480px) {
+  .card-component {
+    flex: 1 1 100%;
+  }
+}

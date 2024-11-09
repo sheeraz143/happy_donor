@@ -78,20 +78,20 @@ export default function ConfirmDonation() {
   };
   return (
     <div className="d-flex flex-column">
-      <h2>Confirm Donation</h2>
+      <h2 className="text-center">Confirm Donation</h2>
       <div
         className="card col-lg-8 col-md-8  col-sm-8 mx-auto align-items-start mt-5 mb-5 gap-3"
         style={{ color: "#097E14" }}
       >
-        <div className="">Name: {data?.name}</div>
-        <div>Request ID:{data?.request_id}</div>
+        <div className="">{data?.name}</div>
+     
         <div>Blood Type:{data?.blood_group}</div>
         <div>Quantity Needed: {data?.units_required}</div>
         <div>Location: {data?.location}</div>
         <div>Donation Date:{data?.date}</div>
         <div>Quantity Donated: {data?.units_required}</div>
       </div>
-      <h5 style={{ color: "blue" }}>
+      <h5 style={{ color: "blue" }} className="text-center">
         Please confirm that the donation for this request has been fulfilled
       </h5>
 

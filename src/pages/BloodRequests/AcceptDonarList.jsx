@@ -7,6 +7,7 @@ import Modal from "react-modal";
 import "../../css/BloodRequest.css";
 import bloodGroupImg from "../../assets/bloodimage.png";
 import profPicImg from "../../assets/prof_img.png";
+import { formatDate } from "../../utils/dateUtils";
 
 const AcceptDonorList = () => {
   const navigate = useNavigate();
@@ -49,7 +50,6 @@ const AcceptDonorList = () => {
   };
 
   const openModal = (donor) => {
-    console.log("donor: ", donor);
     setSelectedDonor(donor);
     setModalIsOpen(true);
   };
@@ -64,8 +64,6 @@ const AcceptDonorList = () => {
   };
 
   const renderRequestCard = (donor) => {
-    console.log("donor: ", donor);
-
     return (
       <div className="request-card" key={donor.donor_id}>
         <div className="request-header">
@@ -86,14 +84,19 @@ const AcceptDonorList = () => {
             />
           </div>
           <div className="request-details">
-            <div className="request-id text-start">
-              Name: {donor.donor_name}
+            <div className="request-date text-start">{donor.patient_name}</div>
+            <div className="request-units text-start">
+              {formatDate(donor.date)}
             </div>
             <div className="request-date text-start">
-              Patient Name: {donor.patient_name}
+              {donor?.address}
             </div>
-            {/* <div className="request-address">Address: {donor.address}</div> */}
-            <div className="request-units text-start">Date: {donor.date}</div>
+            <div
+              className="request-date text-start"
+              style={{ color: "#0750b1" }}
+            >
+              {donor.donation_status}
+            </div>
           </div>
           <div className="blood-group">
             <img src={bloodGroupImg} alt="Blood Group" />
@@ -162,7 +165,7 @@ const AcceptDonorList = () => {
 
   return (
     <>
-      <h3 className="mt-3">Accepted Donors</h3>
+      <h3 className="mt-3 text-center">Accepted Donors</h3>
       <div className="blood-request-container">
         <div className="requests mb-5 mt-5">
           {donors.length > 0 ? (
@@ -172,7 +175,6 @@ const AcceptDonorList = () => {
           )}
         </div>
       </div>
-
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -185,6 +187,30 @@ const AcceptDonorList = () => {
           <div className="d-flex flex-column align-items-center ">
             <h2>Gratitude Message</h2>
             <p>{selectedDonor.gratitude_msg}</p>
+
+            {selectedDonor.media_type === "video" && (
+              <video width="320" height="240" controls className="mb-4">
+                <source src={selectedDonor.media} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            )}
+
+            {selectedDonor.media_type === "image" && (
+              <img
+                src={selectedDonor.media}
+                alt="Gratitude"
+                className="img-fluid rounded mb-4"
+                style={{ maxWidth: "100%", height: "150px" }}
+              />
+            )}
+
+            {selectedDonor.media_type === "audio" && (
+              <audio controls className="mb-4">
+                <source src={selectedDonor.media} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+            )}
+
             <button onClick={closeModal} className="btn btn-primary">
               Close
             </button>

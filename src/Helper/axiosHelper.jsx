@@ -1,10 +1,21 @@
 import axios from "axios";
 
 const helper = {
+  
   baseUrl: function () {
     const URL = "https://happy-donors.devdemo.tech/api/";
 
     return URL;
+  },
+  razorPayKey: function () {
+    const key = "rzp_test_1DP5mmOlF5G5ag";
+
+    return key;
+  },
+  googleMapsApiKey: function () {
+    const apiKey = "AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0";
+
+    return apiKey;
   },
 
   // token:
@@ -15,6 +26,23 @@ const helper = {
         "Content-Type": "application/json;charset=UTF-8",
         Authorization: localStorage.getItem("oAuth"),
         // Authorization: `Bearer ${this.token}`,
+      },
+    };
+
+    return await axios
+      .post(url, data, axiosConfig)
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        return err;
+      });
+  },
+  postDataOrg: async function (url, data) {
+    let axiosConfig = {
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        // Authorization: localStorage.getItem("oAuth"),
       },
     };
 

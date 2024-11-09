@@ -123,9 +123,9 @@
 
 .footer-bottom {
   text-align: center;
-  border-top: 1px solid #fff;
+  /* border-top: 1px solid #fff;
   padding-top: 20px;
-  margin-top: 20px;
+  margin-top: 20px; */
 }
 
 .footer-section ul {

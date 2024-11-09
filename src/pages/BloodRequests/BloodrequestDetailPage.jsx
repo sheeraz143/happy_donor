@@ -3,6 +3,7 @@ import "../../css/BloodrequestDetailPage.css";
 import { useNavigate, useParams } from "react-router";
 import bloodGroupImg from "../../assets/bloodgroup.png";
 import profPicImg from "../../assets/prof_img.png";
+import { formatDate } from "../../utils/dateUtils";
 
 import MapComponent from "../../components/map/MapComponent";
 // import { Link } from "react-router-dom";
@@ -103,7 +104,10 @@ export default function BloodrequestDetailPage() {
 
   return (
     <>
-      <div className="mb-5 mt-5 d-flex res_mobile">
+      <div
+        className="mb-5 mt-5 d-flex res_mobile mx-5"
+        style={{ maxWidth: "1280px", margin: "0 auto" }}
+      >
         <div
           className="flex-shrink-0"
           style={{ flex: "0 0 40%", paddingRight: "20px" }}
@@ -136,13 +140,9 @@ export default function BloodrequestDetailPage() {
                   />
                 </div>
                 <div className="request-details ms-3">
-                  <div
-                    className="text-start"
-                    style={{ overflowWrap: "anywhere" }}
-                  >
-                    Request ID: {data.request_id}
+                  <div className="text-start">
+                    Date: {formatDate(data.date)}
                   </div>
-                  <div className="text-start">Date: {data.date}</div>
                   <div className="text-start">Units: {data.units_required}</div>
                   <div className="text-start">Address: {data.address}</div>
                 </div>
@@ -156,7 +156,7 @@ export default function BloodrequestDetailPage() {
                 </div>
               </div>
               {data.view_donors && (
-                <div className="mt-3">
+                <div className="d-flex justify-content-center mt-3">
                   <button
                     className="btn btn-primary"
                     style={{ padding: "10px" }}
@@ -193,25 +193,28 @@ export default function BloodrequestDetailPage() {
         className="Modal"
         overlayClassName="Overlay"
       >
-        <div className="d-flex flex-column align-items-center ">
-          <h2>Cancel Blood Request</h2>
-          <label className="text-start col-lg-6 col-md-6 col-sm-6">
-            Closure reason
-          </label>
-          <input
-            className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
-            value={closureReason}
+        <div className="d-flex flex-column align-items-center">
+          <h3 className="cancel_blood_req ">Cancel Blood Request</h3>
+          <label className="text-start w-100">Closure reason</label>
+          <select
+            className="form-input w-100 mb-3"
             onChange={(e) => setClosureReason(e.target.value)}
-          />
-          <label className="text-start col-lg-6 col-md-6 col-sm-6">
-            Additional comments
-          </label>
-          <input
-            className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
+          >
+            <option value="">Select reason</option>
+            <option value="Request fulfilled">Request fulfilled</option>
+            <option value="Request canceled">Request canceled</option>
+            <option value="Found an alternate solution">
+              Found an alternate solution
+            </option>
+            <option value="Others">Others (please specify)</option>
+          </select>
+          <label className="text-start w-100">Additional comments</label>
+          <textarea
+            className="form-input w-100 mb-3"
             value={additionalComments}
             onChange={(e) => setAdditionalComments(e.target.value)}
           />
-          <div className="d-flex justify-content-evenly col-lg-6 col-md-6 col-sm-6">
+          <div className="d-flex justify-content-evenly w-100">
             <button onClick={closeModal} className="btn btn-primary">
               Close
             </button>

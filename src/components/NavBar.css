@@ -179,14 +179,14 @@ nav a.inactive {
 
 .profile-pic {
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
 }
 
 .profile-menu {
   position: absolute;
-  width: auto;
-  top: 40px;
+  width: 180px;
+  top: 30px;
   right: 0;
   background-color: white;
   border: 1px solid #ccc;
@@ -215,10 +215,36 @@ nav a.inactive {
   border: none;
   border-radius: 5px;
 }
+.border_bottom {
+  border-bottom: 2px solid black;
+}
+
+.notification-icon-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.notification-count {
+  position: absolute;
+  top: -6px;
+  right: -2px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 3px;
+  font-size: 10px;
+  font-weight: bold;
+}
 
 @media (max-width: 767px) {
   nav {
     background-color: unset !important;
+  }
+  .profile-container h5 {
+    display: none !important;
+  }
+  .notify_bell {
+    color: unset !important;
   }
 
   .navbar {
@@ -238,7 +264,7 @@ nav a.inactive {
     display: none;
     flex-direction: column;
     width: 100%;
-    background-color: #fcf1f1;
+    background-color: #5780b1;
     position: absolute;
     top: 100%;
     left: 0;

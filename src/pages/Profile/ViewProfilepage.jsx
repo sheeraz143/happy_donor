@@ -1,25 +1,27 @@
 import bloodGroupImg from "../../assets/bloodimage.png";
 // import profPicImg from "../../assets/profpic.png";
 import profImg from "../../assets/prof_img.png";
-
 import User from "../../assets/User.png";
 import SuccessIcon from "../../assets/success icon.png";
 import Myrequest from "../../assets/myrequest.png";
-import Language from "../../assets/language.png";
+// import Language from "../../assets/language.png";
 import Bell from "../../assets/Bell.png";
 // import DarkMode from "../../assets/dark_mode.png";
 import Emergency from "../../assets/emergency-contact.png";
 import Logout from "../../assets/Logout.png";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
-import { getProfile, setLoader } from "../../redux/product";
+import { getProfile, setLoader, toggleAvailability } from "../../redux/product";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
+import { formatDate } from "../../utils/dateUtils";
 
 export default function ViewProfilepage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [getData, setData] = useState({});
+  const [refresh, setRefresh] = useState(false);
+  const userType = localStorage.getItem("user_type");
   useEffect(() => {
     window.scrollTo(0, 0);
     dispatch(setLoader(true)); // Start loading
@@ -40,7 +42,7 @@ export default function ViewProfilepage() {
       toast.error(error);
       dispatch(setLoader(false));
     }
-  }, [dispatch]);
+  }, [dispatch, refresh]);
 
   const renderRequestCard = () => {
     if (!getData) {
@@ -64,9 +66,17 @@ export default function ViewProfilepage() {
               {getData?.first_name} {getData?.last_name}
             </div>
             <div className="text-start text-nowrap">{getData?.email}</div>
-            <div className="text-start">DOB: {getData?.date_of_birth}</div>
             <div className="text-start">
-              LDD: {getData?.last_blood_donation_date}
+              DOB:
+              {getData?.date_of_birth
+                ? formatDate(getData.date_of_birth)
+                : "Date not updated"}
+            </div>
+            <div className="text-start">
+              LDD:
+              {getData?.last_blood_donation_date
+                ? formatDate(getData?.last_blood_donation_date)
+                : "Date not updated"}
             </div>
           </div>
           <div className="blood-group">
@@ -74,13 +84,37 @@ export default function ViewProfilepage() {
               src={getData?.bloodGroupImage || bloodGroupImg}
               alt="Blood Group"
               className="Blood_Group_img"
-            />{" "}
+            />
             {/* Fallback to default blood group image */}
           </div>
         </div>
       </div>
     );
   };
+
+  const onAvailabilityChange = () => {
+    dispatch(setLoader(true));
+    try {
+      dispatch(
+        toggleAvailability((res) => {
+          dispatch(setLoader(false));
+
+          if (res.status === true) {
+            toast.success(res.message);
+            setRefresh(!refresh);
+            // localStorage.setItem("is_profile_update", 1);
+            navigate("/viewprofile");
+          } else {
+            toast.error(res.message || "An error occurred.");
+          }
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "An unexpected error occurred.");
+      dispatch(setLoader(false));
+    }
+  };
+
   return (
     <>
       <div className="form-container mb-5 mt-2">
@@ -96,9 +130,11 @@ export default function ViewProfilepage() {
               type="checkbox"
               className="switch-input"
               checked={getData?.availability || false}
-              onChange={(e) =>
-                setData({ ...getData, availability: e.target.checked })
-              }
+              onChange={onAvailabilityChange}
+              // checked={getData?.availability || false}
+              // onChange={(e) =>
+              //   setData({ ...getData, availability: e.target.checked })
+              // }
             />
             <span className="slider round"></span>
           </label>
@@ -107,15 +143,26 @@ export default function ViewProfilepage() {
           className="formpf-container mb-3"
           style={{ cursor: "pointer" }}
           onClick={() => {
-            navigate("/editprofile");
+            const profileVerified = localStorage.getItem("is_profile_update");
+            console.log("profileVerified: ", profileVerified);
+            if (profileVerified == 1) {
+              navigate("/editprofile");
+            } else {
+              navigate("/profile");
+              toast.error("please update your profile");
+            }
           }}
         >
           <img src={User} alt="profile" style={{ cursor: "pointer" }} />
           <label className="switch-label">Edit Profile</label>
         </div>
+
         <div
           className="formpf-container mb-3"
-          style={{ cursor: "pointer" }}
+          style={{
+            cursor: "pointer",
+            display: userType == 4 || userType == 5 ? "none" : "flex",
+          }}
           onClick={() => {
             navigate("/donationhistory");
           }}
@@ -125,7 +172,10 @@ export default function ViewProfilepage() {
         </div>
         <div
           className="formpf-container mb-3"
-          style={{ cursor: "pointer" }}
+          style={{
+            cursor: "pointer",
+            display: userType == 4 || userType == 5 ? "none" : "flex",
+          }}
           onClick={() => {
             navigate("/bloodrequest");
           }}
@@ -133,7 +183,7 @@ export default function ViewProfilepage() {
           <img src={Myrequest} alt="profile" />
           <label className="switch-label">My Requests</label>
         </div>
-        <div
+        {/* <div
           className="formpf-container mb-3"
           style={{ cursor: "pointer" }}
           onClick={() => {
@@ -142,7 +192,7 @@ export default function ViewProfilepage() {
         >
           <img src={Language} alt="profile" />
           <label className="switch-label">Language</label>
-        </div>
+        </div> */}
         <div
           className="formpf-container mb-3"
           style={{ cursor: "pointer" }}
@@ -182,7 +232,7 @@ export default function ViewProfilepage() {
             localStorage.removeItem("user_type");
             localStorage.removeItem("is_profile_update");
             localStorage.removeItem("oAuth");
-            navigate("/");
+            navigate("/login");
           }}
         >
           <img src={Logout} alt="profile" />

@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { Pagination } from "antd";
 import Modal from "react-modal";
+import { formatDate } from "../../utils/dateUtils";
+import profImg from "../../assets/prof_img.png";
 
 export default function ApproveRequests() {
   const dispatch = useDispatch();
@@ -23,7 +25,7 @@ export default function ApproveRequests() {
   const [refresh, setRefresh] = useState(false);
 
   const openModal = (request_id) => {
-    console.log("request_id: ", request_id);
+    // console.log("request_id: ", request_id);
     setModalIsOpen(true);
     setRequestId(request_id);
   };
@@ -47,8 +49,9 @@ export default function ApproveRequests() {
               if (res.errors) {
                 toast.error(res.errors);
               } else {
-                setRequests(res.requests);
-                setTotalRequests(res.pagination.total);
+                setRequests(res?.requests);
+                console.log('res?.requests: ', res?.requests);
+                setTotalRequests(res?.pagination?.total);
               }
             },
             currentPage,
@@ -119,52 +122,80 @@ export default function ApproveRequests() {
   };
 
   return (
-    <div className="d-flex">
-      <div className="cards-container mt-5 mb-5 col-lg-4 mx-auto">
-        {requests?.map((request) => (
-          <div className="card mb-3" key={request.request_id}>
-            <div className="">
-              <p className="card-text text-start">
-                Patient Name: {request.patient_name}
-              </p>
-              {/* <p className="card-text text-start">
-              Patient Mobile: {request.patient_mobile}
-            </p> */}
-              <p className="card-text text-start">
-                Attender Name: {request.attender_name}
-              </p>
-              <p className="card-text text-start">
-                Attender Mobile: {request.attender_mobile_number}
-              </p>
-              <p
-                className="card-text text-start"
-                style={{ overflowWrap: "anywhere" }}
-              >
-                Request ID: {request.request_id}
-              </p>
-              <p className="card-text text-start">Date: {request.date}</p>
-              <p className="card-text text-start">
-                Units Required: {request.units_required}
-              </p>
-              <p className="card-text text-start">Address: {request.address}</p>
-              <div className="d-flex justify-content-between mt-4">
-                <button
-                  className="btn btn-danger"
-                  // onClick={() => handleReject(request.request_id)}
-                  onClick={() => openModal(request.request_id)}
-                >
-                  Reject
-                </button>
-                <button
-                  className="btn btn-success"
-                  onClick={() => handleApprove(request.request_id)}
-                >
-                  Approve
-                </button>
+    <div className="cards-container my-5 mx-5">
+      <div className="row">
+        {requests?.length === 0 ? (
+          <h4 className="text-center mb-5">No Data Available</h4>
+        ) : (
+          requests?.map((request) => (
+            <div
+              className="col-lg-4 col-md-6 col-sm-12 mb-4"
+              key={request.request_id}
+            >
+              <div className="card h-100 p-3">
+                {request.is_critical && (
+                  <div className="emergency-tag position-absolute">
+                    Emergency
+                  </div>
+                )}
+                <div className="d-flex mt-3">
+                  <img
+                    src={request?.profile_picture || profImg}
+                    alt="Profile"
+                    className="profile_img"
+                    onError={(e) => {
+                      e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
+                      e.target.src = profImg; // Set to default image on error
+                    }}
+                  />
+                  <div className="request-details">
+                    <div className="text-start">
+                      <p className="card-text ">Name: {request.patient_name}</p>
+                      <p className="card-text ">
+                        Attender Name: {request.attender_name}
+                      </p>
+                      <p className="card-text ">
+                        Attender Mobile: {request.attender_mobile_number}
+                      </p>
+                      <p className="card-text ">
+                        Willing to arrange transport:{" "}
+                        {request?.willing_to_arrange_transport == true
+                          ? "Yes"
+                          : "No"}
+                      </p>
+
+                      <p className="card-text ">
+                        Date: {formatDate(request.date)}
+                      </p>
+                      <p className="card-text ">
+                        Units Required: {request.units_required}
+                      </p>
+                      <p className="card-text ">Address: {request.address}</p>
+                    </div>
+                  </div>
+                  {/* <div className="blood-group">
+                  <img src={bloodGroupImg} alt="Blood Group" />
+                </div> */}
+                </div>
+
+                <div className="d-flex  mt-2 gap-3 ">
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => openModal(request.request_id)}
+                  >
+                    Reject
+                  </button>
+                  <button
+                    className="btn btn-success"
+                    onClick={() => handleApprove(request.request_id)}
+                  >
+                    Approve
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
         <Pagination
           align="center"
           className="mb-4"
@@ -175,44 +206,45 @@ export default function ApproveRequests() {
             setCurrentPage(page);
           }}
         />
-
-        <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          contentLabel="Gratitude Message"
-          ariaHideApp={false}
-          className="Modal"
-          overlayClassName="Overlay"
-        >
-          <div className="d-flex flex-column align-items-center ">
-            <h3>Cancel Blood Request</h3>
-            <label className="text-start col-lg-6 col-md-6 col-sm-6">
-              Closure reason
-            </label>
-            <input
-              className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
-              value={closureReason}
-              onChange={(e) => setClosureReason(e.target.value)}
-            />
-            <label className="text-start col-lg-6 col-md-6 col-sm-6">
-              Additional comments
-            </label>
-            <input
-              className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
-              value={additionalComments}
-              onChange={(e) => setAdditionalComments(e.target.value)}
-            />
-            <div className="d-flex justify-content-evenly col-lg-6 col-md-6 col-sm-6">
-              <button onClick={closeModal} className="btn btn-primary">
-                Close
-              </button>
-              <button onClick={handleSubmit} className="btn btn-primary">
-                Submit
-              </button>
-            </div>
-          </div>
-        </Modal>
       </div>
+
+      {/* Modal Component */}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Gratitude Message"
+        ariaHideApp={false}
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <div className="d-flex flex-column align-items-center">
+          <h3>Cancel Blood Request</h3>
+          <label className="text-start col-lg-6 col-md-6 col-sm-6">
+            Closure reason
+          </label>
+          <input
+            className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
+            value={closureReason}
+            onChange={(e) => setClosureReason(e.target.value)}
+          />
+          <label className="text-start col-lg-6 col-md-6 col-sm-6">
+            Additional comments
+          </label>
+          <input
+            className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
+            value={additionalComments}
+            onChange={(e) => setAdditionalComments(e.target.value)}
+          />
+          <div className="d-flex justify-content-evenly col-lg-6 col-md-6 col-sm-6">
+            <button onClick={closeModal} className="btn btn-primary">
+              Close
+            </button>
+            <button onClick={handleSubmit} className="btn btn-primary">
+              Submit
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

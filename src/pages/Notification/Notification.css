@@ -1,0 +1,119 @@
+/* Notification.css */
+
+.notification-page {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.notification-header {
+  text-align: center;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.notification-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap; /* Allows buttons to wrap on smaller screens */
+  margin-bottom: 20px;
+}
+
+.mark-read-button,
+.delete-all-button {
+  flex: 1 1 45%; /* Each button takes up to 45% of the width */
+  padding: 10px 15px;
+  font-size: 1em;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  transition: all 0.3s;
+  text-align: center;
+}
+.mark-read-button {
+  background-color: #5780b1;
+  color: #fff;
+}
+
+.mark-read-button:hover {
+  background-color: #5780b1;
+}
+
+.delete-all-button {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.delete-all-button:hover {
+  background-color: #e53935;
+}
+
+.notification-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.notification-card:hover {
+  transform: scale(1.02);
+}
+
+.notification-content {
+  flex-grow: 1;
+}
+
+.notification-title {
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.notification-subtitle {
+  font-size: 0.95em;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.notification-time {
+  font-size: 0.85em;
+  color: #999;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #f44336;
+  transition: color 0.3s;
+}
+
+.delete-button:hover {
+  color: #d32f2f;
+}
+
+@media (max-width: 600px) {
+    .notification-actions {
+      flex-direction: row; /* Keep buttons side-by-side */
+      gap: 5px; /* Reduced gap for smaller screens */
+    }
+  
+    .mark-read-button,
+    .delete-all-button {
+      flex: 1 1 70%; /* Half width for each button */
+      padding: 8px 10px; /* Reduced padding */
+      font-size: 0.9em; /* Slightly smaller font size */
+    }
+  }

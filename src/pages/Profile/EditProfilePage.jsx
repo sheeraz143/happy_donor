@@ -36,34 +36,6 @@ const EditProfilePage = () => {
     setValue,
   } = useForm();
 
-  // const fetchAddress = useCallback(
-  //   async (lat, lon) => {
-  //     if (lat !== null) {
-  //       const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0`;
-  //       const response = await fetch(geocodeUrl);
-  //       const data = await response.json();
-
-  //       if (data.results && data.results.length > 0) {
-  //         const address = data.results[0].formatted_address;
-  //         setLocation(address);
-  //         setValue("location", address);
-  //       }
-  //     }
-  //   },
-  //   [setValue]
-  // ); // Add dependencies if any
-
-  // const handlePlaceSelected = (place) => {
-  //   console.log("place: ", place);
-  //   console.log("lat: ", String(place.geometry.location.lat()));
-  //   console.log("lng: ", String(place.geometry.location.lng()));
-  //   if (place.geometry) {
-  //     setValue("address", place.formatted_address);
-  //     setValue("lat", String(place.geometry.location.lat())); // Convert to string
-  //     setValue("lon", String(place.geometry.location.lng())); // Convert to string
-  //   }
-  // };
-
   useEffect(() => {
     window.scrollTo(0, 0);
     dispatch(setLoader(true)); // Start loading
@@ -71,7 +43,6 @@ const EditProfilePage = () => {
       dispatch(
         getProfile((res) => {
           const user = res?.user;
-          console.log("user: ", user);
           setProfileImage(res?.user?.profile_picture || logo);
           setValue("title", user?.title);
           setValue("first_name", user?.first_name);
@@ -118,7 +89,6 @@ const EditProfilePage = () => {
       try {
         dispatch(
           profilePicUpdate(formData, (res) => {
-            console.log("res: ", res);
             if (res.errors) {
               toast.error(res.errors);
             } else {
@@ -136,8 +106,30 @@ const EditProfilePage = () => {
     }
   };
 
+  const handleInput = (e) => {
+    let value = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+
+    // Restore +91 if the user tries to delete it
+    if (!value.startsWith("91")) {
+      value = `91${value}`; // Keep +91 prefix
+    }
+
+    if (value.startsWith("91")) {
+      value = `+91${value.slice(2, 12)}`; // Format as +91 XXXXXXXXXX
+    }
+
+    // Limit to 10 digits after +91
+    if (value.length > 13) {
+      value = value.slice(0, 14); // +91 followed by 10 digits
+    }
+
+    // Update the state to keep the input controlled
+    // setPhoneNumber(value);
+    e.target.value = value; // Reflect the value in the input
+  };
+
   const onSubmit = (data) => {
-    console.log("Received data: ", data); // Log the incoming data
+    // console.log("Received data: ", data); // Log the incoming data
 
     dispatch(setLoader(true)); // Start loading
     try {
@@ -161,14 +153,13 @@ const EditProfilePage = () => {
       // console.log("changedData: ", changedData);
 
       // Log formData for verification
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${typeof value} - ${value}`);
-      }
+      // for (let [key, value] of formData.entries()) {
+      //   console.log(`${key}: ${typeof value} - ${value}`);
+      // }
 
       // Dispatch action to update profile
       dispatch(
         updateProfile(formData, (res) => {
-          console.log("Response: ", res);
           dispatch(setLoader(false)); // Stop loading
 
           // Check for response status
@@ -219,7 +210,8 @@ const EditProfilePage = () => {
         <label>Title</label>
         <select
           className="form-input"
-          {...register("title", { required: true })}
+          {...register("title", { required: false })}
+          disabled
         >
           <option value="">Select</option>
           <option value="Mr">Mr</option>
@@ -236,7 +228,8 @@ const EditProfilePage = () => {
         <input
           className="form-input"
           type="text"
-          {...register("first_name", { required: true })}
+          {...register("first_name", { required: false })}
+          readOnly
         />
         {errors.first_name && (
           <p className="error-message">First Name is required</p>
@@ -249,7 +242,8 @@ const EditProfilePage = () => {
         <input
           className="form-input"
           type="text"
-          {...register("last_name", { required: true })}
+          {...register("last_name", { required: false })}
+          readOnly
         />
         {errors.last_name && (
           <p className="error-message">Last Name is required</p>
@@ -262,11 +256,13 @@ const EditProfilePage = () => {
         <input
           className="form-input"
           type="tel"
-          readOnly
+          onInput={handleInput}
+          // readOnly
           {...register("phone_number", {
             required: true,
             // pattern: /^[0-9]{10}$/,
             pattern: {
+              // value: /^(?:\+91[-\s]?)?[0]?[123456789]\d{9}$/,
               value: /^(?:\+91[-\s]?)?[0]?[123456789]\d{9}$/,
               message: "Invalid phone number format",
             },
@@ -296,7 +292,8 @@ const EditProfilePage = () => {
         <label>Blood Group</label>
         <select
           className="form-input"
-          {...register("blood_group", { required: true })}
+          {...register("blood_group", { required: false })}
+          disabled
         >
           <option value="">Select</option>
           <option value="A+">A+</option>
@@ -323,7 +320,8 @@ const EditProfilePage = () => {
           onFocus={(e) => {
             e.target.showPicker();
           }}
-          {...register("date_of_birth", { required: true })}
+          {...register("date_of_birth", { required: false })}
+          readOnly
         />
         {errors.date_of_birth && (
           <p className="error-message">Date of Birth is required</p>
@@ -335,7 +333,8 @@ const EditProfilePage = () => {
         <label>Gender</label>
         <select
           className="form-input"
-          {...register("gender", { required: true })}
+          {...register("gender", { required: false })}
+          disabled
         >
           <option value="">Select</option>
           <option value="Male">Male</option>
@@ -380,7 +379,6 @@ const EditProfilePage = () => {
           className="form-input"
           defaultValue={location}
           onPlaceSelected={(place) => {
-            console.log(place);
             if (place.geometry) {
               setValue("address", place.formatted_address);
               setValue("lat", String(place.geometry.location.lat())); // Convert to string
@@ -393,7 +391,7 @@ const EditProfilePage = () => {
           }}
           // defaultValue="Amsterdam"
         />
-        ;
+
         {errors.address && (
           <p className="error-message">Location is required</p>
         )}

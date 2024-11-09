@@ -3,6 +3,8 @@ import {
   Route,
   Routes,
   useLocation,
+  // Navigate,
+  // useNavigate,
 } from "react-router-dom";
 import Home from "./pages/Home";
 import Donate from "./pages/Donate";
@@ -23,7 +25,7 @@ import SelectLanguage from "./pages/Profile/SelectLanguage";
 import NotificationSettings from "./pages/Profile/NotificationSettings";
 import ModeSetting from "./pages/Profile/ModeSetting";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import EmergenctContact from "./pages/Profile/EmergenctContact";
 import AboutUs from "./pages/AboutUs/AboutUsPage";
 import PrivacyPolicy from "./pages/Policy/PrivacyPolicy";
@@ -48,37 +50,128 @@ import Approvals from "./pages/Approvals/Approvals";
 import ApproveRequests from "./pages/Approvals/ApproveRequests";
 import ApproveDonors from "./pages/Approvals/ApproveDonors";
 import ProtectedRoute from "./ProtectedRoute";
+import Camps from "./Camps/Camps";
+import CampsList from "./Camps/CampsList";
+import CampsrequestDetailPage from "./Camps/CampsrequestDetailPage";
+// import Dashboard from "./Camps/Dashboard";
+import AcceptedCampList from "./Camps/AcceptedCampList";
+import ConfirmCampDonation from "./Camps/ConfirmCampDonation";
+import RegisterOrg from "./pages/RegisterOrg";
+import LoginOrg from "./Camps/LoginOrg";
+import Registerbloodbank from "./pages/Bloodbanks/RegisterBloodbank";
+import LoginBloodBank from "./pages/Bloodbanks/LoginBloodBank";
+import PostGratitudeCampMesage from "./Camps/PostGratitudeCampMesage";
+import NotificationPage from "./pages/Notification/NotificationPage";
+
+// import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+import { requestForToken } from "./pushnotification/firebase";
 
 function App() {
   const darkMode = useSelector((state) => state.theme.darkMode);
   const location = useLocation();
+  // const [notification, setNotification] = useState({ title: "", body: "" });
+
+  // const navigate = useNavigate();
 
   useEffect(() => {
-
     if (location.pathname === "/") {
       window.location.href = "/app.html";
-  }
-  
-    document.body.className = darkMode ? "dark-mode" : "";
-  }, [darkMode]);
+    }
 
+    document.body.className = darkMode ? "dark-mode" : "";
+  }, [darkMode, location.pathname]);
+
+  useEffect(() => {
+    // console.log("notification: ", notification);
+
+    // Request permission and get FCM token
+    requestForToken()
+      .then((token) => {
+        if (token) {
+          localStorage.setItem("fcmToken", token);
+          // console.log("FCM Token:", token);
+          // Optionally, send the token to your backend for later use
+        }
+      })
+      .catch((err) => console.log("Notification permission denied:", err));
+
+    // // Listen for foreground messages
+    // onMessageListener()
+    //   .then((payload) => {
+    //     console.log("Received notification:", payload);
+    //     setNotification({
+    //       title: payload.notification.title,
+    //       body: payload.notification.body,
+    //     });
+    //     toast.info(
+    //       `${payload.notification.title}: ${payload.notification.body}`
+    //     );
+    //   })
+    //   .catch((err) => console.log("Failed to receive message:", err));
+  }, []);
 
   const hideNavbarAndFooter =
     location.pathname === "/login" ||
     location.pathname === "/otp" ||
     location.pathname === "/map" ||
-    location.pathname === "/profile";
+    location.pathname === "/profile" ||
+    location.pathname === "/register/organisation" ||
+    location.pathname === "/register/bloodbank" ||
+    location.pathname === "/login/organisation" ||
+    location.pathname === "/login/bloodbank" ||
+    location.pathname === "/terms" ||
+    location.pathname === "/privacypolicy";
+  // const storedUserType = localStorage.getItem("user_type");
+  // const storedUserType = localStorage.getItem("user_type");
+
+  const [refreshNavbar, setRefreshNavbar] = useState(false);
+
+  const handleRefreshNavbar = () => {
+    setRefreshNavbar((prev) => !prev);
+  };
 
   return (
     <>
       <Tost />
       <SimpleBackdrop />
-      {!hideNavbarAndFooter && <Navbar />}
+      {!hideNavbarAndFooter && <Navbar refreshNavbar={refreshNavbar} />}
       <Routes>
         <Route path="/login" element={<LoginComponent />} />
+        <Route
+          path="/login/organisation"
+          element={<LoginOrg onRefreshNavbar={handleRefreshNavbar} />}
+        /> 
+        <Route
+          path="/login/bloodbank"
+          element={<LoginBloodBank onRefreshNavbar={handleRefreshNavbar} />}
+        />
+        <Route
+          path="/register/bloodbank"
+          element={<Registerbloodbank onRefreshNavbar={handleRefreshNavbar} />}
+        />
         <Route path="/otp" element={<OTPVerificationComponent />} />
+        <Route
+          path="/register/organisation"
+          element={<RegisterOrg onRefreshNavbar={handleRefreshNavbar} />}
+        />
+        <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<Terms />} />
         <Route element={<ProtectedRoute />}>
-        <Route path="/home" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+          <Route element={<ProtectedRoute />}>
+            {/* <Route
+              path="/home"
+              element={storedUserType == 5 ? <Dashboard /> : <Home />}
+            />
+            <Route
+              path="/dashboard"
+              element={
+                storedUserType == 5 ? <Dashboard /> : <Navigate to="/home" />
+              }
+            /> */}
+          </Route>
           <Route path="/profile" element={<Profile />} />
           <Route path="/viewprofile" element={<ViewProfilepage />} />
           <Route path="/approvals" element={<Approvals />} />
@@ -96,9 +189,7 @@ function App() {
           <Route path="/modesetting" element={<ModeSetting />} />
           <Route path="/emergencycontact" element={<EmergenctContact />} />
           <Route path="/aboutus" element={<AboutUs />} />
-          <Route path="/privacypolicy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/faqs" element={<Faqs />} />
+
           <Route path="/writetoUs" element={<WriteToUs />} />
           <Route path="/gratitude" element={<GratitudePage />} />
           <Route path="/report" element={<TTIReport />} />
@@ -115,8 +206,25 @@ function App() {
           <Route path="/donarlist/:id" element={<AcceptDonorList />} />
           <Route path="/confirmdonation/:id" element={<ConfirmDonation />} />
           <Route
-            path="/postgratitudemesage"
+            path="gratitudecampmesage/"
             element={<PostGratitudeMesage />}
+          />
+          <Route path="/faqs" element={<Faqs />} />
+          <Route path="/camps" element={<Camps />} />
+          <Route path="/camps/list" element={<CampsList />} />
+          <Route
+            path="/campsrequestdetail/:id"
+            element={<CampsrequestDetailPage />}
+          />
+          <Route path="/camplist/:id" element={<AcceptedCampList />} />
+          <Route path="/confirmcamp/:id" element={<ConfirmCampDonation />} />
+          <Route
+            path="/postgratitudemesage"
+            element={<PostGratitudeCampMesage />}
+          />
+          <Route
+            path="/notification"
+            element={<NotificationPage onRefreshNavbar={handleRefreshNavbar} />}
           />
         </Route>
       </Routes>

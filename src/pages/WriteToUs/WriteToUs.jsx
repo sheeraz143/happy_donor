@@ -1,22 +1,104 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { getProfile, setLoader, writeToUs } from "../../redux/product";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 export default function WriteToUs() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
   const {
     register,
     handleSubmit,
+    setError,
+    clearErrors,
+    setValue,
     formState: { errors },
   } = useForm();
+
+  const handleInput = (e) => {
+    let value = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+
+    // Ensure +91 prefix
+    if (!value.startsWith("91")) {
+      value = `91${value}`; // Keep 91 prefix
+    }
+
+    if (value.startsWith("91")) {
+      value = `+91${value.slice(2, 12)}`; // Format as +91 XXXXXXXXXX
+    }
+
+    // Limit to 10 digits after +91
+    if (value.length > 13) {
+      setError("mobile", {
+        type: "manual",
+        message: "Phone Number must be 10 digits",
+      });
+    } else {
+      clearErrors("mobile");
+    }
+
+    // Update the state to keep the input controlled
+    e.target.value = value; // Reflect the value in the input
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    dispatch(setLoader(true)); // Start loading
+    try {
+      dispatch(
+        getProfile((res) => {
+          const user = res?.user;
+          setValue("title", user?.title);
+          setValue("first_name", user?.first_name);
+          setValue("last_name", user?.last_name);
+          setValue("mobile", user?.phone_number);
+          setValue("email", user?.email);
+
+          // setOriginalData(user);
+
+          if (res.errors) {
+            toast.error(res.errors);
+          } else {
+            // Handle success
+          }
+          dispatch(setLoader(false));
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "An unexpected error occurred.");
+      dispatch(setLoader(false));
+    }
+  }, [dispatch, setValue]);
 
   // Function to handle form submission
   const onSubmit = (data) => {
     console.log(data);
-    navigate("#");
+    dispatch(setLoader(true));
+    try {
+      dispatch(
+        writeToUs(data, (res) => {
+          dispatch(setLoader(false));
+
+          // Check for response status
+          if (res.code === 201) {
+            toast.success(res.message);
+            navigate("/home");
+          } else {
+            const errorMessages = res.message || "An error occurred.";
+            toast.error(errorMessages);
+          }
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "An unexpected error occurred.");
+      dispatch(setLoader(false)); // Stop loading
+    }
   };
 
   return (
@@ -38,6 +120,7 @@ export default function WriteToUs() {
           <option value="Mr">Mr</option>
           <option value="Ms">Ms</option>
           <option value="Mrs">Mrs</option>
+          <option value="Dr">Dr</option>
         </select>
         {errors.title && <p className="error-message">Title is required</p>}
       </div>
@@ -48,9 +131,9 @@ export default function WriteToUs() {
         <input
           className="form-input"
           type="text"
-          {...register("firstName", { required: true })}
+          {...register("first_name", { required: true })}
         />
-        {errors.firstName && (
+        {errors.first_name && (
           <p className="error-message">First Name is required</p>
         )}
       </div>
@@ -61,9 +144,9 @@ export default function WriteToUs() {
         <input
           className="form-input"
           type="text"
-          {...register("lastName", { required: true })}
+          {...register("last_name", { required: true })}
         />
-        {errors.lastName && (
+        {errors.last_name && (
           <p className="error-message">Last Name is required</p>
         )}
       </div>
@@ -87,18 +170,26 @@ export default function WriteToUs() {
         <label>Contact Number</label>
         <input
           className="form-input"
-          type="number"
-          {...register("phoneNumber", {
-            required: true,
-            pattern: /^[0-9]{10}$/,
+          type="tel"
+          onInput={handleInput}
+          {...register("mobile", {
+            required: "Phone Number is required",
+            pattern: {
+              value: /^(?:\+91[-\s]?)?[0]?[123456789]\d{9}$/,
+              message: "Phone Number must be 10 digits",
+            },
+            validate: (value) => {
+              if (!value.startsWith("+91") || value.length !== 13) {
+                return "Phone Number must start with +91 and be 10 digits long";
+              }
+            },
           })}
         />
-        {errors.phoneNumber && (
-          <p className="error-message">Contact Number is required</p>
+        {errors.mobile && (
+          <p className="error-message">{errors.mobile.message}</p>
         )}
       </div>
 
-      {/* Location */}
       <div className="form-group">
         <label>Topic</label>
         <select
@@ -106,9 +197,11 @@ export default function WriteToUs() {
           {...register("topic", { required: true })}
         >
           <option value="">Select</option>
-          <option value="Beginner">Beginner</option>
-          <option value="Intermediate">Intermediate</option>
-          <option value="Experienced">Experienced</option>
+          <option value="Query">Query</option>
+          <option value="Feedbacks">Feedbacks</option>
+          <option value="Suggestions">Suggestions</option>
+          <option value="Experience">Experience</option>
+          <option value="Others">Others</option>
         </select>
         {errors.topic && <p className="error-message">Topic is required</p>}
       </div>
@@ -119,7 +212,7 @@ export default function WriteToUs() {
         <textarea
           className="form-input"
           type="text"
-          {...register("comments")}
+          {...register("comments", { required: false })}
         />
         {/* {errors.address && <p className="error-message">Address is required</p>} */}
       </div>
