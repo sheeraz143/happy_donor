@@ -74,9 +74,9 @@
 <div class="f-tcont rcus">
 <h4>Reach Us</h4>
 <ul class="liimg_s f-social">
-<li><a href="#" target="_blank"><i class="fa fa-facebook"></i></a> </li>
-<li><a href="#" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a> </li>
-<li><a href="#" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a> </li>
+<li><a href="https://www.facebook.com/61567973835364" target="_blank"><i class="fa-brands fa-facebook-f"></i></a> </li>
+<li><a href="https://x.com/HappyDonors" target="_blank"><i class="fa-brands fa-x-twitter"></i> </a> </li>
+<li><a href="https://www.instagram.com/happy_donors11/" target="_blank"><i class="fa-brands fa-instagram"></i></a> </li>
 </ul>
 <div class="foot-leftc">
 <ul>

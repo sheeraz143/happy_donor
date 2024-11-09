@@ -65,12 +65,12 @@
                         </li>
                     </ul>
 
-                      <ul class="contact-info spacing-to">
+                      <ul class="contact-info spacing-to social-icn">
                         <p>Follow Us</p>
                         <li>
-                            <span class="icon-container"><i class="fa fa-facebook"></i></span>
-                             <span class="icon-container"><i class="fa fa-linkedin"></i></span>
-                              <span class="icon-container"><i class="fa fa-instagram"></i></span>
+                            <span class="icon-container"><a target="_blank" href="https://www.facebook.com/61567973835364"><i class="fa-brands fa-facebook-f"></i></a></span>
+                             <span class="icon-container"><a target="_blank" href="https://x.com/HappyDonors"><i class="fa-brands fa-x-twitter"></i> </a></span>
+                              <span class="icon-container"><a target="_blank" href="https://www.instagram.com/happy_donors11/"><i class="fa-brands fa-instagram"></i></a></span>
          
                         </li>
                     </ul>
