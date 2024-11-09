@@ -43,13 +43,12 @@ const CampsList = () => {
   // Fetches data from the API based on active tab and page number
   const loadData = useCallback(
     (tab, page) => {
-      console.log("tab: ", tab);
-      console.log("page: ", page);
       dispatch(setLoader(true));
       try {
         dispatch(
           CampsLists(
             tab,
+            page,
             (res) => {
               dispatch(setLoader(false));
               if (res.errors) {
@@ -57,7 +56,8 @@ const CampsList = () => {
               } else {
                 if (tab === "open") {
                   setOpenRequests(res.camps);
-                  
+                  console.log("res.camps: ", res.camps);
+
                   setRequestCount((prevCount) => ({
                     ...prevCount,
                     matched: res.pagination?.total,
@@ -89,7 +89,6 @@ const CampsList = () => {
   }, [activeTab, currentPage, loadData]);
 
   const handlePageChange = (page) => {
-    console.log("page: ", page);
     setCurrentPage(page);
   };
 

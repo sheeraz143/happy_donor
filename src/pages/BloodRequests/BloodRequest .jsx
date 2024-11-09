@@ -14,8 +14,9 @@ import { Pagination } from "antd";
 import Modal from "react-modal";
 import { formatDate } from "../../utils/dateUtils";
 
+const ITEMS_PER_PAGE = 10; // Number of items per page
+
 const BloodRequest = () => {
-  // const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [openRequests, setOpenRequests] = useState([]);
@@ -44,53 +45,43 @@ const BloodRequest = () => {
     setModalIsOpen(false);
   };
 
+  // Load data with specified tab and page number
   const loadData = useCallback(
     (tab, page = 1) => {
-      dispatch(setLoader(true)); // Start loading
-      try {
-        dispatch(
-          donateBloods(
-            tab,
-            (res) => {
-              dispatch(setLoader(false));
-
-              if (res.errors) {
-                toast.error(res.errors);
-              } else {
-                if (tab === "open") {
-                  setOpenRequests(res.requests);
-                  setRequestCount((prevCount) => ({
-                    ...prevCount,
-                    matched: res.pagination.total,
-                  }));
-                } else {
-                  setClosedRequests(res.requests);
-                  setRequestCount((prevCount) => ({
-                    ...prevCount,
-                    unmatched: res.pagination.total,
-                  }));
-                }
-              }
-            },
-            page
-          )
-        );
-      } catch (error) {
-        toast.error(error.message || "Error fetching requests");
-        dispatch(setLoader(false));
-      }
+      dispatch(setLoader(true));
+      dispatch(
+        donateBloods(tab, page, (res) => {
+          dispatch(setLoader(false));
+          if (res.errors) {
+            toast.error(res.errors);
+          } else {
+            if (tab === "open") {
+              setOpenRequests(res.requests);
+              setRequestCount((prevCount) => ({
+                ...prevCount,
+                matched: res.pagination.total,
+              }));
+            } else {
+              setClosedRequests(res.requests);
+              setRequestCount((prevCount) => ({
+                ...prevCount,
+                unmatched: res.pagination.total,
+              }));
+            }
+          }
+        })
+      );
     },
     [dispatch]
   );
 
   useEffect(() => {
-    loadData(activeTab);
-  }, [activeTab, dispatch, loadData, refresh]);
+    loadData(activeTab, currentPage); // Load data on tab or page change
+  }, [activeTab, currentPage, loadData]);
 
-  useEffect(() => {
-    loadData("open"); // Load open requests initially
-    loadData("closed"); // Load closed requests initially
-  }, [dispatch, loadData]);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   const handleCardClick = (request) => {
     navigate(`/bloodrequestdetail/${request.request_id}`);
@@ -102,109 +93,96 @@ const BloodRequest = () => {
   };
 
   const handleSubmit = () => {
-    if (!closureReason.trim()) {
-      toast.error("Closure reason is required");
+    if (!closureReason.trim() || !additionalComments.trim()) {
+      toast.error("Both reason and additional comments are required.");
       return;
     }
-    if (!additionalComments.trim()) {
-      toast.error("Additional comments are required");
-      return;
-    }
+
     const dataToSend = {
       closure_reason: closureReason,
       additional_comments: additionalComments,
     };
 
     dispatch(setLoader(true));
-
-    try {
-      dispatch(
-        CancelBloodRequest(selectedRequest.request_id, dataToSend, (res) => {
-          if (res.code === 200) {
-            toast.success(res.message);
-            closeModal();
-            setRefresh(!refresh);
-            navigate("/bloodrequest");
-          } else {
-            toast.error(res.message);
-          }
-          dispatch(setLoader(false));
-        })
-      );
-    } catch (error) {
-      toast.error(error.message || "An unexpected error occurred.");
-      dispatch(setLoader(false));
-    }
-  };
-
-  const renderRequestCard = (request, isOpen) => {
-    return (
-      <div
-        className="request-card"
-        key={request.request_id}
-        style={{ cursor: "pointer" }}
-        onClick={() => handleCardClick(request)}
-      >
-        <div className="request-header">
-          <div className="align-content-center">
-            <img
-              src={request.profile_picture || profPicImg}
-              alt="Profile"
-              style={{ height: "70px", width: "70px", borderRadius: "50%" }}
-              onError={(e) => {
-                e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
-                e.target.src = profPicImg; // Set to default image on error
-              }}
-            />
-          </div>
-          <div className="request-details">
-            <div className="request-date text-start"> {request.name}</div>
-            <div className="request-date text-start">
-              {formatDate(request.date)}
-            </div>
-            <div className="request-units text-start">
-              Units Required: {request.units_required}
-            </div>
-            <div className="request-address text-start">{request.location}</div>
-            <div className="request-status text-start">
-              Status: {request.status}
-            </div>
-            {/* Conditionally render the reason and additional comments for closed requests */}
-            {!isOpen && (
-              <>
-                <div className="request-units text-start">
-                  Reason: {request.reason}
-                </div>
-                <div className="request-units text-start">
-                  Additional Comments: {request.reason_comments}
-                </div>
-              </>
-            )}
-          </div>
-          {isOpen && (
-            <div className="blood-group text-start">
-              <img
-                src={bloodGroupImg}
-                alt="Blood Group"
-                onClick={(event) => openModal(request, event)}
-              />
-            </div>
-          )}
-        </div>
-
-        <div className="accept-donar-button d-flex justify-content-center">
-          {request.view_donors && (
-            <button
-              className="accepted-donors-btn"
-              onClick={(event) => handleAcceptedDonorsClick(request, event)}
-            >
-              Accepted Donors
-            </button>
-          )}
-        </div>
-      </div>
+    dispatch(
+      CancelBloodRequest(selectedRequest.request_id, dataToSend, (res) => {
+        dispatch(setLoader(false));
+        if (res.code === 200) {
+          toast.success(res.message);
+          closeModal();
+          setRefresh(!refresh);
+          loadData(activeTab, currentPage); // Refresh current page
+        } else {
+          toast.error(res.message);
+        }
+      })
     );
   };
+
+  const renderRequestCard = (request, isOpen) => (
+    <div
+      className="request-card"
+      key={request.request_id}
+      style={{ cursor: "pointer" }}
+      onClick={() => handleCardClick(request)}
+    >
+      <div className="request-header">
+        <div className="align-content-center">
+          <img
+            src={request.profile_picture || profPicImg}
+            alt="Profile"
+            style={{ height: "70px", width: "70px", borderRadius: "50%" }}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = profPicImg; // Set default image on error
+            }}
+          />
+        </div>
+        <div className="request-details">
+          <div className="request-date text-start">{request.name}</div>
+          <div className="request-date text-start">
+            {formatDate(request.date)}
+          </div>
+          <div className="request-units text-start">
+            Units Required: {request.units_required}
+          </div>
+          <div className="request-address text-start">{request.location}</div>
+          <div className="request-status text-start">
+            Status: {request.status}
+          </div>
+          {!isOpen && (
+            <>
+              <div className="request-units text-start">
+                Reason: {request.reason}
+              </div>
+              <div className="request-units text-start">
+                Additional Comments: {request.reason_comments}
+              </div>
+            </>
+          )}
+        </div>
+        {isOpen && (
+          <div className="blood-group text-start">
+            <img
+              src={bloodGroupImg}
+              alt="Blood Group"
+              onClick={(event) => openModal(request, event)}
+            />
+          </div>
+        )}
+      </div>
+      <div className="accept-donar-button d-flex justify-content-center">
+        {request.view_donors && (
+          <button
+            className="accepted-donors-btn"
+            onClick={(event) => handleAcceptedDonorsClick(request, event)}
+          >
+            Accepted Donors
+          </button>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -218,16 +196,22 @@ const BloodRequest = () => {
             Add New
           </button>
         </h3>
-        <div className="tabs mt-4 ">
+        <div className="tabs mt-4">
           <button
             className={`tab ${activeTab === "open" ? "active" : ""}`}
-            onClick={() => setActiveTab("open")}
+            onClick={() => {
+              setCurrentPage(1); // Reset to page 1 when switching tabs
+              setActiveTab("open");
+            }}
           >
             Open ({requestCount.matched || 0})
           </button>
           <button
             className={`tab ${activeTab === "closed" ? "active" : ""}`}
-            onClick={() => setActiveTab("closed")}
+            onClick={() => {
+              setCurrentPage(1); // Reset to page 1 when switching tabs
+              setActiveTab("closed");
+            }}
           >
             Closed ({requestCount.unmatched || 0})
           </button>
@@ -250,24 +234,22 @@ const BloodRequest = () => {
           align="center"
           className="mb-4"
           current={currentPage}
-          total={requestCount[activeTab] || 0}
-          onChange={(page) => {
-            setCurrentPage(page);
-            loadData(activeTab, page);
-          }}
+          total={requestCount[activeTab]}
+          pageSize={ITEMS_PER_PAGE}
+          onChange={handlePageChange}
         />
       </div>
 
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        contentLabel="Gratitude Message"
+        contentLabel="Close Request Modal"
         ariaHideApp={false}
         className="Modal"
         overlayClassName="Overlay"
       >
         <div className="d-flex flex-column align-items-center">
-          <h3 className="cancel_blood_req ">Close Request</h3>
+          <h3 className="cancel_blood_req">Close Request</h3>
           <label className="text-start w-100">
             Reason for closing the request
           </label>
