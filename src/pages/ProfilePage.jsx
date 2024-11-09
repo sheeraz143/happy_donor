@@ -84,7 +84,9 @@ const Profile = () => {
 
   // Function to handle form submission
   const onSubmit = (data) => {
-    // dispatch(setLoader(true)); // Start loading
+    // console.log("data: ", data);
+    // return;
+    dispatch(setLoader(true)); // Start loading
     try {
       const payload = {
         title: data?.title,
@@ -98,11 +100,13 @@ const Profile = () => {
         address: data?.address,
         location: data?.location,
         last_blood_donation_date: data?.lastDonationDate,
-        lat: "93.1232",
-        lon: "92.32323",
+        lat: data?.lat,
+        lon: data?.lon,
         // availability: data?.availability !== null ? data.availability : false,
         availability: true,
         terms_accepted: data?.terms,
+        aadhar_id: data?.aadhar_id,
+        abhid: data?.abhid,
       };
 
       dispatch(
@@ -129,7 +133,7 @@ const Profile = () => {
   return (
     <form className="form-container" onSubmit={handleSubmit(onSubmit)}>
       {/* Title */}
-      <div className="d-flex align-items-center justify-content-around">
+      <div className="d-flex align-items-center justify-content-between">
         <h3>Complete profile</h3>
         <Link to="/home" className="skip">
           Skip
@@ -322,6 +326,47 @@ const Profile = () => {
         )}
       </div>
 
+      {/* Aadhar Number */}
+      <div className="form-group">
+        <label>Aadhar ID </label>
+        <input
+          className="form-input"
+          type="text"
+          inputMode="numeric"
+          maxLength="16"
+          {...register("aadhar_id", {
+            required: false,
+            pattern: {
+              value: /^\d{16}$/,
+              message: "Aadhar Number must be exactly 16 digits",
+            },
+          })}
+        />
+        {errors.aadhar_id && (
+          <p className="error-message">{errors.aadhar_id.message}</p>
+        )}
+      </div>
+      {/* Aadhar Number */}
+      <div className="form-group">
+        <label>Abha ID </label>
+        <input
+          className="form-input"
+          type="text"
+          inputMode="numeric"
+          maxLength="14"
+          {...register("abhid", {
+            required: false,
+            pattern: {
+              value: /^\d{14}$/,
+              message: "Abha Number must be exactly 14 digits",
+            },
+          })}
+        />
+        {errors.abhid && (
+          <p className="error-message">{errors.abhid.message}</p>
+        )}
+      </div>
+
       {/* Availability Toggle Switch */}
       {/* <div className=" switch-container">
         <label className="switch-label">Availability</label>
@@ -343,8 +388,8 @@ const Profile = () => {
           className="form-checkbox"
         />
         <label>
-          I have read and agree to the <Link to="/terms">terms of service</Link>
-          and <Link to="/privacypolicy">privacy policy</Link>
+          I have read and agree to the <Link to="/terms"target="_blank" >terms of service</Link>
+          and <Link to="/privacypolicy" target="_blank">privacy policy</Link>
         </label>
         {errors.terms && (
           <p className="error-message">You must agree to the terms</p>

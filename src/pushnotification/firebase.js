@@ -18,13 +18,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
-// Function to register the service worker and get the FCM token
-export const requestForToken = async () => {
+// Function to register the service worker, get FCM token, and listen for messages
+export const requestForToken = async (onMessageReceived) => {
   try {
     const registration = await navigator.serviceWorker.register(
       "/firebase-messaging-sw.js"
     );
-    // console.log("Service Worker registered with scope:", registration.scope);
 
     const currentToken = await getToken(messaging, {
       serviceWorkerRegistration: registration,
@@ -40,35 +39,15 @@ export const requestForToken = async () => {
   } catch (error) {
     console.error("An error occurred while retrieving token:", error);
   }
+
+  // Set up the onMessage listener for foreground messages
+  onMessage(messaging, (payload) => {
+    console.log("Received FCM payload: ", payload);
+    toast.info(`${payload.notification.title}: ${payload.notification.body}`);
+
+    // Trigger the callback to refresh notifications in Navbar
+    if (onMessageReceived) onMessageReceived();
+  });
 };
-
-onMessage(messaging, (payload) => {
-  console.log("Received FCM payload: ", payload);
-
-  toast.info(`${payload.notification.title}: ${payload.notification.body}`);
-});
-
-// Listener for foreground messages
-// export const onMessageListener = () =>
-//     new Promise((resolve) => {
-//       // Hardcoded payload for testing purposes
-//       const testPayload = {
-//         notification: {
-//           title: "Test Notification",
-//           body: "This is a test notification message.",
-//           icon: "/path-to-icon.png", // Optional icon path
-//         },
-//       };
-
-//       // Immediately resolve with the test payload for testing
-//       console.log("Simulating payload: ", testPayload);
-//       resolve(testPayload);
-
-//       // Also handle real FCM messages when they come in
-//       onMessage(messaging, (payload) => {
-//         console.log("Received FCM payload: ", payload);
-//         resolve(payload);
-//       });
-//     });
 
 export default app;

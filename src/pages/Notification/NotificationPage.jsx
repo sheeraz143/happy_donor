@@ -13,9 +13,11 @@ import {
 import { toast } from "react-toastify";
 import { formatDistanceToNow } from "date-fns";
 import { FaCheck, FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function NotificationPage({ onRefreshNavbar }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Use navigate hook from react-router-dom
   const [data, setData] = useState([]);
   const [refresh, setRefresh] = useState(false);
 
@@ -42,9 +44,6 @@ export default function NotificationPage({ onRefreshNavbar }) {
     dispatch(
       markAllAsRead((response) => {
         if (response.status) {
-          // setData(
-          //   data.map((notification) => ({ ...notification, read: true }))
-          // ); // Update local state
           toast.success(response.data?.data?.message);
           setRefresh(!refresh);
         } else {
@@ -59,7 +58,6 @@ export default function NotificationPage({ onRefreshNavbar }) {
     dispatch(
       deleteAllNotifications((response) => {
         if (response.code == 200) {
-          // setData([]); // Clear all notifications from local state
           toast.success(response.message);
           setRefresh(!refresh);
         } else {
@@ -74,7 +72,6 @@ export default function NotificationPage({ onRefreshNavbar }) {
     dispatch(
       deleteNotification(id, (response) => {
         if (response.status) {
-          // setData(data.filter((notification) => notification.id !== id)); // Update local state
           toast.success(response.data?.data?.message);
           setRefresh(!refresh);
         } else {
@@ -82,6 +79,23 @@ export default function NotificationPage({ onRefreshNavbar }) {
         }
       })
     );
+  };
+
+  // Handler to navigate to the appropriate screen when a notification is clicked
+  const handleNotificationClick = (notification) => {
+    console.log('notification: ', notification);
+    if (notification.screen === "Request") {
+      navigate(`/bloodrequestdetail/${notification.link}`);
+    }
+    console.log('notification: ', notification);
+    if (notification.screen === "Donor") {
+      navigate(`/donate`);
+    }
+    
+    if (notification.screen === "Çamp") {
+      navigate(`/campdetails/${notification.link}`);
+    }
+    
   };
 
   return (
@@ -102,7 +116,11 @@ export default function NotificationPage({ onRefreshNavbar }) {
         <h4 className="text-center">No data available</h4>
       ) : (
         data.map((notification) => (
-          <div key={notification.id} className="notification-card">
+          <div
+            key={notification.id}
+            className="notification-card"
+            onClick={() => handleNotificationClick(notification)} // Add click handler for navigation
+          >
             <div className="notification-content">
               <p className="notification-title">{notification.title}</p>
               <p className="notification-subtitle">{notification.message}</p>
@@ -114,7 +132,10 @@ export default function NotificationPage({ onRefreshNavbar }) {
             </div>
             <button
               className="delete-button"
-              onClick={() => handleDeleteNotification(notification.id)}
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent the notification click handler from firing
+                handleDeleteNotification(notification.id);
+              }}
             >
               <FaTrash />
             </button>

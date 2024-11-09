@@ -57,6 +57,7 @@ function Navbar({ refreshNavbar }) {
   }, [location.pathname]);
 
   useEffect(() => {
+    console.log("Navbar useEffect triggered! Refreshing notifications..."); 
     dispatch(setLoader(true));
     dispatch(
       ViewNotifications((res) => {
@@ -64,14 +65,15 @@ function Navbar({ refreshNavbar }) {
         if (res.errors) {
           toast.error(res.errors);
         } else {
-          setCount(res.pagination?.total);
+          setCount(res?.total);
+          console.log('res: ', res);
         }
       })
     ).catch((error) => {
       toast.error(error.message || "Error fetching notifications");
       dispatch(setLoader(false));
     });
-  }, [dispatch, refreshNavbar]);
+  }, [refreshNavbar]);
 
   const handleNavigation = (path) => {
     console.log("path: ", path);
@@ -147,10 +149,10 @@ function Navbar({ refreshNavbar }) {
         <NavLink
           to="/bloodrequest"
           className={activeLink === "/bloodrequest" ? "active" : "inactive"}
-          // onClick={(e) => {
-          //   e.preventDefault();
-          //   handleNavigation(userType == 5 ? "/camps/list" : "/bloodrequest");
-          // }}
+          onClick={(e) => {
+            e.preventDefault();
+            handleNavigation(userType == 4 || userType == 5 ? "/camps/list" : "/bloodrequest");
+          }}
         >
           Request
         </NavLink>

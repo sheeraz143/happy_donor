@@ -353,7 +353,7 @@ function Request() {
 
       {/* Wiiling to transport*/}
       <div className="form-group">
-        <label>Wiiling to arrange the transport to the doctor?</label>
+        <label>Wiiling to arrange the transport to the donor?</label>
         <select
           className="form-input"
           {...register("willing", { required: true })}

@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch } from "react-redux";
-import { AcceptedDonors, setLoader } from "../../redux/product";
+import { AcceptedDonors, MarkDonated, setLoader, ViewBloodRequest } from "../../redux/product";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
 import "../../css/BloodRequest.css";
-import bloodGroupImg from "../../assets/bloodimage.png";
+// import bloodGroupImg from "../../assets/bloodimage.png";
 import profPicImg from "../../assets/prof_img.png";
 import { formatDate } from "../../utils/dateUtils";
+import { Link } from "react-router-dom";
 
 const AcceptDonorList = () => {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ const AcceptDonorList = () => {
   // const [donationStatus, setDonationStatus] = useState({});
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedDonor, setSelectedDonor] = useState(null);
+  const [data, setData] = useState({});
+
 
   useEffect(() => {
     dispatch(setLoader(true));
@@ -45,8 +48,60 @@ const AcceptDonorList = () => {
     }
   }, [dispatch, id]);
 
+  useEffect(() => {
+    dispatch(setLoader(true));
+    try {
+      dispatch(
+        ViewBloodRequest(id, (res) => {
+          dispatch(setLoader(false));
+
+          if (res.errors) {
+            toast.error(res.errors);
+          } else {
+            setData(res);
+          }
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "Error fetching requests");
+      dispatch(setLoader(false));
+    }
+  }, []);
+
   const markAsDonated = (donor) => {
-    navigate(`/confirmdonation/${id}`, { state: { donor } });
+    console.log('donor: ', donor);
+    // navigate(`/confirmdonation/${id}`, { state: { donor } });
+    // const confirmDonated = () => {
+      dispatch(setLoader(true));
+  
+      const dataToSend = {
+        request_id: data?.request_id,
+        donor_id: donor?.donor_id,
+        units_donated: "1",
+      };
+      console.log('dataToSend: ', dataToSend);
+  
+      try {
+        dispatch(
+          // MarkDonated({ request_id: requestId, donor_id: donorId }, (res) => {
+          MarkDonated(dataToSend, (res) => {
+            if (res.code === 200) {
+              toast.success(res.message);
+              // navigate(`/donarlist/${id}`);
+              // setRefresh(!refresh);
+            } else {
+              toast.error(res.message);
+              // navigate(`/donarlist/${id}`);
+            }
+            dispatch(setLoader(false));
+  
+          })
+        );
+      } catch (error) {
+        toast.error(error.message || "Error marking as donated");
+        dispatch(setLoader(false));
+      }
+    
   };
 
   const openModal = (donor) => {
@@ -84,13 +139,15 @@ const AcceptDonorList = () => {
             />
           </div>
           <div className="request-details">
-            <div className="request-date text-start">{donor.patient_name}</div>
+            <div className="request-date text-start">{donor?.donor_name}</div>
             <div className="request-units text-start">
               {formatDate(donor.date)}
             </div>
             <div className="request-date text-start">
-              {donor?.address}
+              {donor?.location}
             </div>
+            <label className="request-date text-start">Phone Number: </label><Link to="#" onClick={(e) => { e.preventDefault(); window.location.href = `tel:${donor?.phone_number}`; }}>{donor?.phone_number}</Link>
+
             <div
               className="request-date text-start"
               style={{ color: "#0750b1" }}
@@ -99,7 +156,9 @@ const AcceptDonorList = () => {
             </div>
           </div>
           <div className="blood-group">
-            <img src={bloodGroupImg} alt="Blood Group" />
+          <h3 className="blood-group" style={{color:"red"}} >{donor?.blood_group || 'Unknown'}</h3> {/* Show blood group text */}
+
+            {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
           </div>
         </div>
 
@@ -145,6 +204,7 @@ const AcceptDonorList = () => {
                 <button
                   className="accepted-donors-btn"
                   onClick={() => openModal(donor)}
+                  // onClick={() => markAsDonated(donor)}
                 >
                   View Gratitude Message
                 </button>

@@ -66,6 +66,8 @@ import NotificationPage from "./pages/Notification/NotificationPage";
 // import { toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 import { requestForToken } from "./pushnotification/firebase";
+import PaginatedList from "./pages/pagination";
+// import FirebaseComponent from "./pushnotification/FirebaseComponent";
 
 function App() {
   const darkMode = useSelector((state) => state.theme.darkMode);
@@ -82,33 +84,45 @@ function App() {
     document.body.className = darkMode ? "dark-mode" : "";
   }, [darkMode, location.pathname]);
 
-  useEffect(() => {
-    // console.log("notification: ", notification);
+  // useEffect(() => {
+  //   // console.log("notification: ", notification);
 
-    // Request permission and get FCM token
-    requestForToken()
+  //   // Request permission and get FCM token
+  //   requestForToken()
+  //     .then((token) => {
+  //       if (token) {
+  //         localStorage.setItem("fcmToken", token);
+  //         // console.log("FCM Token:", token);
+  //         // Optionally, send the token to your backend for later use
+  //       }
+  //     })
+  //     .catch((err) => console.log("Notification permission denied:", err));
+
+  //   // // Listen for foreground messages
+  //   // onMessageListener()
+  //   //   .then((payload) => {
+  //   //     console.log("Received notification:", payload);
+  //   //     setNotification({
+  //   //       title: payload.notification.title,
+  //   //       body: payload.notification.body,
+  //   //     });
+  //   //     toast.info(
+  //   //       `${payload.notification.title}: ${payload.notification.body}`
+  //   //     );
+  //   //   })
+  //   //   .catch((err) => console.log("Failed to receive message:", err));
+  // }, []);
+
+  useEffect(() => {
+    // Request permission and get FCM token, and listen for new messages
+    requestForToken(handleRefreshNavbar)
       .then((token) => {
         if (token) {
           localStorage.setItem("fcmToken", token);
-          // console.log("FCM Token:", token);
-          // Optionally, send the token to your backend for later use
+          console.log("FCM Token:", token);
         }
       })
       .catch((err) => console.log("Notification permission denied:", err));
-
-    // // Listen for foreground messages
-    // onMessageListener()
-    //   .then((payload) => {
-    //     console.log("Received notification:", payload);
-    //     setNotification({
-    //       title: payload.notification.title,
-    //       body: payload.notification.body,
-    //     });
-    //     toast.info(
-    //       `${payload.notification.title}: ${payload.notification.body}`
-    //     );
-    //   })
-    //   .catch((err) => console.log("Failed to receive message:", err));
   }, []);
 
   const hideNavbarAndFooter =
@@ -128,6 +142,8 @@ function App() {
   const [refreshNavbar, setRefreshNavbar] = useState(false);
 
   const handleRefreshNavbar = () => {
+    console.log("handleRefreshNavbar called! Toggling refreshNavbar state."); // Add this line
+
     setRefreshNavbar((prev) => !prev);
   };
 
@@ -141,7 +157,7 @@ function App() {
         <Route
           path="/login/organisation"
           element={<LoginOrg onRefreshNavbar={handleRefreshNavbar} />}
-        /> 
+        />
         <Route
           path="/login/bloodbank"
           element={<LoginBloodBank onRefreshNavbar={handleRefreshNavbar} />}
@@ -159,6 +175,7 @@ function App() {
         <Route path="/terms" element={<Terms />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<Home />} />
+          <Route path="/pagination" element={<PaginatedList />} />
           {/* <Route path="/dashboard" element={<Dashboard />} /> */}
           <Route element={<ProtectedRoute />}>
             {/* <Route
