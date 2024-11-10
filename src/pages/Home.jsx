@@ -33,6 +33,7 @@ function Home() {
   const [refresh, setRefresh] = useState(false);
 
   const isProfileUpdate = localStorage.getItem("is_profile_update");
+
   const storedUserType = localStorage.getItem("user_type");
 
   useEffect(() => {
@@ -149,10 +150,10 @@ function Home() {
   };
 
   const handleNavigation = (path) => {
-    console.log('path: ', path);
-    console.log('isProfileUpdate: ', isProfileUpdate);
-    console.log('userType: ', storedUserType);
-  
+    console.log("path: ", path);
+    console.log("isProfileUpdate: ", isProfileUpdate);
+    console.log("userType: ", storedUserType);
+
     if (isProfileUpdate == 0) {
       if (storedUserType == 4 || storedUserType == 5) {
         navigate(path);
@@ -172,7 +173,6 @@ function Home() {
       navigate(path);
     }
   };
-  
 
   const renderRequestCard = (request) => {
     return (
@@ -338,29 +338,41 @@ function Home() {
         ""
       ) : (
         <>
-          <div
-            className="recent-requests mt-4"
-            style={{ maxWidth: "1280px", margin: "0 auto" }}
-          >
-            <h2 style={{ fontSize: "1.5rem" }}>
-              Recent Blood Requests
-              <div>
-                <Link
-                  to="/donate"
-                  className="seeall"
-                  style={{ fontSize: "1.25rem" }}
-                >
-                  See all
-                </Link>
-              </div>
-            </h2>
-          </div>
+          {isProfileUpdate !== 0 && (
+            <div
+              className="recent-requests mt-4"
+              style={{
+                maxWidth: "1280px",
+                margin: "0 auto",
+                display: isProfileUpdate == 0 ? "none" : "block",
+              }}
+            >
+              <h2 style={{ fontSize: "1.5rem" }}>
+                Recent Blood Requests
+                <div>
+                  <Link
+                    to="/donate"
+                    className="seeall"
+                    style={{ fontSize: "1.25rem" }}
+                  >
+                    See all
+                  </Link>
+                </div>
+              </h2>
+            </div>
+          )}
           <div className="blood-request-container">
             <div className="requests mt-5">
               {recentBloodRequest?.length > 0 ? (
                 recentBloodRequest.map((request) => renderRequestCard(request))
               ) : (
-                <p>No recent blood requests found.</p>
+                <p
+                  style={{
+                    display: isProfileUpdate == 0 ? "none" : "block",
+                  }}
+                >
+                  No recent blood requests found.
+                </p>
               )}
             </div>
           </div>

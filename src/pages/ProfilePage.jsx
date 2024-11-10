@@ -109,7 +109,9 @@ const Profile = () => {
         gender: data?.gender,
         address: data?.address,
         location: data?.location,
-        last_blood_donation_date: data?.lastDonationDate ? data?.lastDonationDate : "",
+        last_blood_donation_date: data?.lastDonationDate
+          ? data?.lastDonationDate
+          : "",
         lat: data?.lat,
         lon: data?.lon,
         // availability: data?.availability !== null ? data.availability : false,
@@ -308,7 +310,7 @@ const Profile = () => {
           defaultValue={location}
           onPlaceSelected={(place) => {
             if (place.geometry) {
-              setValue("location", place.formatted_address, {
+              setValue("address", place.formatted_address, {
                 shouldValidate: true,
               });
               setValue("lat", String(place.geometry.location.lat()), {
@@ -317,17 +319,17 @@ const Profile = () => {
               setValue("lon", String(place.geometry.location.lng()), {
                 shouldValidate: true,
               });
-              trigger(["location", "lat", "lon"]); // Manually trigger validation
+              trigger(["address", "lat", "lon"]); // Manually trigger validation
             }
           }}
           options={{
             types: ["establishment"],
             componentRestrictions: { country: "IN" },
           }}
-          {...register("location", { required: true })}
+          {...register("address", { required: true })}
         />
 
-        {errors.location && (
+        {errors.address && (
           <p className="error-message">Location is required</p>
         )}
       </div>
@@ -356,7 +358,7 @@ const Profile = () => {
           onFocus={(e) => {
             e.target.showPicker();
           }}
-          {...register("lastDonationDate", { required: false })}
+          {...register("lastDonationDate", { required: true })}
         />
         {errors.lastDonationDate && (
           <p className="error-message">Last Donation Date is required</p>

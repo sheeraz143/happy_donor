@@ -146,7 +146,7 @@ function DonationHistory() {
       </div>
       <div>
         {openRequests?.length === 0 && (
-          <h4 className="mx-auto mb-5">No Data available.</h4>
+          <h4 className="mx-auto mb-5 text-center">No Data available.</h4>
         )}
       </div>
       <div>

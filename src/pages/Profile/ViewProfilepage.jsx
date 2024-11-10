@@ -85,8 +85,10 @@ export default function ViewProfilepage() {
               alt="Blood Group"
               className="Blood_Group_img"
             /> */}
-          <h3 className="blood-group" style={{color:"red"}}>{getData.blood_group || ''}</h3> {/* Show blood group text */}
-
+            <h3 className="blood-group" style={{ color: "red" }}>
+              {getData.blood_group || ""}
+            </h3>{" "}
+            {/* Show blood group text */}
             {/* Fallback to default blood group image */}
           </div>
         </div>
@@ -125,11 +127,13 @@ export default function ViewProfilepage() {
             {getData ? renderRequestCard() : <p>No profile data found.</p>}
           </div>
         </div>
-        <div className="switch-container mb-3"
-         style={{
-          cursor: "pointer",
-          display: userType == 4 || userType == 5 ? "none" : "flex",
-        }}>
+        <div
+          className="switch-container mb-3"
+          style={{
+            cursor: "pointer",
+            display: userType == 4 || userType == 5 ? "none" : "flex",
+          }}
+        >
           <label className="switch-label">Availability</label>
           <label className="switch">
             <input
@@ -153,7 +157,6 @@ export default function ViewProfilepage() {
           }}
           onClick={() => {
             const profileVerified = localStorage.getItem("is_profile_update");
-            console.log("profileVerified: ", profileVerified);
             if (profileVerified == 1) {
               navigate("/editprofile");
             } else {
@@ -173,7 +176,13 @@ export default function ViewProfilepage() {
             display: userType == 4 || userType == 5 ? "none" : "flex",
           }}
           onClick={() => {
-            navigate("/donationhistory");
+            const profileVerified = localStorage.getItem("is_profile_update");
+            if (profileVerified == 1) {
+              navigate("/donationhistory");
+            } else {
+              navigate("/profile");
+              toast.error("please update your profile");
+            }
           }}
         >
           <img src={SuccessIcon} alt="profile" />
@@ -186,7 +195,13 @@ export default function ViewProfilepage() {
             display: userType == 4 || userType == 5 ? "none" : "flex",
           }}
           onClick={() => {
-            navigate("/bloodrequest");
+            const profileVerified = localStorage.getItem("is_profile_update");
+            if (profileVerified == 1) {
+              navigate("/bloodrequest");
+            } else {
+              navigate("/profile");
+              toast.error("please update your profile");
+            }
           }}
         >
           <img src={Myrequest} alt="profile" />
