@@ -96,7 +96,7 @@ const Footer = () => {
           <ul>
             <li>
               <a
-                href="/app.html"
+                href="/index.html"
                 style={{ color: "#fff", textDecoration: "none" }}
               >
                 Home
@@ -112,7 +112,7 @@ const Footer = () => {
             </li>
             <li>
               <a
-                href="/app.html"
+                href="/index.html"
                 style={{ color: "#fff", textDecoration: "none" }}
               >
                 Services

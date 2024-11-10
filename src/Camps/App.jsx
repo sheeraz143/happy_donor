@@ -50,6 +50,7 @@ import ApproveDonors from "./pages/Approvals/ApproveDonors";
 import ProtectedRoute from "./ProtectedRoute";
 import Camps from "./Camps/Camps";
 import CampsList from "./Camps/CampsList";
+import CampsrequestDetailPage from "./CampsrequestDetailPage";
 
 function App() {
   const darkMode = useSelector((state) => state.theme.darkMode);
@@ -57,7 +58,7 @@ function App() {
 
   useEffect(() => {
     if (location.pathname === "/") {
-      window.location.href = "/app.html";
+      window.location.href = "/index.html";
     }
 
     document.body.className = darkMode ? "dark-mode" : "";
