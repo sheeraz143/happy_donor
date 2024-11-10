@@ -153,8 +153,8 @@
                                 <a href="#">Services</a>
                                 <ul class="drop-down">
                                       
-                                        <li> <a href="https://app.dev.happydonors.ngo/login" target="_blank" title="Become a Donor" > Become a Donor</a></li>
-                                        <li><a href="https://app.dev.happydonors.ngo/login" target="_blank" title="Find a Donor">Find a Donor</a></li>
+                                        <li> <a href="https://app.happydonors.ngo/login" target="_blank" title="Become a Donor" > Become a Donor</a></li>
+                                        <li><a href="https://app.happydonors.ngo/login" target="_blank" title="Find a Donor">Find a Donor</a></li>
                                         <li><a href="#" title="Blood Banks ">Blood Banks </a></li>
                                         <li><a href="#" title="Organisations">Organisations </a></li>
                                     </ul> 
