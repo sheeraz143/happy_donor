@@ -113,7 +113,8 @@ function Navbar({ refreshNavbar }) {
     localStorage.removeItem("user_type");
     localStorage.removeItem("is_profile_update");
     localStorage.removeItem("oAuth");
-    navigate("/");
+    // navigate("/index.html");
+    window.location.href = "https://happydonors.ngo/index.html";
   };
 
   const handleMouseEnter = () => {
