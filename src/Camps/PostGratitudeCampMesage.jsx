@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 
 export default function PostGratitudeCampMesage() {
-  const [media, setMedia] = useState([]); // State for all media types
+  const [media, setMedia] = useState(null); // Single media file state
   const [textMessage, setTextMessage] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,6 +22,8 @@ export default function PostGratitudeCampMesage() {
   const requestId = queryParams.get("requestId");
   const donorId = queryParams.get("donorId");
   const [data, setData] = useState({});
+  const { donorData } = location.state || {};
+  console.log("donorData: ", donorData);
 
   useEffect(() => {
     dispatch(setLoader(true));
@@ -44,8 +46,8 @@ export default function PostGratitudeCampMesage() {
   }, []);
 
   const handleMediaUpload = (event) => {
-    const files = Array.from(event.target.files);
-    setMedia((prev) => [...prev, ...files]); // Add new files to existing media
+    const file = event.target.files[0]; // Get only the first selected file
+    setMedia(file); // Set the single media file in state
   };
 
   const handleCalendarClick = () => {
@@ -53,21 +55,25 @@ export default function PostGratitudeCampMesage() {
     fileInput.type = "file";
     fileInput.accept = "video/*"; // Accept video files only
     fileInput.onchange = (e) => {
-      const files = Array.from(e.target.files);
-      setMedia((prev) => [...prev, ...files]); // Add video files to media
+      const file = e.target.files[0];
+      setMedia(file); // Replace any previous media with the new video
     };
     fileInput.click();
   };
 
   const handleSubmit = () => {
+    if (!textMessage) {
+      toast.error("Message cannot be empty");
+      return;
+    }
     const formData = new FormData();
     formData.append("request_id", requestId);
     formData.append("donor_id", donorId);
     formData.append("message", textMessage);
 
-    media.forEach((file) => {
-      formData.append("media[]", file); // Append all media files
-    });
+    if (media) {
+      formData.append("media[]", media); // Append only the current media file
+    }
 
     dispatch(setLoader(true));
     try {
@@ -75,24 +81,19 @@ export default function PostGratitudeCampMesage() {
         SendGratitudeMessage(formData, (res) => {
           dispatch(setLoader(false));
 
-          // Check for 422 status code
           if (res.code === 422) {
-            // Check if errors exist
             if (res.errors) {
-              // Extract specific media error messages
               for (const [key, value] of Object.entries(res.errors)) {
-                // Show the specific error message for media
                 if (key.startsWith("media.")) {
                   value.forEach((error) => {
-                    toast.error(error); // Show each error message
+                    toast.error(error);
                   });
                 }
               }
             } else {
-              toast.error("The media must not be greater than 5120 kilobytes.");
+              toast.error("The media must not be greater than 25mb.");
             }
           } else if (res.errors) {
-            // Handle other types of errors
             toast.error(res.errors);
           } else if (res.code === 404) {
             toast.error(res.message);
@@ -115,9 +116,11 @@ export default function PostGratitudeCampMesage() {
         className="card col-lg-8 col-md-8 col-sm-8 mx-auto align-items-start mt-5 mb-5 gap-3"
         style={{ color: "#097E14" }}
       >
-        <div>{data?.name}</div>
+        <h5>Donor Info</h5>
+        <div>{donorData?.donor_name}</div>
         <div>Blood Type: {data?.blood_group}</div>
-        <div>Quantity Needed: {data?.units_required}</div>
+        <div>Status: {donorData?.donation_status}</div>
+        {/* <div>Dono{donorData?.phone_number}</div> */}
         <div>{data?.location}</div>
       </div>
       <h5
@@ -178,34 +181,30 @@ export default function PostGratitudeCampMesage() {
               onClick={handleCalendarClick}
             />
           </div>
-          {media.length > 0 && (
+          {media && (
             <div className="text-center mt-3">
-              {media.map((file, index) => {
-                const fileURL = URL.createObjectURL(file);
-                return file.type.startsWith("image/") ? (
-                  <img
-                    key={index}
-                    src={fileURL}
-                    alt={`Uploaded Preview ${index + 1}`}
-                    className="img-fluid rounded"
-                    style={{
-                      marginRight: "10px",
-                      marginBottom: "10px",
-                      height: "100px",
-                    }}
-                  />
-                ) : file.type.startsWith("audio/") ? (
-                  <audio key={index} controls>
-                    <source src={fileURL} type="audio/*" />
-                    Your browser does not support the audio tag.
-                  </audio>
-                ) : file.type.startsWith("video/") ? (
-                  <video key={index} width="200" controls>
-                    <source src={fileURL} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                ) : null;
-              })}
+              {media.type.startsWith("image/") ? (
+                <img
+                  src={URL.createObjectURL(media)}
+                  alt="Uploaded Preview"
+                  className="img-fluid rounded"
+                  style={{
+                    marginRight: "10px",
+                    marginBottom: "10px",
+                    height: "100px",
+                  }}
+                />
+              ) : media.type.startsWith("audio/") ? (
+                <audio controls>
+                  <source src={URL.createObjectURL(media)} type="audio/*" />
+                  Your browser does not support the audio tag.
+                </audio>
+              ) : media.type.startsWith("video/") ? (
+                <video width="200" controls>
+                  <source src={URL.createObjectURL(media)} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              ) : null}
             </div>
           )}
         </div>

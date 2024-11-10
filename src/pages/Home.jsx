@@ -192,8 +192,7 @@ function Home() {
           </div>
           <div className="request-details ms-3">
             <div className="request-date text-start">
-              Attender: {request?.username}{" "}
-              {/* {request?.attender_last_name} */}
+              {request?.username} {/* {request?.attender_last_name} */}
             </div>
             <div className="request-units text-start">
               Units Required: {request?.quantity_units}
@@ -201,16 +200,20 @@ function Home() {
             <div className="request-address text-start">
               Address: {request?.delivery_address}
             </div>
-            <label>Phone Number: </label>
-            <Link
-              to="#"
-              onClick={(e) => {
-                e.preventDefault();
-                window.location.href = `tel:${request?.phone_number}`;
-              }}
-            >
-              {request?.phone_number}
-            </Link>
+            {request?.phone_number && (
+              <div>
+                <label>Phone Number: </label>
+                <Link
+                  to="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href = `tel:${request.phone_number}`;
+                  }}
+                >
+                  {request.phone_number}
+                </Link>
+              </div>
+            )}
           </div>
           <div className="blood-group ms-auto">
             {/* <img

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import "../../css/BloodRequest.css";
-// import bloodGroupImg from "../../assets/bloodgroup.png";
 import profPicImg from "../../assets/prof_img.png";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
@@ -13,6 +12,7 @@ import {
 import { Pagination } from "antd";
 import Modal from "react-modal";
 import { formatDate } from "../../utils/dateUtils";
+import { FaTimes } from "react-icons/fa";
 
 const ITEMS_PER_PAGE = 10; // Number of items per page
 
@@ -45,7 +45,7 @@ const BloodRequest = () => {
     setModalIsOpen(false);
   };
 
-  // Load data with specified tab and page number
+  // Load data for open and closed requests
   const loadData = useCallback(
     (tab, page = 1) => {
       dispatch(setLoader(true));
@@ -75,8 +75,15 @@ const BloodRequest = () => {
     [dispatch]
   );
 
+  // Load data for both tabs initially and on refresh
   useEffect(() => {
-    loadData(activeTab, currentPage); // Load data on tab or page change
+    loadData("open", 1);
+    loadData("closed", 1);
+  }, [loadData, refresh]);
+
+  // Load data when activeTab or currentPage changes
+  useEffect(() => {
+    loadData(activeTab, currentPage);
   }, [activeTab, currentPage, loadData]);
 
   const handlePageChange = (page) => {
@@ -110,8 +117,7 @@ const BloodRequest = () => {
         if (res.code === 200) {
           toast.success(res.message);
           closeModal();
-          setRefresh(!refresh);
-          loadData(activeTab, currentPage); // Refresh current page
+          setRefresh(!refresh); // Trigger data refresh
         } else {
           toast.error(res.message);
         }
@@ -123,9 +129,33 @@ const BloodRequest = () => {
     <div
       className="request-card"
       key={request.request_id}
-      style={{ cursor: "pointer" }}
+      style={{ cursor: "pointer", position: "relative" }}
       onClick={() => handleCardClick(request)}
     >
+      <button
+        className="close-button"
+        onClick={(event) => openModal(request, event)}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          background: "white",
+          border: "1px solid lightgray",
+          borderRadius: "50%",
+          color: "gray",
+          cursor: "pointer",
+          fontSize: "16px",
+          width: "24px",
+          height: "24px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
+        }}
+      >
+        <FaTimes />
+      </button>
+
       <div className="request-header">
         <div className="align-content-center">
           <img
@@ -134,7 +164,7 @@ const BloodRequest = () => {
             style={{ height: "70px", width: "70px", borderRadius: "50%" }}
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = profPicImg; // Set default image on error
+              e.target.src = profPicImg;
             }}
           />
         </div>
@@ -163,19 +193,9 @@ const BloodRequest = () => {
         </div>
         {isOpen && (
           <div className="blood-group text-start">
-            {/* <img
-              src={bloodGroupImg}
-              alt="Blood Group"
-              onClick={(event) => openModal(request, event)}
-            /> */}
-            <h3
-              className="blood-group"
-              style={{ color: "red" }}
-              onClick={(event) => openModal(request, event)}
-            >
+            <h3 className="blood-group" style={{ color: "red" }}>
               {request.blood_group || ""}
-            </h3>{" "}
-            {/* Show blood group text */}
+            </h3>
           </div>
         )}
       </div>
@@ -208,7 +228,7 @@ const BloodRequest = () => {
           <button
             className={`tab ${activeTab === "open" ? "active" : ""}`}
             onClick={() => {
-              setCurrentPage(1); // Reset to page 1 when switching tabs
+              setCurrentPage(1);
               setActiveTab("open");
             }}
           >
@@ -217,7 +237,7 @@ const BloodRequest = () => {
           <button
             className={`tab ${activeTab === "closed" ? "active" : ""}`}
             onClick={() => {
-              setCurrentPage(1); // Reset to page 1 when switching tabs
+              setCurrentPage(1);
               setActiveTab("closed");
             }}
           >

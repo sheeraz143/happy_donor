@@ -16,6 +16,7 @@ import {
 } from "../../redux/product";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
+import { FaTimes } from "react-icons/fa";
 
 export default function BloodrequestDetailPage() {
   const navigate = useNavigate();
@@ -121,21 +122,45 @@ export default function BloodrequestDetailPage() {
           style={{ flex: "0 0 60%" }}
         >
           <div className="col-lg-10 col-md-10 col-sm-10">
-            <div className="request-card" key={data.request_id}>
+            <div
+              className="request-card"
+              key={data.request_id}
+              style={{ position: "relative" }}
+            >
+              {/* Close Icon in the top-right corner */}
+              <button
+                className="close-button"
+                onClick={(event) => openModal(data, event)}
+                style={{
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  background: "white", // White background for contrast
+                  border: "1px solid lightgray", // Light gray border for better visibility
+                  borderRadius: "50%", // Circle shape
+                  color: "gray",
+                  cursor: "pointer",
+                  fontSize: "16px",
+                  width: "24px",
+                  height: "24px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)", // Optional shadow for depth
+                }}
+              >
+                <FaTimes />
+              </button>
+
               <div className="request-header d-flex align-items-center">
                 <div className="align-content-center">
                   <img
                     className="prof_img"
-                    src={data.profile_picture}
+                    src={data?.profile_picture || profPicImg}
                     alt="Profile"
-                    // style={{
-                    //   width: "120px",
-                    //   height: "120px",
-                    //   borderRadius: "50%",
-                    // }}
                     onError={(e) => {
-                      e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
-                      e.target.src = profPicImg; // Set to default image on error
+                      e.target.onerror = null;
+                      e.target.src = profPicImg;
                     }}
                   />
                 </div>
@@ -147,16 +172,18 @@ export default function BloodrequestDetailPage() {
                   <div className="text-start">Address: {data.address}</div>
                 </div>
                 <div className="blood-group ms-auto">
-                {/*   <img
+                  {/*   <img
                     src={bloodGroupImg}
                     alt="Blood Group"
                     onClick={openModal}
                     className="cursor-pointer"
                   /> */}
-              <h3 className="blood-group" style={{color:"red"}} onClick={(event) => openModal(data, event)}>{data.blood_group || 'Unknown'}</h3> {/* Show blood group text */}
-                  
+                  <h3 className="blood-group" style={{ color: "red" }}>
+                    {data.blood_group || "Unknown"}
+                  </h3>
                 </div>
               </div>
+
               {data.view_donors && (
                 <div className="d-flex justify-content-center mt-3">
                   <button
@@ -170,12 +197,12 @@ export default function BloodrequestDetailPage() {
               )}
             </div>
           </div>
+
           <div className="col-lg-10 col-md-10 col-sm-10 mt-2">
             <Steps
               progressDot
               current={currentStep}
               direction="vertical"
-              // style={{ display: "flex", alignItems: "center" }}
               items={[
                 { title: "Initiated", description: "" },
                 { title: "Active", description: "" },

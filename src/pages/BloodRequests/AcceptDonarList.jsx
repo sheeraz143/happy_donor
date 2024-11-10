@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch } from "react-redux";
-import { AcceptedDonors, MarkDonated, setLoader, ViewBloodRequest } from "../../redux/product";
+import {
+  AcceptedDonors,
+  MarkDonated,
+  setLoader,
+  ViewBloodRequest,
+} from "../../redux/product";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
 import "../../css/BloodRequest.css";
@@ -14,13 +19,14 @@ const AcceptDonorList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
+  console.log("id: ", id);
   const [donors, setDonors] = useState([]);
   const [requestId, setRequestId] = useState({});
   // const [donationStatus, setDonationStatus] = useState({});
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedDonor, setSelectedDonor] = useState(null);
   const [data, setData] = useState({});
-
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     dispatch(setLoader(true));
@@ -46,7 +52,7 @@ const AcceptDonorList = () => {
       toast.error(error.message || "Error fetching requests");
       dispatch(setLoader(false));
     }
-  }, [dispatch, id]);
+  }, [dispatch, id, refresh]);
 
   useEffect(() => {
     dispatch(setLoader(true));
@@ -66,42 +72,42 @@ const AcceptDonorList = () => {
       toast.error(error.message || "Error fetching requests");
       dispatch(setLoader(false));
     }
-  }, []);
+  }, [refresh]);
 
   const markAsDonated = (donor) => {
-    console.log('donor: ', donor);
+    console.log("donor: ", donor);
     // navigate(`/confirmdonation/${id}`, { state: { donor } });
     // const confirmDonated = () => {
-      dispatch(setLoader(true));
-  
-      const dataToSend = {
-        request_id: data?.request_id,
-        donor_id: donor?.donor_id,
-        units_donated: "1",
-      };
-      console.log('dataToSend: ', dataToSend);
-  
-      try {
-        dispatch(
-          // MarkDonated({ request_id: requestId, donor_id: donorId }, (res) => {
-          MarkDonated(dataToSend, (res) => {
-            if (res.code === 200) {
-              toast.success(res.message);
-              // navigate(`/donarlist/${id}`);
-              // setRefresh(!refresh);
-            } else {
-              toast.error(res.message);
-              // navigate(`/donarlist/${id}`);
-            }
-            dispatch(setLoader(false));
-  
-          })
-        );
-      } catch (error) {
-        toast.error(error.message || "Error marking as donated");
-        dispatch(setLoader(false));
-      }
-    
+    dispatch(setLoader(true));
+
+    const dataToSend = {
+      request_id: String(data?.request_id),
+      donor_id: String(donor?.donor_id),
+      units_donated: "1",
+    };
+    console.log("dataToSend: ", dataToSend);
+
+    try {
+      dispatch(
+        // MarkDonated({ request_id: requestId, donor_id: donorId }, (res) => {
+        MarkDonated(dataToSend, (res) => {
+          console.log("res: ", res);
+          if (res.code === 200) {
+            toast.success(res.message);
+            setRefresh(!refresh);
+            // navigate(`/donarlist/${id}`);
+            // setRefresh(!refresh);
+          } else {
+            toast.error(res.message);
+            // navigate(`/donarlist/${id}`);
+          }
+          dispatch(setLoader(false));
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "Error marking as donated");
+      dispatch(setLoader(false));
+    }
   };
 
   const openModal = (donor) => {
@@ -114,8 +120,10 @@ const AcceptDonorList = () => {
     setSelectedDonor(null);
   };
 
-  const navigateToGratitude = (requestId, donorId) => {
-    navigate(`/postgratitudemesage?requestId=${requestId}&donorId=${donorId}`);
+  const navigateToGratitude = (requestId, donorId, donorData) => {
+    navigate(`/postgratitudemesage?requestId=${requestId}&donorId=${donorId}`, {
+      state: { donorData },
+    });
   };
 
   const renderRequestCard = (donor) => {
@@ -143,10 +151,17 @@ const AcceptDonorList = () => {
             <div className="request-units text-start">
               {formatDate(donor.date)}
             </div>
-            <div className="request-date text-start">
-              {donor?.location}
-            </div>
-            <label className="request-date text-start">Phone Number: </label><Link to="#" onClick={(e) => { e.preventDefault(); window.location.href = `tel:${donor?.phone_number}`; }}>{donor?.phone_number}</Link>
+            <div className="request-date text-start">{donor?.location}</div>
+            <label className="request-date text-start">Donor Number: </label>
+            <Link
+              to="#"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href = `tel:${donor?.phone_number}`;
+              }}
+            >
+              {donor?.phone_number}
+            </Link>
 
             <div
               className="request-date text-start"
@@ -156,8 +171,10 @@ const AcceptDonorList = () => {
             </div>
           </div>
           <div className="blood-group">
-          <h3 className="blood-group" style={{color:"red"}} >{donor?.blood_group || 'Unknown'}</h3> {/* Show blood group text */}
-
+            <h3 className="blood-group" style={{ color: "red" }}>
+              {donor?.blood_group || "Unknown"}
+            </h3>{" "}
+            {/* Show blood group text */}
             {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
           </div>
         </div>
@@ -211,7 +228,9 @@ const AcceptDonorList = () => {
               ) : (
                 <button
                   className="accepted-donors-btn"
-                  onClick={() => navigateToGratitude(requestId, donor.donor_id)}
+                  onClick={() =>
+                    navigateToGratitude(requestId, donor.donor_id, donor)
+                  }
                 >
                   Post Gratitude Message
                 </button>

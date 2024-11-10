@@ -387,7 +387,7 @@ export const CreateCamp =
   };
 
 export const donateBloods =
-  (type,page, callback = () => {}) =>
+  (type, page, callback = () => {}) =>
   async () => {
     try {
       const response = await Helper.getData(
@@ -411,7 +411,7 @@ export const donateBloods =
   };
 
 export const CampsLists =
-  (type,page,  callback = () => {}) =>
+  (type, page, callback = () => {}) =>
   async () => {
     try {
       const response = await Helper.getData(
@@ -640,6 +640,7 @@ export const MarkDonated =
         baseUrl + `app/blood-requests/confirm-donation`,
         data
       );
+      console.log("response: ", response);
 
       const result = {
         ...response.data,

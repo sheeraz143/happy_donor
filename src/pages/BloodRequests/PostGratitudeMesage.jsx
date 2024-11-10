@@ -85,7 +85,7 @@ export default function PostGratitudeMessage() {
                 }
               }
             } else {
-              toast.error("The media must not be greater than 5120 kilobytes.");
+              toast.error("The media must not be greater than 25mb.");
             }
           } else if (res.errors) {
             // Handle other types of errors
