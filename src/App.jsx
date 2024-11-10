@@ -78,7 +78,7 @@ function App() {
 
   useEffect(() => {
     if (location.pathname === "/") {
-      window.location.href = "/app.html";
+      window.location.href = "/index.html";
     }
 
     document.body.className = darkMode ? "dark-mode" : "";
