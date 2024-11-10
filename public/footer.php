@@ -62,10 +62,10 @@
 <div class="f-tcont">
 <h4>Services </h4>
 <ul>
-<li><i class="fa fa-angle-double-right"></i> <a target="_blank" href="https://app.dev.happydonors.ngo/login">Become a Donor</a></li>
-<li><i class="fa fa-angle-double-right"></i> <a target="_blank" href="https://app.dev.happydonors.ngo/login">Find a Donor </a></li>
-<li><i class="fa fa-angle-double-right"></i> <a target="_blank" href="https://app.dev.happydonors.ngo/register/bloodbank">Blood Banks</a></li>
-<li><i class="fa fa-angle-double-right"></i> <a target="_blank" href="https://app.dev.happydonors.ngo/register/organisation">Organisations </a></li>
+<li><i class="fa fa-angle-double-right"></i> <a target="_blank" href="https://app.happydonors.ngo/login">Become a Donor</a></li>
+<li><i class="fa fa-angle-double-right"></i> <a target="_blank" href="https://app.happydonors.ngo/login">Find a Donor </a></li>
+<li><i class="fa fa-angle-double-right"></i> <a target="_blank" href="https://app.happydonors.ngo/register/bloodbank">Blood Banks</a></li>
+<li><i class="fa fa-angle-double-right"></i> <a target="_blank" href="https://app.happydonors.ngo/register/organisation">Organisations </a></li>
 </ul>
 </div>
 </div>

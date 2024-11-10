@@ -15,7 +15,7 @@
             <div class="slider_item_container" data-bg_img="images/banner-1.jpg" data-bg_color="#555555"
                 data-bg_opacity="0.0">
                 <div class="item">
-                   <a target="_blank" href="https://app.dev.happydonors.ngo/login" class="link-abst"></a>
+                   <a target="_blank" href="https://app.happydonors.ngo/login" class="link-abst"></a>
                     <div class="slider-content">
                         <div class="container text-left">
                             <div class="row">
@@ -61,7 +61,7 @@
             <div class="slider_item_container" data-bg_img="images/banner-2.jpg" data-bg_color="#555555"
                 data-bg_opacity="0.0">
                 <div class="item">
-                     <a target="_blank" href="https://app.dev.happydonors.ngo/login" class="link-abst"></a>
+                     <a target="_blank" href="https://app.happydonors.ngo/login" class="link-abst"></a>
                     <div class="slider-content">
                         <div class="container text-left">
                             <div class="row">
