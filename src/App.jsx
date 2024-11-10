@@ -135,6 +135,7 @@ function App() {
     location.pathname === "/login/organisation" ||
     location.pathname === "/login/bloodbank" ||
     location.pathname === "/terms" ||
+    location.pathname.includes("viewbloodrequest") ||
     location.pathname === "/privacypolicy";
   // const storedUserType = localStorage.getItem("user_type");
   // const storedUserType = localStorage.getItem("user_type");
@@ -142,8 +143,6 @@ function App() {
   const [refreshNavbar, setRefreshNavbar] = useState(false);
 
   const handleRefreshNavbar = () => {
-    console.log("handleRefreshNavbar called! Toggling refreshNavbar state."); // Add this line
-
     setRefreshNavbar((prev) => !prev);
   };
 
@@ -217,6 +216,10 @@ function App() {
           <Route path="/contributefund" element={<ContributeFund />} />
           <Route
             path="/bloodrequestdetail/:id"
+            element={<BloodrequestDetailPage />}
+          />
+          <Route
+            path="/viewbloodrequest/:id"
             element={<BloodrequestDetailPage />}
           />
           <Route path="/closedrequests/:id" element={<ClosedRequests />} />

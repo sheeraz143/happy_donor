@@ -87,6 +87,20 @@ function Donate() {
       dispatch(setLoader(false));
     }
   };
+  const handleShareClick = (request) => {
+    if (navigator.share) {
+      const shareMessage = `${request.name} requires ${request.units_required} Units of ${request.blood_group} blood at ${request.location}. https/app.happydonors.ngo/viewbloodrequest/${request?.request_id}`;
+      navigator
+        .share({
+          title: "Blood Donation Request",
+          text: shareMessage,
+          // url: , // You can include the URL of the page if needed
+        })
+        .catch((error) => console.log("Error sharing", error));
+    } else {
+      alert("Web Share API is not supported in your browser.");
+    }
+  };
 
   const renderRequestCard = (request, showAcceptButton) => (
     <div className="request-card position-relative" key={request?.request_id}>
@@ -109,15 +123,22 @@ function Donate() {
         </div>
         <div className="blood-group">
           {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
-          <h3 className="blood-group" style={{color:"red"}}>{request.blood_group || 'Unknown'}</h3> {/* Show blood group text */}
-
+          <h3 className="blood-group" style={{ color: "red" }}>
+            {request.blood_group || "Unknown"}
+          </h3>{" "}
+          {/* Show blood group text */}
         </div>
       </div>
 
       <div className="accept-donar-button d-flex justify-content-around">
         <div className="icon-container">
           <Link to="#" className="share-link">
-            <img src={shareIcon} alt="Share" className="icon-img" />
+            <img
+              src={shareIcon}
+              alt="Share"
+              className="icon-img"
+              onClick={() => handleShareClick(request)}
+            />
           </Link>
           <Link
             to={`https://www.google.com/maps?q=${request.lat},${request.lon}`}
@@ -144,7 +165,6 @@ function Donate() {
   );
 
   const renderOthersCard = (request) => (
-   
     <div className="request-card position-relative" key={request?.request_id}>
       {request.is_critical && (
         <div className="emergency-tag position-absolute">Emergency</div>
@@ -173,15 +193,22 @@ function Donate() {
         </div>
         <div className="blood-group ms-auto">
           {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
-          <h3 className="blood-group" style={{color:"red"}}>{request.blood_group || 'Unknown'}</h3> {/* Show blood group text */}
-
+          <h3 className="blood-group" style={{ color: "red" }}>
+            {request.blood_group || "Unknown"}
+          </h3>{" "}
+          {/* Show blood group text */}
         </div>
       </div>
 
       <div className="accept-donar-button d-flex align-items-center mt-3">
         <div className="icon-container d-flex me-3">
           <Link to="#" className="share-link me-2">
-            <img src={shareIcon} alt="Share" className="icon-img" />
+            <img
+              src={shareIcon}
+              alt="Share"
+              className="icon-img"
+              onClick={() => handleShareClick(request)}
+            />
           </Link>
           <Link
             to={`https://www.google.com/maps?q=${request.lat},${request.lon}`}

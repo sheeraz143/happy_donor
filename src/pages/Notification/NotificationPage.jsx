@@ -14,8 +14,9 @@ import { toast } from "react-toastify";
 import { formatDistanceToNow } from "date-fns";
 import { FaCheck, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
-export default function NotificationPage() {
+export default function NotificationPage({ onRefreshNavbar }) {
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Use navigate hook from react-router-dom
   const [data, setData] = useState([]);
@@ -46,6 +47,7 @@ export default function NotificationPage() {
         if (response.status) {
           toast.success(response.data?.data?.message);
           setRefresh(!refresh);
+          onRefreshNavbar();
         } else {
           toast.error(response.message || "Failed to mark all as read");
         }
@@ -60,6 +62,7 @@ export default function NotificationPage() {
         if (response.code == 200) {
           toast.success(response.message);
           setRefresh(!refresh);
+          onRefreshNavbar();
         } else {
           toast.error(response.message || "Failed to delete all notifications");
         }
@@ -74,6 +77,7 @@ export default function NotificationPage() {
         if (response.status) {
           toast.success(response.data?.data?.message);
           setRefresh(!refresh);
+          onRefreshNavbar();
         } else {
           toast.error(response.message || "Failed to delete notification");
         }
@@ -144,3 +148,7 @@ export default function NotificationPage() {
     </div>
   );
 }
+
+NotificationPage.propTypes = {
+  onRefreshNavbar: PropTypes.func.isRequired,
+};

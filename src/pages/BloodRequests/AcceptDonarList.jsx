@@ -250,7 +250,7 @@ const AcceptDonorList = () => {
           {donors.length > 0 ? (
             donors.map(renderRequestCard)
           ) : (
-            <h4>No accepted donors available.</h4>
+            <h4 className="text-center">No accepted donors available.</h4>
           )}
         </div>
       </div>

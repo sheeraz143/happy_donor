@@ -1,6 +1,6 @@
-import { Steps } from "antd";
+// import { Steps } from "antd";
 import "../../css/BloodrequestDetailPage.css";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 // import bloodGroupImg from "../../assets/bloodgroup.png";
 import profPicImg from "../../assets/prof_img.png";
 import { formatDate } from "../../utils/dateUtils";
@@ -9,31 +9,14 @@ import MapComponent from "../../components/map/MapComponent";
 // import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import {
-  CancelBloodRequest,
-  setLoader,
-  ViewBloodRequest,
-} from "../../redux/product";
+import { setLoader, ViewBloodRequest } from "../../redux/product";
 import { toast } from "react-toastify";
-import Modal from "react-modal";
-import { FaTimes } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function BloodrequestDetailPage() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
   const [data, setData] = useState({});
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [closureReason, setClosureReason] = useState("");
-  const [additionalComments, setAdditionalComments] = useState("");
-
-  const openModal = () => {
-    setModalIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalIsOpen(false);
-  };
 
   useEffect(() => {
     dispatch(setLoader(true));
@@ -46,6 +29,7 @@ export default function BloodrequestDetailPage() {
             toast.error(res.errors);
           } else {
             setData(res);
+            console.log("res: ", res);
           }
         })
       );
@@ -55,53 +39,9 @@ export default function BloodrequestDetailPage() {
     }
   }, [dispatch, id]);
 
-  const statusToStep = {
-    Initiated: 0,
-    Active: 1,
-    "In Progress": 2,
-    Completed: 3,
-  };
-
-  const currentStep = statusToStep[data.status] || 0;
-
   if (!data.request_id) {
     return <h4 className="mt-4 mb-4">No data found!</h4>;
   }
-
-  const handleSubmit = () => {
-    if (!closureReason.trim()) {
-      toast.error("Closure reason is required");
-      return;
-    }
-    if (!additionalComments.trim()) {
-      toast.error("Additional comments are required");
-      return;
-    }
-    const dataToSend = {
-      closure_reason: closureReason,
-      additional_comments: additionalComments,
-    };
-
-    dispatch(setLoader(true));
-
-    try {
-      dispatch(
-        CancelBloodRequest(data.request_id, dataToSend, (res) => {
-          if (res.code === 200) {
-            toast.success(res.message);
-            closeModal();
-            navigate("/bloodrequest");
-          } else {
-            toast.error(res.message);
-          }
-          dispatch(setLoader(false));
-        })
-      );
-    } catch (error) {
-      toast.error(error.message || "An unexpected error occurred.");
-      dispatch(setLoader(false));
-    }
-  };
 
   return (
     <>
@@ -127,31 +67,6 @@ export default function BloodrequestDetailPage() {
               key={data.request_id}
               style={{ position: "relative" }}
             >
-              {/* Close Icon in the top-right corner */}
-              <button
-                className="close-button"
-                onClick={(event) => openModal(data, event)}
-                style={{
-                  position: "absolute",
-                  top: "10px",
-                  right: "10px",
-                  background: "white", // White background for contrast
-                  border: "1px solid lightgray", // Light gray border for better visibility
-                  borderRadius: "50%", // Circle shape
-                  color: "gray",
-                  cursor: "pointer",
-                  fontSize: "16px",
-                  width: "24px",
-                  height: "24px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)", // Optional shadow for depth
-                }}
-              >
-                <FaTimes />
-              </button>
-
               <div className="request-header d-flex align-items-center">
                 <div className="align-content-center">
                   <img
@@ -165,6 +80,7 @@ export default function BloodrequestDetailPage() {
                   />
                 </div>
                 <div className="request-details ms-3">
+                  <div className="text-start">{data.name}</div>
                   <div className="text-start">
                     Date: {formatDate(data.date)}
                   </div>
@@ -172,87 +88,18 @@ export default function BloodrequestDetailPage() {
                   <div className="text-start">Address: {data.address}</div>
                 </div>
                 <div className="blood-group ms-auto">
-                  {/*   <img
-                    src={bloodGroupImg}
-                    alt="Blood Group"
-                    onClick={openModal}
-                    className="cursor-pointer"
-                  /> */}
                   <h3 className="blood-group" style={{ color: "red" }}>
                     {data.blood_group || "Unknown"}
                   </h3>
                 </div>
               </div>
-
-              {data.view_donors && (
-                <div className="d-flex justify-content-center mt-3">
-                  <button
-                    className="btn btn-primary"
-                    style={{ padding: "10px" }}
-                    onClick={() => navigate(`/donarlist/${id}`)}
-                  >
-                    Accepted Donors
-                  </button>
-                </div>
-              )}
             </div>
           </div>
-
-          <div className="col-lg-10 col-md-10 col-sm-10 mt-2">
-            <Steps
-              progressDot
-              current={currentStep}
-              direction="vertical"
-              items={[
-                { title: "Initiated", description: "" },
-                { title: "Active", description: "" },
-                { title: "In Progress", description: "" },
-                { title: "Completed", description: "" },
-              ]}
-            />
-          </div>
+          <p className="text-center mt-5">
+            Visit <Link to="https://www.happydonors.ngo">Happy Donors</Link> for more details.
+          </p>
         </div>
       </div>
-
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Gratitude Message"
-        ariaHideApp={false}
-        className="Modal"
-        overlayClassName="Overlay"
-      >
-        <div className="d-flex flex-column align-items-center">
-          <h3 className="cancel_blood_req ">Cancel Blood Request</h3>
-          <label className="text-start w-100">Closure reason</label>
-          <select
-            className="form-input w-100 mb-3"
-            onChange={(e) => setClosureReason(e.target.value)}
-          >
-            <option value="">Select reason</option>
-            <option value="Request fulfilled">Request fulfilled</option>
-            <option value="Request canceled">Request canceled</option>
-            <option value="Found an alternate solution">
-              Found an alternate solution
-            </option>
-            <option value="Others">Others (please specify)</option>
-          </select>
-          <label className="text-start w-100">Additional comments</label>
-          <textarea
-            className="form-input w-100 mb-3"
-            value={additionalComments}
-            onChange={(e) => setAdditionalComments(e.target.value)}
-          />
-          <div className="d-flex justify-content-evenly w-100">
-            <button onClick={closeModal} className="btn btn-primary">
-              Close
-            </button>
-            <button onClick={handleSubmit} className="btn btn-primary">
-              Submit
-            </button>
-          </div>
-        </div>
-      </Modal>
     </>
   );
 }
