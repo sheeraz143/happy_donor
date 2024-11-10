@@ -15,7 +15,7 @@ import { formatDistanceToNow } from "date-fns";
 import { FaCheck, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-export default function NotificationPage({ onRefreshNavbar }) {
+export default function NotificationPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Use navigate hook from react-router-dom
   const [data, setData] = useState([]);
@@ -30,7 +30,7 @@ export default function NotificationPage({ onRefreshNavbar }) {
           toast.error(res.errors);
         } else {
           setData(res?.notifications);
-          onRefreshNavbar();
+          // onRefreshNavbar();
         }
       })
     ).catch((error) => {
@@ -83,19 +83,18 @@ export default function NotificationPage({ onRefreshNavbar }) {
 
   // Handler to navigate to the appropriate screen when a notification is clicked
   const handleNotificationClick = (notification) => {
-    console.log('notification: ', notification);
+    console.log("notification: ", notification);
     if (notification.screen === "Request") {
       navigate(`/bloodrequestdetail/${notification.link}`);
     }
-    console.log('notification: ', notification);
+    console.log("notification: ", notification);
     if (notification.screen === "Donor") {
       navigate(`/donate`);
     }
-    
+
     if (notification.screen === "Çamp") {
       navigate(`/campdetails/${notification.link}`);
     }
-    
   };
 
   return (

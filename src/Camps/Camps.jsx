@@ -6,6 +6,7 @@ import { CreateCamp, setLoader } from "../redux/product";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import Autocomplete from "react-google-autocomplete";
+import { Link } from "react-router-dom";
 
 function Camps() {
   const navigate = useNavigate();
@@ -237,8 +238,15 @@ function Camps() {
           className="form-checkbox"
           {...register("terms", { required: true })}
         />
-        <label>
-          I have read and agree to terms of service and privacy policy
+         <label>
+          I have read and agree to the
+          <Link to="/terms-and-conditions.html" target="_blank">
+            terms of service
+          </Link>
+          and
+          <Link to="/privacy-policy.html" target="_blank">
+            privacy policy
+          </Link>
         </label>
         {errors.terms && (
           <p className="error-message">You must agree to the terms</p>

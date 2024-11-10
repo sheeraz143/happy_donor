@@ -57,7 +57,6 @@ function Navbar({ refreshNavbar }) {
   }, [location.pathname]);
 
   useEffect(() => {
-    console.log("Navbar useEffect triggered! Refreshing notifications..."); 
     dispatch(setLoader(true));
     dispatch(
       ViewNotifications((res) => {
@@ -65,8 +64,7 @@ function Navbar({ refreshNavbar }) {
         if (res.errors) {
           toast.error(res.errors);
         } else {
-          setCount(res?.total);
-          console.log('res: ', res);
+          setCount(res?.count);
         }
       })
     ).catch((error) => {
@@ -88,23 +86,25 @@ function Navbar({ refreshNavbar }) {
   //   setIsOpen(false);
   // };
 
-
   const handleNavigation = (path) => {
     console.log("path: ", path);
     console.log("profileVerified: ", profileVerified);
     console.log("userType: ", userType);
-  
-    if ((profileVerified == null || profileVerified == "0") && !(userType == 4 || userType == 5)) {
+
+    if (
+      (profileVerified == null || profileVerified == "0") &&
+      !(userType == 4 || userType == 5)
+    ) {
       toast.error("Please update your profile");
       navigate("/profile");
     } else {
       navigate(path);
     }
-  
+
     setActiveLink(path); // Set active link
-    setIsOpen(false);    // Close the navigation menu if it is open
+    setIsOpen(false); // Close the navigation menu if it is open
   };
-  
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -168,7 +168,7 @@ function Navbar({ refreshNavbar }) {
           className={activeLink === "/bloodrequest" ? "active" : "inactive"}
           onClick={(e) => {
             e.preventDefault();
-            handleNavigation( "/bloodrequest");
+            handleNavigation("/bloodrequest");
           }}
         >
           Request

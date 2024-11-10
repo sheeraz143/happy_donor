@@ -415,11 +415,11 @@ const Registerbloodbank = () => {
             />
             <label>
               I have read and agree to the
-              <Link to="/terms" target="_blank">
+              <Link to="/terms-and-conditions.html" target="_blank">
                 terms of service
               </Link>
               and
-              <Link to="/privacypolicy" target="_blank">
+              <Link to="/privacy-policy.html" target="_blank">
                 privacy policy
               </Link>
             </label>
