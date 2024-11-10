@@ -21,10 +21,20 @@ const Profile = () => {
     return `${year}-${month}-${day}`;
   });
 
+  // Calculate the date 18 years ago from today
+  const todayDate = new Date();
+  const eighteenYearsAgo = new Date(
+    todayDate.getFullYear() - 18,
+    todayDate.getMonth(),
+    todayDate.getDate()
+  );
+  const formattedDate = eighteenYearsAgo.toISOString().split("T")[0]; // Format date as YYYY-MM-DD
+
   const {
     register,
     handleSubmit,
     setValue,
+    trigger,
     formState: { errors },
   } = useForm();
 
@@ -99,7 +109,7 @@ const Profile = () => {
         gender: data?.gender,
         address: data?.address,
         location: data?.location,
-        last_blood_donation_date: data?.lastDonationDate,
+        last_blood_donation_date: data?.lastDonationDate ? data?.lastDonationDate : "",
         lat: data?.lat,
         lon: data?.lon,
         // availability: data?.availability !== null ? data.availability : false,
@@ -141,7 +151,10 @@ const Profile = () => {
       </div>
       {/* Title */}
       <div className="form-group">
-        <label>Title</label>
+        <label>
+          Title <span className="required-asterisk">*</span>
+        </label>
+
         <select
           className="form-input"
           {...register("title", { required: true })}
@@ -157,7 +170,9 @@ const Profile = () => {
 
       {/* First Name */}
       <div className="form-group">
-        <label>First Name</label>
+        <label>
+          First Name <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
           type="text"
@@ -170,7 +185,9 @@ const Profile = () => {
 
       {/* Last Name */}
       <div className="form-group">
-        <label>Last Name</label>
+        <label>
+          Last Name <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
           type="text"
@@ -183,7 +200,9 @@ const Profile = () => {
 
       {/* Phone Number */}
       <div className="form-group">
-        <label>Phone Number</label>
+        <label>
+          Phone Number <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
           type="tel"
@@ -205,7 +224,9 @@ const Profile = () => {
 
       {/* Email */}
       <div className="form-group">
-        <label>Email</label>
+        <label>
+          Email <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
           type="email"
@@ -219,7 +240,9 @@ const Profile = () => {
 
       {/* Blood Group */}
       <div className="form-group">
-        <label>Blood Group</label>
+        <label>
+          Blood Group <span className="required-asterisk">*</span>
+        </label>
         <select
           className="form-input"
           {...register("bloodGroup", { required: true })}
@@ -241,11 +264,13 @@ const Profile = () => {
 
       {/* Date of Birth */}
       <div className="form-group">
-        <label>Date of Birth</label>
+        <label>
+          Date of Birth <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
           type="date"
-          max={today}
+          max={formattedDate}
           onFocus={(e) => {
             e.target.showPicker();
           }}
@@ -258,7 +283,9 @@ const Profile = () => {
 
       {/* Gender */}
       <div className="form-group">
-        <label>Gender</label>
+        <label>
+          Gender <span className="required-asterisk">*</span>
+        </label>
         <select
           className="form-input"
           {...register("gender", { required: true })}
@@ -272,25 +299,35 @@ const Profile = () => {
       </div>
 
       <div className="form-group">
-        <label>Location</label>
+        <label>
+          Location <span className="required-asterisk">*</span>
+        </label>
         <Autocomplete
           apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
           className="form-input"
           defaultValue={location}
           onPlaceSelected={(place) => {
             if (place.geometry) {
-              setValue("address", place.formatted_address);
-              setValue("lat", String(place.geometry.location.lat())); // Convert to string
-              setValue("lon", String(place.geometry.location.lng())); // Convert to string
+              setValue("location", place.formatted_address, {
+                shouldValidate: true,
+              });
+              setValue("lat", String(place.geometry.location.lat()), {
+                shouldValidate: true,
+              });
+              setValue("lon", String(place.geometry.location.lng()), {
+                shouldValidate: true,
+              });
+              trigger(["location", "lat", "lon"]); // Manually trigger validation
             }
           }}
           options={{
             types: ["establishment"],
             componentRestrictions: { country: "IN" },
           }}
+          {...register("location", { required: true })}
         />
 
-        {errors.address && (
+        {errors.location && (
           <p className="error-message">Location is required</p>
         )}
       </div>
@@ -319,7 +356,7 @@ const Profile = () => {
           onFocus={(e) => {
             e.target.showPicker();
           }}
-          {...register("lastDonationDate", { required: true })}
+          {...register("lastDonationDate", { required: false })}
         />
         {errors.lastDonationDate && (
           <p className="error-message">Last Donation Date is required</p>
@@ -333,12 +370,12 @@ const Profile = () => {
           className="form-input"
           type="text"
           inputMode="numeric"
-          maxLength="16"
+          maxLength="12"
           {...register("aadhar_id", {
             required: false,
             pattern: {
-              value: /^\d{16}$/,
-              message: "Aadhar Number must be exactly 16 digits",
+              value: /^\d{12}$/,
+              message: "Aadhar Number must be exactly 12 digits",
             },
           })}
         />
@@ -356,10 +393,10 @@ const Profile = () => {
           maxLength="14"
           {...register("abhid", {
             required: false,
-            pattern: {
-              value: /^\d{14}$/,
-              message: "Abha Number must be exactly 14 digits",
-            },
+            // pattern: {
+            //   value: /^\d{14}$/,
+            //   message: "Abha Number must be exactly 14 digits",
+            // },
           })}
         />
         {errors.abhid && (
@@ -388,8 +425,14 @@ const Profile = () => {
           className="form-checkbox"
         />
         <label>
-          I have read and agree to the <Link to="/terms"target="_blank" >terms of service</Link>
-          and <Link to="/privacypolicy" target="_blank">privacy policy</Link>
+          I have read and agree to the
+          <Link to="/terms-and-conditions.html" target="_blank">
+            terms of service
+          </Link>
+          and
+          <Link to="/privacy-policy.html" target="_blank">
+            privacy policy
+          </Link>
         </label>
         {errors.terms && (
           <p className="error-message">You must agree to the terms</p>

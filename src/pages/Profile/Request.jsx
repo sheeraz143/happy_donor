@@ -6,6 +6,7 @@ import { requestBlood, setLoader } from "../../redux/product";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import Autocomplete from "react-google-autocomplete";
+import { Link } from "react-router-dom";
 
 function Request() {
   const navigate = useNavigate();
@@ -92,7 +93,7 @@ function Request() {
       toast.error(error);
       dispatch(setLoader(false));
     }
-    navigate("/bloodrequest");
+    // navigate("/bloodrequest");
   };
   return (
     <form className="form-container mb-4" onSubmit={handleSubmit(onSubmit)}>
@@ -372,8 +373,15 @@ function Request() {
           {...register("terms", { required: true })}
           className="form-checkbox"
         />
-        <label>
-          I have read and agree to terms of service and privacy policy
+       <label>
+          I have read and agree to the
+          <Link to="/terms-and-conditions.html" target="_blank">
+            terms of service
+          </Link>
+          and
+          <Link to="/privacy-policy.html" target="_blank">
+            privacy policy
+          </Link>
         </label>
         {errors.terms && (
           <p className="error-message">You must agree to the terms</p>

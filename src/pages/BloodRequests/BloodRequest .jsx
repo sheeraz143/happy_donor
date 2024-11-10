@@ -173,7 +173,7 @@ const BloodRequest = () => {
               style={{ color: "red" }}
               onClick={(event) => openModal(request, event)}
             >
-              {request.blood_group || "Unknown"}
+              {request.blood_group || ""}
             </h3>{" "}
             {/* Show blood group text */}
           </div>

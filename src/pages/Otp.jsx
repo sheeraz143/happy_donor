@@ -3,7 +3,7 @@ import "../css/OTPVerificationComponent.css"; // Import the CSS file
 import { useLocation, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { setLoader, verifytOTP } from "../redux/product";
+import { requestOTP, setLoader, verifytOTP } from "../redux/product";
 
 const OTPVerificationComponent = () => {
   const [otp, setOtp] = useState(new Array(4).fill(""));
@@ -27,7 +27,27 @@ const OTPVerificationComponent = () => {
   };
 
   const handleResend = () => {
-    alert("Resend code");
+    const data = {
+      phone_number: phoneNum,
+    };
+    try {
+      dispatch(
+        requestOTP(data, (res) => {
+          if (res.errors) {
+            toast.error(res.errors);
+          } else {
+            // Handle success
+            toast.success(res.message);
+            // navigate("/otp", { state: { inputValue } });
+          }
+          dispatch(setLoader(false));
+        })
+      );
+    } catch (error) {
+      // Handle unexpected errors
+      toast.error(error.message);
+      dispatch(setLoader(false));
+    }
   };
 
   const handleVerify = () => {
