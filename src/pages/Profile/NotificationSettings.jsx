@@ -13,15 +13,15 @@ export default function NotificationSettings() {
     // formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    const formattedData = {
-      newdonation: !!data.newdonation,
-      newcampalert: !!data.newcampalert,
-      adminnotification: !!data.adminnotification,
-      newdonationSMS: !!data.newdonationSMS,
-      newcampalertSMS: !!data.newcampalertSMS,
-      adminnotificationSMS: !!data.adminnotificationSMS,
-    };
+  const onSubmit = () => {
+    // const formattedData = {
+    //   newdonation: !!data.newdonation,
+    //   newcampalert: !!data.newcampalert,
+    //   adminnotification: !!data.adminnotification,
+    //   newdonationSMS: !!data.newdonationSMS,
+    //   newcampalertSMS: !!data.newcampalertSMS,
+    //   adminnotificationSMS: !!data.adminnotificationSMS,
+    // };
 
     navigate("#");
   };
@@ -67,7 +67,7 @@ export default function NotificationSettings() {
           <span className="slider round"></span>
         </label>
       </div>
-      <h5 className="text-start">SMS Notifications</h5>
+      {/* <h5 className="text-start">SMS Notifications</h5>
       <div className=" switch-container">
         <label className="switch-label">New Donation Request</label>
         <label className="switch">
@@ -103,7 +103,7 @@ export default function NotificationSettings() {
           />
           <span className="slider round"></span>
         </label>
-      </div>
+      </div> */}
 
       {/* Submit Button */}
       <button type="submit" className="submit-button">

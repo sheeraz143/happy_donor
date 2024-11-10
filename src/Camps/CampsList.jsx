@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import "../css/BloodRequest.css";
 import bloodGroupImg from "../../src/assets/BloodCamps.png";
-// import profPicImg from "../assets/prof_img.png";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -10,8 +9,9 @@ import { Pagination } from "antd";
 import Modal from "react-modal";
 import { formatDate } from "../utils/dateUtils";
 
+const ITEMS_PER_PAGE = 10; // Set items per page
+
 const CampsList = () => {
-  // const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [openRequests, setOpenRequests] = useState([]);
@@ -20,13 +20,13 @@ const CampsList = () => {
     matched: 0,
     unmatched: 0,
   });
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1); // Track the current page
   const [activeTab, setActiveTab] = useState("open");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [closureReason, setClosureReason] = useState("");
   const [additionalComments, setAdditionalComments] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const [refresh, setRefresh] = useState(false);
+  const [totalItems, setTotalItems] = useState(0); // Track total items for pagination
 
   const openModal = (request, event) => {
     event.stopPropagation();
@@ -40,32 +40,36 @@ const CampsList = () => {
     setModalIsOpen(false);
   };
 
+  // Fetches data from the API based on active tab and page number
   const loadData = useCallback(
-    (tab, page = 1) => {
-      dispatch(setLoader(true)); // Start loading
+    (tab, page) => {
+      dispatch(setLoader(true));
       try {
         dispatch(
           CampsLists(
             tab,
+            page,
             (res) => {
               dispatch(setLoader(false));
-
               if (res.errors) {
                 toast.error(res.errors);
               } else {
                 if (tab === "open") {
-                  setOpenRequests(res?.camps);
+                  setOpenRequests(res.camps);
+                  console.log("res.camps: ", res.camps);
+
                   setRequestCount((prevCount) => ({
                     ...prevCount,
-                    matched: res?.pagination?.total,
+                    matched: res.pagination?.total,
                   }));
                 } else {
                   setClosedRequests(res.camps);
                   setRequestCount((prevCount) => ({
                     ...prevCount,
-                    unmatched: res?.pagination?.total,
+                    unmatched: res.pagination?.total,
                   }));
                 }
+                setTotalItems(res.pagination?.total || 0); // Set total items for pagination
               }
             },
             page
@@ -79,22 +83,18 @@ const CampsList = () => {
     [dispatch]
   );
 
+  // Reload data on tab or page change
   useEffect(() => {
-    loadData(activeTab);
-  }, [activeTab, dispatch, loadData, refresh]);
+    loadData(activeTab, currentPage);
+  }, [activeTab, currentPage, loadData]);
 
-  useEffect(() => {
-    loadData("open"); // Load open requests initially
-    loadData("closed"); // Load closed requests initially
-  }, [dispatch, loadData]);
-
-  const handleCardClick = (request) => {
-    navigate(`/campsrequestdetail/${request.camp_id}`);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
-  const handleAcceptedDonorsClick = (request, event) => {
-    event.stopPropagation();
-    navigate(`/camplist/${request.camp_id}`);
+  const handleCardClick = (request) => {
+    // Navigate to the details page of the selected camp
+    navigate(`/campsrequestdetail/${request.camp_id}`);
   };
 
   const handleSubmit = () => {
@@ -119,8 +119,8 @@ const CampsList = () => {
           if (res.code === 200) {
             toast.success(res.message);
             closeModal();
-            setRefresh(!refresh);
-            navigate("/bloodrequest");
+            setCurrentPage(1); // Reset to page 1 after submission
+            loadData(activeTab, 1); // Refresh data for the first page
           } else {
             toast.error(res.message);
           }
@@ -133,36 +133,27 @@ const CampsList = () => {
     }
   };
 
+  const handleAcceptedDonorsClick = (request, event) => {
+    event.stopPropagation();
+    navigate(`/camplist/${request.camp_id}`);
+  };
+
   const renderRequestCard = (request, isOpen, index) => {
     return (
       <div
         className="request-card"
-        key={`${request.request_id}-${index}`}
+        key={`${request.camp_id}-${index}`}
         style={{ cursor: "pointer" }}
         onClick={() => handleCardClick(request)}
       >
         <div className="request-header">
-          {/* <div className="align-content-center">
-            <img
-              src={request.profile_picture || profPicImg}
-              alt="Profile"
-              style={{ height: "70px", width: "70px", borderRadius: "50%" }}
-              onError={(e) => {
-                e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
-                e.target.src = profPicImg; // Set to default image on error
-              }}
-            />
-          </div> */}
           <div className="request-details">
             <div className="request-date text-start"> {request?.title}</div>
             <div className="request-date text-start"> {request?.date}</div>
             <div className="request-date text-start">
               {formatDate(request?.date)}
             </div>
-
             <div className="request-address text-start">{request.location}</div>
-
-            {/* Conditionally render the reason and additional comments for closed requests */}
             {!isOpen && (
               <>
                 <div className="request-units text-start">
@@ -177,22 +168,19 @@ const CampsList = () => {
               Status: {request.status}
             </div>
           </div>
-          {/* {isOpen && ( */}
           <div className="blood-group text-start">
             <img
-              // src={bloodGroupImg}
               style={{ maxWidth: "200px" }}
               className="img_fluid"
               src={request.camp_image || bloodGroupImg}
               alt="Blood Group"
               onClick={(event) => openModal(request, event)}
               onError={(e) => {
-                e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
-                e.target.src = bloodGroupImg; // Set to default image on error
+                e.target.onerror = null;
+                e.target.src = bloodGroupImg;
               }}
             />
           </div>
-          {/* )} */}
         </div>
 
         <div className="accept-donar-button d-flex justify-content-center">
@@ -224,13 +212,19 @@ const CampsList = () => {
         <div className="tabs mt-4 ">
           <button
             className={`tab ${activeTab === "open" ? "active" : ""}`}
-            onClick={() => setActiveTab("open")}
+            onClick={() => {
+              setCurrentPage(1); // Reset to page 1 when switching tabs
+              setActiveTab("open");
+            }}
           >
             Open ({requestCount.matched || 0})
           </button>
           <button
             className={`tab ${activeTab === "closed" ? "active" : ""}`}
-            onClick={() => setActiveTab("closed")}
+            onClick={() => {
+              setCurrentPage(1); // Reset to page 1 when switching tabs
+              setActiveTab("closed");
+            }}
           >
             Closed ({requestCount.unmatched || 0})
           </button>
@@ -257,18 +251,16 @@ const CampsList = () => {
           align="center"
           className="mb-4"
           current={currentPage}
-          total={requestCount[activeTab] || 0}
-          onChange={(page) => {
-            setCurrentPage(page);
-            loadData(activeTab, page);
-          }}
+          total={totalItems} // Total items for pagination
+          pageSize={ITEMS_PER_PAGE} // Show 10 items per page
+          onChange={handlePageChange} // Set new page and load data
         />
       </div>
 
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        contentLabel="Gratitude Message"
+        contentLabel="Close Camp Modal"
         ariaHideApp={false}
         className="Modal"
         overlayClassName="Overlay"

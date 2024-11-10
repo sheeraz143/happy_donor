@@ -387,11 +387,11 @@ export const CreateCamp =
   };
 
 export const donateBloods =
-  (type, callback = () => {}) =>
+  (type,page, callback = () => {}) =>
   async () => {
     try {
       const response = await Helper.getData(
-        baseUrl + `app/blood-requests/${type}`
+        baseUrl + `app/blood-requests/${type}?page=${page}&limit=${10}`
       );
 
       const result = {
@@ -411,11 +411,11 @@ export const donateBloods =
   };
 
 export const CampsLists =
-  (type, callback = () => {}) =>
+  (type,page,  callback = () => {}) =>
   async () => {
     try {
       const response = await Helper.getData(
-        baseUrl + `app/blood-camps/${type}`
+        baseUrl + `app/blood-camps/${type}?page=${page}&limit=${10}`
       );
 
       const result = {

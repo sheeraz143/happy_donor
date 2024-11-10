@@ -1,4 +1,4 @@
-import bloodGroupImg from "../../assets/bloodimage.png";
+// import bloodGroupImg from "../../assets/bloodimage.png";
 // import profPicImg from "../../assets/profpic.png";
 import profImg from "../../assets/prof_img.png";
 import User from "../../assets/User.png";
@@ -80,11 +80,13 @@ export default function ViewProfilepage() {
             </div>
           </div>
           <div className="blood-group">
-            <img
+            {/* <img
               src={getData?.bloodGroupImage || bloodGroupImg}
               alt="Blood Group"
               className="Blood_Group_img"
-            />
+            /> */}
+          <h3 className="blood-group" style={{color:"red"}}>{getData.blood_group || ''}</h3> {/* Show blood group text */}
+
             {/* Fallback to default blood group image */}
           </div>
         </div>
@@ -123,7 +125,11 @@ export default function ViewProfilepage() {
             {getData ? renderRequestCard() : <p>No profile data found.</p>}
           </div>
         </div>
-        <div className="switch-container mb-3">
+        <div className="switch-container mb-3"
+         style={{
+          cursor: "pointer",
+          display: userType == 4 || userType == 5 ? "none" : "flex",
+        }}>
           <label className="switch-label">Availability</label>
           <label className="switch">
             <input
@@ -141,7 +147,10 @@ export default function ViewProfilepage() {
         </div>
         <div
           className="formpf-container mb-3"
-          style={{ cursor: "pointer" }}
+          style={{
+            cursor: "pointer",
+            display: userType == 4 || userType == 5 ? "none" : "flex",
+          }}
           onClick={() => {
             const profileVerified = localStorage.getItem("is_profile_update");
             console.log("profileVerified: ", profileVerified);
@@ -195,7 +204,10 @@ export default function ViewProfilepage() {
         </div> */}
         <div
           className="formpf-container mb-3"
-          style={{ cursor: "pointer" }}
+          style={{
+            cursor: "pointer",
+            display: userType == 4 || userType == 5 ? "none" : "flex",
+          }}
           onClick={() => {
             navigate("/notifisetting");
           }}
@@ -217,7 +229,10 @@ export default function ViewProfilepage() {
         </div> */}
         <div
           className="formpf-container mb-3"
-          style={{ cursor: "pointer" }}
+          style={{
+            cursor: "pointer",
+            display: userType == 4 || userType == 5 ? "none" : "flex",
+          }}
           onClick={() => {
             navigate("/emergencycontact");
           }}

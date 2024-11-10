@@ -1,7 +1,7 @@
 import { Steps } from "antd";
 import "../../css/BloodrequestDetailPage.css";
 import { useNavigate, useParams } from "react-router";
-import bloodGroupImg from "../../assets/bloodgroup.png";
+// import bloodGroupImg from "../../assets/bloodgroup.png";
 import profPicImg from "../../assets/prof_img.png";
 import { formatDate } from "../../utils/dateUtils";
 
@@ -147,12 +147,14 @@ export default function BloodrequestDetailPage() {
                   <div className="text-start">Address: {data.address}</div>
                 </div>
                 <div className="blood-group ms-auto">
-                  <img
+                {/*   <img
                     src={bloodGroupImg}
                     alt="Blood Group"
                     onClick={openModal}
                     className="cursor-pointer"
-                  />
+                  /> */}
+              <h3 className="blood-group" style={{color:"red"}} onClick={(event) => openModal(data, event)}>{data.blood_group || 'Unknown'}</h3> {/* Show blood group text */}
+                  
                 </div>
               </div>
               {data.view_donors && (

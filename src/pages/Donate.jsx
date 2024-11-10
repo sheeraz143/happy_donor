@@ -1,5 +1,5 @@
 import "../css/BloodRequest.css";
-import bloodGroupImg from "../assets/bloodimage.png";
+// import bloodGroupImg from "../assets/bloodimage.png";
 import { Link } from "react-router-dom";
 import shareIcon from "../assets/Share.png";
 import profImg from "../assets/prof_img.png";
@@ -108,7 +108,9 @@ function Donate() {
           <div className="text-start">{formatDate(request?.date)}</div>
         </div>
         <div className="blood-group">
-          <img src={bloodGroupImg} alt="Blood Group" />
+          {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
+          <h3 className="blood-group" style={{color:"red"}}>{request.blood_group || 'Unknown'}</h3> {/* Show blood group text */}
+
         </div>
       </div>
 
@@ -170,7 +172,9 @@ function Donate() {
           <div className="text-start">{formatDate(request.date)}</div>
         </div>
         <div className="blood-group ms-auto">
-          <img src={bloodGroupImg} alt="Blood Group" />
+          {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
+          <h3 className="blood-group" style={{color:"red"}}>{request.blood_group || 'Unknown'}</h3> {/* Show blood group text */}
+
         </div>
       </div>
 
