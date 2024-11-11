@@ -283,7 +283,7 @@ export default function ContributeFund() {
           <option value="Female">Female</option>
           <option value="Others">Others</option>
         </select>
-        {errors.gender && <p className="error-message">Title is required</p>}
+        {errors.gender && <p className="error-message">Gender is required</p>}
       </div>
 
       <div className="form-group">

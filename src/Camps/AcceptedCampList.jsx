@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch } from "react-redux";
-import { AcceptedCamps, setLoader } from "../redux/product";
+import { AcceptedCamps, MarkCampDonated, setLoader } from "../redux/product";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
 import "../css/BloodRequest.css";
@@ -17,6 +17,7 @@ const AcceptedCampList = () => {
   const [requestId, setRequestId] = useState({});
   // const [donationStatus, setDonationStatus] = useState({});
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   const [selectedDonor, setSelectedDonor] = useState(null);
 
   useEffect(() => {
@@ -38,10 +39,38 @@ const AcceptedCampList = () => {
       toast.error(error.message || "Error fetching requests");
       dispatch(setLoader(false));
     }
-  }, [dispatch, id]);
+  }, [dispatch, id, refresh]);
 
+  // const markAsDonated = (donor) => {
+  //   navigate(`/confirmcamp/${id}`, { state: { donor } });
+  // };
   const markAsDonated = (donor) => {
-    navigate(`/confirmcamp/${id}`, { state: { donor } });
+    // console.log('donor: ', donor);
+    // return;
+    dispatch(setLoader(true));
+
+    const dataToSend = {
+      camp_id: id,
+      donor_id: donor?.donor_id,
+      // units_donated: "1",
+    };
+
+    try {
+      dispatch(
+        MarkCampDonated(dataToSend, (res) => {
+          if (res.code === 200) {
+            toast.success(res.message);
+            setRefresh(!refresh);
+          } else {
+            toast.error(res.message);
+          }
+          dispatch(setLoader(false));
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "Error marking as donated");
+      dispatch(setLoader(false));
+    }
   };
 
   const openModal = (donor) => {
@@ -54,8 +83,10 @@ const AcceptedCampList = () => {
     setSelectedDonor(null);
   };
 
-  const navigateToGratitude = (requestId, donorId) => {
-    navigate(`/gratitudecampmesage?requestId=${requestId}&donorId=${donorId}`);
+  const navigateToGratitude = (requestId, donorId, donor) => {
+    navigate(`/gratitudecampmesage?requestId=${requestId}&donorId=${donorId}`, {
+      state: donor,
+    });
   };
 
   const renderRequestCard = (donor) => {
@@ -122,7 +153,9 @@ const AcceptedCampList = () => {
               {!donor.message || donor.message.trim() === "" ? (
                 <button
                   className="accepted-donors-btn"
-                  onClick={() => navigateToGratitude(requestId, donor.donor_id)}
+                  onClick={() =>
+                    navigateToGratitude(requestId, donor.donor_id, donor)
+                  }
                 >
                   Post TTI Report
                 </button>

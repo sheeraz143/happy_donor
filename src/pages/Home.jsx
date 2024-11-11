@@ -9,7 +9,7 @@ import medicalcamps from "../assets/medicalcamps.png";
 import funddonation from "../assets/funddonation.png";
 import sos from "../assets/sos.png";
 // import bloodGroupImg from "../assets/bloodimage.png";
-import profPicImg from "../assets/profpic.png";
+import profPicImg from "../assets/prof_img.png";
 import shareIcon from "../assets/Share.png";
 import locationIcon from "../assets/Mappoint.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -176,7 +176,10 @@ function Home() {
 
   const renderRequestCard = (request) => {
     return (
-      <div className="request-card col" key={request.id}>
+      <div className="request-card col position-relative" key={request.id}>
+        {request?.is_critical && (
+          <div className="emergency-tag position-absolute">Emergency</div>
+        )}
         <div className="request-header d-flex align-items-center">
           <div className="align-content-center">
             <img
@@ -191,14 +194,20 @@ function Home() {
             />
           </div>
           <div className="request-details ms-3">
-            <div className="request-date text-start">
+            <div
+              className="request-date text-start fw-bold "
+              style={{ color: "#000",fontSize:"20px" }}
+            >
               {request?.username} {/* {request?.attender_last_name} */}
             </div>
-            <div className="request-units text-start">
+            <div className="request-units text-start" style={{ color: "#000", }}>
               Units Required: {request?.quantity_units}
             </div>
-            <div className="request-address text-start">
+            <div className="request-address text-start" style={{ color: "#000", }}>
               Address: {request?.delivery_address}
+            </div>
+            <div className="request-address text-start" style={{ color: "#000", }}>
+              Date: {request?.required_date}
             </div>
             {request?.phone_number && (
               <div>

@@ -113,8 +113,8 @@ function Navbar({ refreshNavbar }) {
     localStorage.removeItem("user_type");
     localStorage.removeItem("is_profile_update");
     localStorage.removeItem("oAuth");
-    // navigate("/index.html");
-    window.location.href = "https://happydonors.ngo/index.html";
+    navigate("/index.html");
+    // window.location.href = "https://happydonors.ngo/index.html";
   };
 
   const handleMouseEnter = () => {
@@ -204,17 +204,34 @@ function Navbar({ refreshNavbar }) {
             className="notify_bell"
             onClick={() => navigate("/notification")}
           />
-          {<span className="notification-count">{count}</span>}
+          {<span className="notification-count">{count || 0}</span>}
         </div>
         <div
           className="profile-container gap-3 d-flex align-items-center"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          <h5 style={{ margin: 0, color: "#fff", fontSize: "1rem" }}>
+          <h5
+            style={{
+              margin: 0,
+              color: "#fff",
+              fontSize: "1rem",
+              display: userType == 4 || userType == 5 ? "none" : "flex",
+            }}
+          >
             {data?.first_name == null
               ? "Guest"
               : ` ${data?.first_name} ${data?.last_name}`}
+          </h5>
+          <h5
+            style={{
+              margin: 0,
+              color: "#fff",
+              fontSize: "1rem",
+              display: userType == 4 || userType == 5 ? "flex" : "none",
+            }}
+          >
+            {data?.user_details?.organization_name}
           </h5>
           <img
             src={data?.profile_picture || profilePic}
@@ -225,12 +242,26 @@ function Navbar({ refreshNavbar }) {
             <div className="profile-menu ">
               <p style={{ fontSize: "16px" }}>
                 <FaRegUserCircle
-                  style={{ height: "20px", width: "20px" }}
+                  style={{
+                    height: "20px",
+                    width: "20px",
+                    display: userType == 4 || userType == 5 ? "none" : "flex",
+                  }}
                   className="mx-2"
                 />
                 {data?.name == null
                   ? "Guest"
                   : `${data?.first_name} ${data?.last_name}`}
+              </p>
+              <p
+                style={{
+                  margin: 0,
+                  color: "#fff",
+                  fontSize: "1rem",
+                  display: userType == 4 || userType == 5 ? "flex" : "none",
+                }}
+              >
+                {data?.user_details?.organization_name}
               </p>
               {/* <span className="border_bottom"></span>
               <div className="d-flex align-items-center gap-2">

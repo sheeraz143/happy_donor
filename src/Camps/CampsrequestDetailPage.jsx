@@ -1,7 +1,7 @@
 import { Steps } from "antd";
 import "../css/BloodrequestDetailPage.css";
 import { useNavigate, useParams } from "react-router";
-import bloodGroupImg from "../assets/bloodgroup.png";
+// import bloodGroupImg from "../assets/bloodgroup.png";
 import profPicImg from "../assets/prof_img.png";
 // import { formatDate } from "../utils/dateUtils";
 
@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { CancelCamp, setLoader, ViewSinglecamp } from "../redux/product";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
+import { FaTimes } from "react-icons/fa";
 
 export default function CampsrequestDetailPage() {
   const navigate = useNavigate();
@@ -122,7 +123,35 @@ export default function CampsrequestDetailPage() {
           style={{ flex: "0 0 60%" }}
         >
           <div className="col-lg-10 col-md-10 col-sm-10">
-            <div className="request-card" key={data.camp_id}>
+            <div
+              className="request-card"
+              key={data.camp_id}
+              style={{ position: "relative" }}
+            >
+              {/* Close Icon in the top-right corner */}
+              <button
+                className="close-button"
+                onClick={(event) => openModal(data, event)}
+                style={{
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  background: "white", // White background for contrast
+                  border: "1px solid lightgray", // Light gray border for better visibility
+                  borderRadius: "50%", // Circle shape
+                  color: "gray",
+                  cursor: "pointer",
+                  fontSize: "16px",
+                  width: "24px",
+                  height: "24px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)", // Optional shadow for depth
+                }}
+              >
+                <FaTimes />
+              </button>
               <div className="request-header d-flex align-items-center">
                 <div className="align-content-center">
                   <img
@@ -142,12 +171,15 @@ export default function CampsrequestDetailPage() {
                   <div className="text-start">Address: {data?.location}</div>
                 </div>
                 <div className="blood-group ms-auto">
-                  <img
+                  {/* <img
                     src={bloodGroupImg}
                     alt="Blood Group"
                     onClick={openModal}
                     className="cursor-pointer"
-                  />
+                  /> */}
+                  <h3 className="blood-group" style={{ color: "red" }}>
+                    {data.blood_group || ""}
+                  </h3>
                 </div>
               </div>
               {data?.view_donors && (

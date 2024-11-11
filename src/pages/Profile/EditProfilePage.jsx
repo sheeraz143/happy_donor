@@ -27,6 +27,14 @@ const EditProfilePage = () => {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   });
+  // Calculate the date 18 years ago from today
+  const todayDate = new Date();
+  const eighteenYearsAgo = new Date(
+    todayDate.getFullYear() - 18,
+    todayDate.getMonth(),
+    todayDate.getDate()
+  );
+  const formattedDate = eighteenYearsAgo.toISOString().split("T")[0]; // Format date as YYYY-MM-DD
   const [originalData, setOriginalData] = useState({});
 
   const {
@@ -318,7 +326,7 @@ const EditProfilePage = () => {
         <input
           className="form-input"
           type="date"
-          max={today}
+          max={formattedDate}
           onFocus={(e) => {
             e.target.showPicker();
           }}
@@ -381,6 +389,7 @@ const EditProfilePage = () => {
           className="form-input"
           defaultValue={location}
           onPlaceSelected={(place) => {
+            console.log("place: ", place);
             if (place.geometry) {
               setValue("address", place.formatted_address);
               setValue("lat", String(place.geometry.location.lat())); // Convert to string

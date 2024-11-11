@@ -40,7 +40,6 @@ import CampDetails from "./pages/Bloodcamps/CampDetails";
 import RequestDetail from "./pages/DonateBlood/DetailsPage";
 import EventDetails from "./pages/Bloodcamps/EventDetails";
 import ContributeFund from "./pages/Donation/ContributeFund";
-import BloodrequestDetailPage from "./pages/BloodRequests/BloodrequestDetailPage";
 import ClosedRequests from "./pages/BloodRequests/ClosedRequests";
 import AcceptDonorList from "./pages/BloodRequests/AcceptDonarList";
 import ConfirmDonation from "./pages/BloodRequests/ConfirmDonation";
@@ -67,6 +66,8 @@ import NotificationPage from "./pages/Notification/NotificationPage";
 // import "react-toastify/dist/ReactToastify.css";
 import { requestForToken } from "./pushnotification/firebase";
 import PaginatedList from "./pages/pagination";
+import BloodrequestDetailPage from "./pages/BloodRequests/BloodrequestDetailPage";
+import ViewrequestDetailPage from "./pages/BloodRequests/ViewRequestDetail";
 // import FirebaseComponent from "./pushnotification/FirebaseComponent";
 
 function App() {
@@ -220,7 +221,7 @@ function App() {
           />
           <Route
             path="/viewbloodrequest/:id"
-            element={<BloodrequestDetailPage />}
+            element={<ViewrequestDetailPage />}
           />
           <Route path="/closedrequests/:id" element={<ClosedRequests />} />
           <Route path="/donarlist/:id" element={<AcceptDonorList />} />

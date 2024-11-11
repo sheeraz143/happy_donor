@@ -62,17 +62,41 @@ export default function ViewProfilepage() {
             {/* Fallback to default image */}
           </div>
           <div className="request-details ms-3">
-            <div className="text-start fw-bold">
+            <div
+              className="text-start fw-bold"
+              style={{
+                display: userType == 4 || userType == 5 ? "none" : "flex",
+              }}
+            >
               {getData?.first_name} {getData?.last_name}
             </div>
+            <div
+              className="text-start fw-bold"
+              style={{
+                display: userType == 4 || userType == 5 ? "flex" : "none",
+              }}
+            >
+              {getData.user_details?.organization_name}
+            </div>
             <div className="text-start text-nowrap">{getData?.email}</div>
-            <div className="text-start">
+            <div
+              className="text-start"
+              style={{
+                display: userType == 4 || userType == 5 ? "none" : "flex",
+              }}
+            >
               DOB:
               {getData?.date_of_birth
                 ? formatDate(getData.date_of_birth)
                 : "Date not updated"}
             </div>
-            <div className="text-start">
+
+            <div
+              className="text-start"
+              style={{
+                display: userType == 4 || userType == 5 ? "none" : "flex",
+              }}
+            >
               LDD:
               {getData?.last_blood_donation_date
                 ? formatDate(getData?.last_blood_donation_date)

@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { Pagination } from "antd";
 import { formatDate } from "../../utils/dateUtils";
 import Modal from "react-modal";
+import profPicImg from "../../assets/prof_img.png";
 
 function DonationHistory() {
   // const navigate = useNavigate();
@@ -66,9 +67,13 @@ function DonationHistory() {
       <div className="request-header d-flex align-items-center">
         <div className="align-content-center">
           <img
-            src={request?.profile_picture}
+            src={request?.profile_picture || profPicImg}
             alt="Profile"
             style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+            onError={(e) => {
+              e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
+              e.target.src = profPicImg; // Set to default image on error
+            }}
           />
         </div>
         <div className="request-details ms-3">
@@ -78,6 +83,7 @@ function DonationHistory() {
             {request?.patient_name ?? request?.donor_name}
           </div>
           <div className="request-date text-start">
+            Donate on:
             {formatDate(request?.date)}
           </div>
           <div className="request-date text-start">{request?.location}</div>
@@ -88,8 +94,10 @@ function DonationHistory() {
         </div>
         <div className="blood-group ms-auto">
           {/* <img src={bloodGroupImage} alt="Blood Group" /> */}
-          <h3 className="blood-group" style={{color:"red"}}>{request.blood_group || ''}</h3> {/* Show blood group text */}
-
+          <h3 className="blood-group" style={{ color: "red" }}>
+            {request.blood_group || ""}
+          </h3>{" "}
+          {/* Show blood group text */}
         </div>
       </div>
 
