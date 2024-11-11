@@ -3,12 +3,12 @@ import axios from "axios";
 const helper = {
   
   baseUrl: function () {
-    const URL = "https://happy-donors.devdemo.tech/api/";
+    const URL = "https://happydonorsdev.devdemo.tech/api/";
 
     return URL;
   },
   razorPayKey: function () {
-    const key = "rzp_test_1DP5mmOlF5G5ag";
+    const key = "rzp_test_xMw7fbS5jks9Ye";
 
     return key;
   },

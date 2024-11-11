@@ -85,7 +85,7 @@ function Camps() {
       {/* Title */}
       <h3 style={{ color: "black", textAlign: "center" }}>Create a new camp</h3>
       <div className="form-group">
-        <label>Camp Title</label>
+        <label>Camp Title <span className="required-asterisk">*</span></label>
         <input
           className="form-input"
           {...register("title", { required: true })}
@@ -95,7 +95,7 @@ function Camps() {
 
       {/* Date */}
       <div className="form-group">
-        <label>Date</label>
+        <label>Date <span className="required-asterisk">*</span></label>
         <input
           className="form-input"
           type="date"
@@ -111,7 +111,7 @@ function Camps() {
 
       {/* Start Time */}
       <div className="form-group">
-        <label>Start Time</label>
+        <label>Start Time <span className="required-asterisk">*</span></label>
         <input
           className="form-input"
           type="time"
@@ -128,7 +128,7 @@ function Camps() {
 
       {/* End Time */}
       <div className="form-group">
-        <label>End Time</label>
+        <label>End Time <span className="required-asterisk">*</span></label>
         <input
           className="form-input"
           type="time"
@@ -188,7 +188,7 @@ function Camps() {
 
       {/* Location */}
       <div className="form-group">
-        <label>Location</label>
+        <label>Location <span className="required-asterisk">*</span></label>
         <Autocomplete
           apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
           onPlaceSelected={(place) => {

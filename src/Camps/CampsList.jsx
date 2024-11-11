@@ -150,6 +150,7 @@ const CampsList = () => {
           <div className="request-details">
             <div className="request-date text-start"> {request?.title}</div>
             <div className="request-date text-start"> {request?.date}</div>
+            <div className="request-date text-start"> Time:{request?.time}</div>
             <div className="request-date text-start">
               {formatDate(request?.date)}
             </div>

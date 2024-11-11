@@ -100,7 +100,7 @@ function Request() {
       {/* Title */}
       <h3 style={{ color: "black" }}>Request for blood</h3>
       <div className="form-group">
-        <label>Title</label>
+        <label>Title <span className="required-asterisk">*</span></label>
         <select
           className="form-input"
           {...register("title", { required: true })}
@@ -116,7 +116,7 @@ function Request() {
 
       {/* First Name */}
       <div className="form-group">
-        <label>Patient First Name</label>
+        <label>Patient First Name <span className="required-asterisk">*</span></label>
         <input
           className="form-input"
           type="text"
@@ -130,7 +130,7 @@ function Request() {
 
       {/* Last Name */}
       <div className="form-group">
-        <label>Patient Last Name</label>
+        <label>Patient Last Name <span className="required-asterisk">*</span></label>
         <input
           className="form-input"
           type="text"
@@ -144,7 +144,7 @@ function Request() {
 
       {/* Blood Group */}
       <div className="form-group">
-        <label>Blood Group</label>
+        <label>Blood Group <span className="required-asterisk">*</span></label>
         <select
           className="form-input"
           {...register("bloodGroup", { required: true })}
@@ -167,7 +167,7 @@ function Request() {
 
       {/* Blood Component */}
       <div className="form-group">
-        <label>Blood Component</label>
+        <label>Blood Component <span className="required-asterisk">*</span></label>
         <select
           className="form-input"
           {...register("bloodComponent", { required: true })}
@@ -186,7 +186,7 @@ function Request() {
 
       {/* Quantity*/}
       <div className="form-group">
-        <label>Quantity (Units)</label>
+        <label>Quantity (Units) <span className="required-asterisk">*</span></label>
         <select
           className="form-input"
           {...register("Quantity", { required: true })}
@@ -210,7 +210,7 @@ function Request() {
 
       {/* Required Date */}
       <div className="form-group">
-        <label>Required Date</label>
+        <label>Required Date <span className="required-asterisk">*</span></label>
         <input
           className="form-input"
           type="date"
@@ -239,7 +239,7 @@ function Request() {
         )}
       </div> */}
       <div className="form-group">
-        <label>Location</label>
+        <label>Location <span className="required-asterisk">*</span></label>
         <Autocomplete
           apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
           onPlaceSelected={(place) => {
@@ -287,7 +287,7 @@ function Request() {
 
       {/* First Name */}
       <div className="form-group">
-        <label>Attender First Name</label>
+        <label>Attender First Name <span className="required-asterisk">*</span></label>
         <input
           className="form-input"
           type="text"
@@ -301,7 +301,7 @@ function Request() {
 
       {/* Last Name */}
       <div className="form-group">
-        <label>Attender Last Name</label>
+        <label>Attender Last Name <span className="required-asterisk">*</span></label>
         <input
           className="form-input"
           type="text"
@@ -315,7 +315,7 @@ function Request() {
 
       {/* mobile number */}
       <div className="form-group">
-        <label>Mobile Number</label>
+        <label>Mobile Number <span className="required-asterisk">*</span></label>
         {/* <input
           className="form-input"
           type="tel"
@@ -354,7 +354,7 @@ function Request() {
 
       {/* Wiiling to transport*/}
       <div className="form-group">
-        <label>Wiiling to arrange the transport to the donor?</label>
+        <label>Wiiling to arrange the transport to the donor? <span className="required-asterisk">*</span></label>
         <select
           className="form-input"
           {...register("willing", { required: true })}
@@ -363,7 +363,7 @@ function Request() {
           <option value="yes">Yes</option>
           <option value="no">No</option>
         </select>
-        {errors.willing && <p className="error-message">Field is required</p>}
+        {errors.willing && <p className="error-message">Field is required </p>}
       </div>
 
       {/* Terms and Conditions */}

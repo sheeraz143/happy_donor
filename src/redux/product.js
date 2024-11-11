@@ -917,6 +917,7 @@ export const SendGratitudeCampMessage =
         callback({
           status: false,
           code: response.status,
+          data: response?.response?.data,
           message: response?.response?.data.message,
         });
       }
@@ -1490,6 +1491,80 @@ export const paymentStatus =
           status: false,
           code: response.status,
           message: response?.data.message,
+        });
+      }
+    } catch (err) {
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const fundInitiate =
+  (data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(
+        baseUrl + `app/fund-donation/initiate`,
+        data
+      );
+      console.log("response: ", response.response);
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else if (response.status == 422) {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.data?.message,
+          data: response.response?.data, // Passing the entire response data if it's not a success
+        });
+      }
+    } catch (err) {
+      console.log("err: ", err);
+      // For other errors, send a generic message
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        // message: err.response?.data?.message || "An unexpected error occurred.",
+        data: err.response?.data, // Passing the entire response data if it's not a success
+      });
+    }
+  };
+
+export const fundStatus =
+  (data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(
+        baseUrl + `app/fund-donation/update-status`,
+        data
+      );
+      console.log("response: ", response);
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.data.message,
+          data: response?.data,
         });
       }
     } catch (err) {

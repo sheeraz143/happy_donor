@@ -10,6 +10,9 @@ import {
 } from "../redux/product";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import { formatDate } from "../utils/dateUtils";
+import profPicImg from "../assets/prof_img.png";
 
 export default function PostGratitudeCampMesage() {
   const [media, setMedia] = useState(null); // Single media file state
@@ -21,7 +24,7 @@ export default function PostGratitudeCampMesage() {
   const queryParams = new URLSearchParams(location.search);
   const requestId = queryParams.get("requestId");
   const donorId = queryParams.get("donorId");
-  const [data, setData] = useState({});
+  // const [data, setData] = useState({});
   const { donorData } = location.state || {};
   console.log("donorData: ", donorData);
 
@@ -35,7 +38,8 @@ export default function PostGratitudeCampMesage() {
           if (res.errors) {
             toast.error(res.errors);
           } else {
-            setData(res);
+            // setData(res);
+            console.log('res: ', res);
           }
         })
       );
@@ -112,7 +116,7 @@ export default function PostGratitudeCampMesage() {
   return (
     <div className="d-flex flex-column">
       <h2 className="mt-4 text-center">Post Gratitude Message</h2>
-      <div
+      {/* <div
         className="card col-lg-8 col-md-8 col-sm-8 mx-auto align-items-start mt-5 mb-5 gap-3"
         style={{ color: "#097E14" }}
       >
@@ -120,9 +124,70 @@ export default function PostGratitudeCampMesage() {
         <div>{donorData?.donor_name}</div>
         <div>Blood Type: {data?.blood_group}</div>
         <div>Status: {donorData?.donation_status}</div>
-        {/* <div>Dono{donorData?.phone_number}</div> */}
         <div>{data?.location}</div>
-      </div>
+      </div> */}
+      {/* <div
+        className="card col-lg-8 col-md-8 col-sm-8 mx-auto align-items-start mt-5 mb-5 gap-3"
+        style={{ color: "#097E14" }}
+      > */}
+        <div className="request-card col-lg-8 mx-auto mt-5 mb-5" key={donorData.donor_id}>
+          <div className="request-header">
+            <div className="align-content-center">
+              <img
+                src={donorData.profile_picture || profPicImg}
+                alt="Profile"
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+                onError={(e) => {
+                  e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
+                  e.target.src = profPicImg; // Set to default image on error
+                }}
+              />
+            </div>
+            <div className="request-details">
+              <div className="request-date text-start">
+                {donorData?.donor_name}
+              </div>
+              <div className="request-units text-start">
+                {formatDate(donorData?.date)}
+              </div>
+              <div className="request-date text-start">
+                {donorData?.location}
+              </div>
+              <label className="request-date text-start">Donor Number: </label>
+              <Link
+                to="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.location.href = `tel:${donorData?.phone_number}`;
+                }}
+              >
+                {donorData?.phone_number}
+              </Link>
+
+              <div
+                className="request-date text-start"
+                style={{ color: "#0750b1" }}
+              >
+                {donorData.donation_status}
+              </div>
+            </div>
+            <div className="blood-group">
+              <h3 className="blood-group" style={{ color: "red" }}>
+                {donorData?.blood_group || ""}
+              </h3>{" "}
+              {/* Show blood group text */}
+              {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
+            </div>
+          </div>
+
+          <div className="accept-donar-button d-flex justify-content-end gap-3 mt-2"></div>
+        </div>
+      {/* </div> */}
       <h5
         style={{ color: "blue" }}
         className="col-lg-8 col-md-8 col-sm-8 mx-auto text-start"

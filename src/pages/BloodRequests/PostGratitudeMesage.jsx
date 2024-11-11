@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 
 export default function PostGratitudeMessage() {
-  const [media, setMedia] = useState([]); // State for media files (only PDFs)
+  const [media, setMedia] = useState(null); // State for single media file (only one PDF)
   const [textMessage, setTextMessage] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -21,10 +21,10 @@ export default function PostGratitudeMessage() {
   };
 
   const location = useLocation();
+  const donorData = location.state || {};
   const queryParams = new URLSearchParams(location.search);
   const requestId = queryParams.get("requestId");
   const donorId = queryParams.get("donorId");
-  const [data, setData] = useState({});
 
   useEffect(() => {
     dispatch(setLoader(true));
@@ -34,8 +34,6 @@ export default function PostGratitudeMessage() {
           dispatch(setLoader(false));
           if (res.errors) {
             toast.error(res.errors);
-          } else {
-            setData(res);
           }
         })
       );
@@ -46,24 +44,76 @@ export default function PostGratitudeMessage() {
   }, [dispatch, requestId]);
 
   const handleMediaUpload = (event) => {
-    const files = Array.from(event.target.files);
-    setMedia((prev) => [...prev, ...files]); // Add new files to existing media
+    const file = event.target.files[0];
+    if (file) {
+      setMedia(file); // Replace the previous file with the newly selected one
+    }
   };
 
+  // const handleSubmit = () => {
+  //   if (!textMessage) {
+  //     toast.error("The message field is required.");
+  //     return;
+  //   }
+  //   const formData = new FormData();
+  //   formData.append("camp_id", requestId);
+  //   formData.append("donor_id", donorId);
+  //   formData.append("message", textMessage);
+  //   formData.append("abnormal", isAbnormal == true ? "1" : "0");
+
+  //   if (media) {
+  //     formData.append("media[]", media); // Append the single media file
+  //   }
+
+  //   dispatch(setLoader(true));
+  //   try {
+  //     dispatch(
+  //       SendGratitudeCampMessage(formData, (res) => {
+  //         dispatch(setLoader(false));
+
+  //         if (res.code === 422) {
+  //           if (res.errors) {
+  //             for (const [key, value] of Object.entries(res.errors)) {
+  //               if (key.startsWith("media.")) {
+  //                 value.forEach((error) => {
+  //                   toast.error(error);
+  //                 });
+  //               }
+  //             }
+  //           } else {
+  //             toast.error("The media must not be greater than 25mb.");
+  //           }
+  //         } else if (res.errors) {
+  //           toast.error(res.errors);
+  //         } else if (res.code === 404) {
+  //           toast.error(res.message);
+  //         } else if (res.code === 200) {
+  //           navigate(`/camplist/${requestId}`);
+  //           toast.success(res.message);
+  //         }
+  //       })
+  //     );
+  //   } catch (error) {
+  //     toast.error(error.message || "Error sending gratitude message");
+  //     dispatch(setLoader(false));
+  //   }
+  // };
   const handleSubmit = () => {
     if (!textMessage) {
       toast.error("The message field is required.");
       return;
     }
+
     const formData = new FormData();
     formData.append("camp_id", requestId);
     formData.append("donor_id", donorId);
     formData.append("message", textMessage);
     formData.append("abnormal", isAbnormal);
+    // formData.append("abnormal", isAbnormal == true ? "1" : "0");
 
-    media.forEach((file) => {
-      formData.append("media[]", file); // Append all media files
-    });
+    if (media) {
+      formData.append("media[]", media); // Append the single media file
+    }
 
     dispatch(setLoader(true));
     try {
@@ -71,24 +121,18 @@ export default function PostGratitudeMessage() {
         SendGratitudeCampMessage(formData, (res) => {
           dispatch(setLoader(false));
 
-          // Check for 422 status code
           if (res.code === 422) {
-            // Check if errors exist
-            if (res.errors) {
-              // Extract specific media error messages
-              for (const [key, value] of Object.entries(res.errors)) {
-                // Show the specific error message for media
-                if (key.startsWith("media.")) {
-                  value.forEach((error) => {
-                    toast.error(error); // Show each error message
-                  });
-                }
+            // Check if there are specific errors in the response
+            if (res.data && res.data.errors) {
+              for (const [messages] of Object.entries(res.data.errors)) {
+                messages.forEach((message) => {
+                  toast.error(message); // Display each error message
+                });
               }
             } else {
               toast.error("The media must not be greater than 25mb.");
             }
           } else if (res.errors) {
-            // Handle other types of errors
             toast.error(res.errors);
           } else if (res.code === 404) {
             toast.error(res.message);
@@ -111,10 +155,11 @@ export default function PostGratitudeMessage() {
         className="card col-lg-8 col-md-8 col-sm-8 mx-auto align-items-start mt-5 mb-5 gap-3"
         style={{ color: "#097E14" }}
       >
-        <div>{data?.name}</div>
-        <div>Blood Type: {data?.blood_group}</div>
-        <div>Quantity Needed: {data?.units_required}</div>
-        <div>{data?.location}</div>
+        <div>{donorData?.donor_name}</div>
+        <div>{donorData?.date}</div>
+        <div>{donorData?.time}</div>
+        <div>{donorData?.location}</div>
+        <div>{donorData?.status}</div>
       </div>
       <h5
         style={{ color: "blue" }}
@@ -159,18 +204,17 @@ export default function PostGratitudeMessage() {
               onChange={handleMediaUpload}
             />
           </div>
-          {media.length > 0 && (
+          {media && (
             <div className="text-center mt-3">
-              {media.map((file, index) => {
-                const fileURL = URL.createObjectURL(file);
-                return (
-                  <div key={index} className="mb-2">
-                    <a href={fileURL} target="_blank" rel="noopener noreferrer">
-                      {file.name} (PDF)
-                    </a>
-                  </div>
-                );
-              })}
+              <div className="mb-2">
+                <a
+                  href={URL.createObjectURL(media)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {media.name} (PDF)
+                </a>
+              </div>
             </div>
           )}
         </div>
