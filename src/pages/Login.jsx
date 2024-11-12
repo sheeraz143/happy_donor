@@ -69,7 +69,7 @@ const LoginComponent = () => {
   return (
     <div className="container">
       <img src={logo} alt="Happy Donors" className="donar-logo" />
-      <h2 className="welcomeText">Welcome Back! Saving Lives Starts Here</h2>
+      <h2 className="welcomeText">Welcome Back! Saving Lives Starts Here Dev</h2>
 
       <div className="inputContainer">
         <span className="icon">📞</span>
