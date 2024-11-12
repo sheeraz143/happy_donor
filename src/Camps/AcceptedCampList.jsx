@@ -5,7 +5,7 @@ import { AcceptedCamps, MarkCampDonated, setLoader } from "../redux/product";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
 import "../css/BloodRequest.css";
-// import bloodGroupImg from "../assets/bloodimage.png";
+import CampImg from "../assets/bloodcamps.png";
 import profPicImg from "../assets/prof_img.png";
 import { formatDate } from "../utils/dateUtils";
 
@@ -95,7 +95,7 @@ const AcceptedCampList = () => {
         <div className="request-header">
           <div className="align-content-center">
             <img
-              src={donor.profile_picture || profPicImg}
+              src={donor?.profile_picture || profPicImg}
               alt="Profile"
               style={{
                 width: "100px",
@@ -124,14 +124,14 @@ const AcceptedCampList = () => {
             </div>
           </div>
           <div className="blood-group">
-            {/* <img
-              src={donor?.camp_image || bloodGroupImg}
+            <img
+              src={donor?.camp_image || CampImg}
               alt="Blood Group"
               style={{ maxWidth: "180px" }}
-            /> */}
-            <h3 className="blood-group" style={{ color: "red" }}>
+            />
+            {/* <h3 className="blood-group" style={{ color: "red" }}>
               {donor?.blood_group || ""}
-            </h3>{" "}
+            </h3>{" "} */}
           </div>
         </div>
 

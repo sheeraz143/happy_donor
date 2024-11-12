@@ -26,7 +26,16 @@ const OTPVerificationComponent = () => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleVerify();
+    }
+  };
+
   const handleResend = () => {
+    // Clear the OTP fields
+    setOtp(new Array(4).fill(""));
+    
     const data = {
       phone_number: phoneNum,
     };
@@ -36,15 +45,12 @@ const OTPVerificationComponent = () => {
           if (res.errors) {
             toast.error(res.errors);
           } else {
-            // Handle success
             toast.success(res.message);
-            // navigate("/otp", { state: { inputValue } });
           }
           dispatch(setLoader(false));
         })
       );
     } catch (error) {
-      // Handle unexpected errors
       toast.error(error.message);
       dispatch(setLoader(false));
     }
@@ -53,21 +59,16 @@ const OTPVerificationComponent = () => {
   const handleVerify = () => {
     const otpString = otp.join("");
 
-    // Check if the OTP array is empty
-    if (otp.every((digit) => digit === "")) {
-      toast.error("OTP cannot be empty");
-      return;
-    }
     if (otp.some((digit) => digit === "")) {
       toast.error("All OTP fields must be filled");
       return;
     }
 
-    // Check if the length of the OTP string is correct
     if (otpString.length !== 4) {
       toast.error("OTP must be 4 digits");
       return;
     }
+
     dispatch(setLoader(true));
     const data = {
       phone_number: phoneNum,
@@ -79,7 +80,6 @@ const OTPVerificationComponent = () => {
       dispatch(
         verifytOTP(data, (res) => {
           if (res.code === 200) {
-            // Handle success
             localStorage.setItem("user_type", res.user_type);
             localStorage.setItem("is_profile_update", res.is_profile_update);
             localStorage.setItem("oAuth", `Bearer ${res.token}`);
@@ -90,14 +90,12 @@ const OTPVerificationComponent = () => {
               navigate("/home");
             }
           } else {
-            // Handle error
             toast.error(res.message);
           }
           dispatch(setLoader(false));
         })
       );
     } catch (error) {
-      // Handle unexpected errors
       toast.error(error.message || "An unexpected error occurred.");
       dispatch(setLoader(false));
     }
@@ -121,12 +119,13 @@ const OTPVerificationComponent = () => {
             id={`otp-input-${index}`}
             value={value}
             onChange={(e) => handleChange(e.target, index)}
+            onKeyDown={handleKeyDown} // Updated to use onKeyDown instead of onKeyPress
             className="otp-input"
           />
         ))}
       </div>
 
-      <button className="verify-button" onClick={handleVerify}>
+      <button className="verify-button" type="submit" onClick={handleVerify}>
         Verify
       </button>
 

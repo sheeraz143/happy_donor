@@ -39,7 +39,7 @@ export default function PostGratitudeCampMesage() {
             toast.error(res.errors);
           } else {
             // setData(res);
-            console.log('res: ', res);
+            console.log("res: ", res);
           }
         })
       );
@@ -130,63 +130,64 @@ export default function PostGratitudeCampMesage() {
         className="card col-lg-8 col-md-8 col-sm-8 mx-auto align-items-start mt-5 mb-5 gap-3"
         style={{ color: "#097E14" }}
       > */}
-        <div className="request-card col-lg-8 mx-auto mt-5 mb-5" key={donorData.donor_id}>
-          <div className="request-header">
-            <div className="align-content-center">
-              <img
-                src={donorData.profile_picture || profPicImg}
-                alt="Profile"
-                style={{
-                  width: "100px",
-                  height: "100px",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                }}
-                onError={(e) => {
-                  e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
-                  e.target.src = profPicImg; // Set to default image on error
-                }}
-              />
+      <div
+        className="request-card col-lg-8 mx-auto mt-5 mb-5"
+        key={donorData.donor_id}
+      >
+        <div className="request-header">
+          <div className="align-content-center">
+            <img
+              src={donorData.profile_picture || profPicImg}
+              alt="Profile"
+              style={{
+                width: "100px",
+                height: "100px",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+              onError={(e) => {
+                e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
+                e.target.src = profPicImg; // Set to default image on error
+              }}
+            />
+          </div>
+          <div className="request-details">
+            <div className="request-date text-start">
+              {donorData?.donor_name}
             </div>
-            <div className="request-details">
-              <div className="request-date text-start">
-                {donorData?.donor_name}
-              </div>
-              <div className="request-units text-start">
-                {formatDate(donorData?.date)}
-              </div>
-              <div className="request-date text-start">
-                {donorData?.location}
-              </div>
-              <label className="request-date text-start">Donor Number: </label>
-              <Link
-                to="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.location.href = `tel:${donorData?.phone_number}`;
-                }}
-              >
-                {donorData?.phone_number}
-              </Link>
+            <div className="request-units text-start">
+              {formatDate(donorData?.date)}
+            </div>
+            <div className="request-date text-start">{donorData?.location}</div>
+            <label className="request-date text-start">Donor Number: </label>
+            <Link
+              to="#"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href = `tel:${donorData?.phone_number}`;
+              }}
+            >
+              {donorData?.phone_number}
+            </Link>
 
-              <div
-                className="request-date text-start"
-                style={{ color: "#0750b1" }}
-              >
-                {donorData.donation_status}
-              </div>
-            </div>
-            <div className="blood-group">
-              <h3 className="blood-group" style={{ color: "red" }}>
-                {donorData?.blood_group || ""}
-              </h3>{" "}
-              {/* Show blood group text */}
-              {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
+            <div
+              className="request-date text-start"
+              style={{ color: "#0750b1" }}
+            >
+              {donorData.donation_status}
             </div>
           </div>
-
-          <div className="accept-donar-button d-flex justify-content-end gap-3 mt-2"></div>
+          <div className="blood-group">
+            <h3 className="blood-group" style={{ color: "red" }}>
+              {donorData?.blood_group || ""}
+            </h3>{" "}
+            {/* Show blood group text */}
+            {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
+          </div>
         </div>
+
+        <div className="accept-donar-button d-flex justify-content-end gap-3 mt-2"></div>
+      </div>
       {/* </div> */}
       <h5
         style={{ color: "blue" }}
@@ -278,6 +279,7 @@ export default function PostGratitudeCampMesage() {
         <button
           className="btn flex-fill me-2 fw-bold"
           style={{ padding: "15px", background: "#D9D9D9", color: "gray" }}
+          onClick={() => navigate(`/donarlist/${requestId}`)}
         >
           Cancel
         </button>

@@ -78,7 +78,7 @@ function Home() {
           },
           (error) => {
             console.error("Error getting geolocation:", error);
-            toast.error("Unable to retrieve your location.");
+            // toast.error("Unable to retrieve your location.");
           }
         );
       } else {
@@ -151,10 +151,6 @@ function Home() {
   };
 
   const handleNavigation = (path) => {
-    console.log("path: ", path);
-    console.log("isProfileUpdate: ", isProfileUpdate);
-    console.log("userType: ", storedUserType);
-
     if (isProfileUpdate == 0) {
       if (storedUserType == 4 || storedUserType == 5) {
         navigate(path);
@@ -172,6 +168,27 @@ function Home() {
       }
     } else {
       navigate(path);
+    }
+  };
+
+  const handleShareClick = (request) => {
+    const shareMessage = `${request.username} requires ${request.quantity_units} units of ${request.blood_group} blood at ${request.delivery_address}. View details here: https://app.happydonors.ngo/donate`;
+
+    if (navigator.share) {
+      // Use Web Share API if available
+      navigator
+        .share({
+          title: "Blood Donation Request",
+          text: shareMessage,
+          url: "https://app.happydonors.ngo/donate",
+        })
+        .catch((error) => console.log("Error sharing", error));
+    } else {
+      // WhatsApp fallback if Web Share API isn't available
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
+        shareMessage
+      )}`;
+      window.open(whatsappUrl, "_blank"); // Opens WhatsApp share URL in a new tab
     }
   };
 
@@ -194,7 +211,7 @@ function Home() {
               alt="Profile"
             />
           </div>
-          <div className="request-details ms-3">
+          <div className="request-details ms-4">
             <div
               className="request-date text-start fw-bold "
               style={{ color: "#000", fontSize: "20px" }}
@@ -210,7 +227,10 @@ function Home() {
             >
               Address: {request?.delivery_address}
             </div>
-            <div className="request-address text-start">
+            <div
+              className="request-address text-start"
+              style={{ color: "#000" }}
+            >
               Date: {formatDate(request?.required_date)}
             </div>
             {request?.phone_number && (
@@ -243,7 +263,12 @@ function Home() {
         <div className="accept-donor-button d-flex justify-content-around align-items-center ">
           <div className="icon-container d-flex me-3">
             <Link to="#" className="share-link me-2">
-              <img src={shareIcon} alt="Share" className="icon-img" />
+              <img
+                src={shareIcon}
+                alt="Share"
+                className="icon-img"
+                onClick={() => handleShareClick(request)}
+              />
             </Link>
             {/* <Link to="#" className="location-link">
               <img src={locationIcon} alt="Location" className="icon-img" />

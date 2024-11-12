@@ -100,7 +100,9 @@ function Request() {
       {/* Title */}
       <h3 style={{ color: "black" }}>Request for blood</h3>
       <div className="form-group">
-        <label>Title <span className="required-asterisk">*</span></label>
+        <label>
+          Title <span className="required-asterisk">*</span>
+        </label>
         <select
           className="form-input"
           {...register("title", { required: true })}
@@ -116,7 +118,9 @@ function Request() {
 
       {/* First Name */}
       <div className="form-group">
-        <label>Patient First Name <span className="required-asterisk">*</span></label>
+        <label>
+          Patient First Name <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
           type="text"
@@ -130,7 +134,9 @@ function Request() {
 
       {/* Last Name */}
       <div className="form-group">
-        <label>Patient Last Name <span className="required-asterisk">*</span></label>
+        <label>
+          Patient Last Name <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
           type="text"
@@ -144,7 +150,9 @@ function Request() {
 
       {/* Blood Group */}
       <div className="form-group">
-        <label>Blood Group <span className="required-asterisk">*</span></label>
+        <label>
+          Blood Group <span className="required-asterisk">*</span>
+        </label>
         <select
           className="form-input"
           {...register("bloodGroup", { required: true })}
@@ -167,7 +175,9 @@ function Request() {
 
       {/* Blood Component */}
       <div className="form-group">
-        <label>Blood Component <span className="required-asterisk">*</span></label>
+        <label>
+          Blood Component <span className="required-asterisk">*</span>
+        </label>
         <select
           className="form-input"
           {...register("bloodComponent", { required: true })}
@@ -186,7 +196,9 @@ function Request() {
 
       {/* Quantity*/}
       <div className="form-group">
-        <label>Quantity (Units) <span className="required-asterisk">*</span></label>
+        <label>
+          Quantity (Units) <span className="required-asterisk">*</span>
+        </label>
         <select
           className="form-input"
           {...register("Quantity", { required: true })}
@@ -210,7 +222,9 @@ function Request() {
 
       {/* Required Date */}
       <div className="form-group">
-        <label>Required Date <span className="required-asterisk">*</span></label>
+        <label>
+          Required Date <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
           type="date"
@@ -239,7 +253,9 @@ function Request() {
         )}
       </div> */}
       <div className="form-group">
-        <label>Location <span className="required-asterisk">*</span></label>
+        <label>
+          Location <span className="required-asterisk">*</span>
+        </label>
         <Autocomplete
           apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
           onPlaceSelected={(place) => {
@@ -273,7 +289,7 @@ function Request() {
 
       {/* Critical*/}
       <div className="form-group">
-        <label>Emergency?</label>
+        <label>Emergency? <span className="required-asterisk">*</span></label>
         <select
           className="form-input"
           {...register("critical", { required: true })}
@@ -287,7 +303,9 @@ function Request() {
 
       {/* First Name */}
       <div className="form-group">
-        <label>Attender First Name <span className="required-asterisk">*</span></label>
+        <label>
+          Attender First Name <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
           type="text"
@@ -301,7 +319,9 @@ function Request() {
 
       {/* Last Name */}
       <div className="form-group">
-        <label>Attender Last Name <span className="required-asterisk">*</span></label>
+        <label>
+          Attender Last Name <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
           type="text"
@@ -315,7 +335,9 @@ function Request() {
 
       {/* mobile number */}
       <div className="form-group">
-        <label>Mobile Number <span className="required-asterisk">*</span></label>
+        <label>
+          Mobile Number <span className="required-asterisk">*</span>
+        </label>
         {/* <input
           className="form-input"
           type="tel"
@@ -354,7 +376,10 @@ function Request() {
 
       {/* Wiiling to transport*/}
       <div className="form-group">
-        <label>Wiiling to arrange the transport to the donor? <span className="required-asterisk">*</span></label>
+        <label>
+          Wiiling to arrange the transport to the donor?
+          <span className="required-asterisk">*</span>
+        </label>
         <select
           className="form-input"
           {...register("willing", { required: true })}
@@ -373,7 +398,7 @@ function Request() {
           {...register("terms", { required: true })}
           className="form-checkbox"
         />
-       <label>
+        <label>
           I have read and agree to the
           <Link to="/terms-and-conditions.html" target="_blank">
             terms of service
@@ -394,7 +419,7 @@ function Request() {
           type="button"
           className="submit-button"
           style={{ backgroundColor: "grey", color: "white", width: "100px" }}
-          onClick={() => navigate("/home")}
+          onClick={() => navigate("/bloodrequest")}
         >
           Cancel
         </button>

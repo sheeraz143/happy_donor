@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import BloodCamps from "../../assets/BloodCamps.png";
-import bloodGroupImage from "../../assets/bloodimage.png";
+// import bloodGroupImage from "../../assets/bloodimage.png";
 import shareIcon from "../../assets/Share.png";
 import locationIcon from "../../assets/Mappoint.png";
 import { toast } from "react-toastify";
@@ -26,6 +26,7 @@ const BloodMedicalCamps = () => {
     window.scrollTo(0, 0);
     const fetchCampsAndEvents = async () => {
       const handleResponse = (result, type) => {
+        // console.log("result: ", result);
         if (result.code === 200) {
           if (type === "matched") {
             setCamps(result.camps || []);
@@ -102,6 +103,54 @@ const BloodMedicalCamps = () => {
     }
   };
 
+  const handleShareClick = (request) => {
+    // console.log("request: ", request);
+    // return;
+    const shareMessage = `${request.title} requires ${request.units_required} units of ${request.blood_group} blood at ${request.location}. View details here: https://happydonorsdev.devdemo.tech/viewcampdetails/${request?.camp_id}`;
+
+    if (navigator.share) {
+      // Use Web Share API if available
+      navigator
+        .share({
+          title: "Blood Donation Request",
+          text: shareMessage,
+          url: `https://happydonorsdev.devdemo.tech/viewcampdetails/${request?.camp_id}`,
+        })
+        .catch((error) => console.log("Error sharing", error));
+    } else {
+      // WhatsApp fallback if Web Share API isn't available
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
+        shareMessage
+      )}`;
+      window.open(whatsappUrl, "_blank"); // Opens WhatsApp share URL in a new tab
+    }
+  };
+  const handleShareClick1 = (event, request) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    // console.log("request: ", request);
+    // return;
+    const shareMessage = `${request.title} requires ${request.units_required} units of ${request.blood_group} blood at ${request.location}. View details here: https://happydonorsdev.devdemo.tech/viewcampdetails/${request?.id}`;
+
+    if (navigator.share) {
+      // Use Web Share API if available
+      navigator
+        .share({
+          title: "Blood Donation Request",
+          text: shareMessage,
+          url: `https://happydonorsdev.devdemo.tech/viewcampdetails/${request?.id}`,
+        })
+        .catch((error) => console.log("Error sharing", error));
+    } else {
+      // WhatsApp fallback if Web Share API isn't available
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
+        shareMessage
+      )}`;
+      window.open(whatsappUrl, "_blank"); // Opens WhatsApp share URL in a new tab
+    }
+  };
+
   const renderRequestCard = (request) => (
     <div className="request-card position-relative" key={request?.camp_id}>
       <div
@@ -142,10 +191,15 @@ const BloodMedicalCamps = () => {
       <div className="accept-donar-button d-flex justify-content-around">
         <div className="icon-container">
           <Link href="#" className="share-link">
-            <img src={shareIcon} alt="Share" className="icon-img" />
+            <img
+              src={shareIcon}
+              alt="Share"
+              className="icon-img"
+              onClick={() => handleShareClick(request)}
+            />
           </Link>
           <Link
-            href={`https://www.google.com/maps?q=${request.latitude},${request.longitude}`}
+            to={`https://www.google.com/maps?q=${request.latitude},${request.longitude}`}
             className="location-link"
             target="_blank"
             rel="noopener noreferrer"
@@ -166,94 +220,107 @@ const BloodMedicalCamps = () => {
     </div>
   );
 
-  const renderOthersCard = (request) => (
-    <div
-      className="request-card"
-      key={request?.id}
-      onClick={() => {
-        navigate("/eventdetails", { state: { request: request?.id } });
-      }}
-    >
-      <div className="request-header d-flex align-items-center">
-        <div className="align-content-center">
-          <img
-            src={request?.profilePic || profImg}
-            alt="Profile"
-            className="profile_img"
-          />
+  const renderOthersCard = (request) => {
+    return (
+      <div
+        className="request-card"
+        key={request?.id}
+        onClick={() => {
+          // console.log("request?.id: ", request?.id);
+          // return;
+          navigate("/eventdetails", { state: { request: request?.id } });
+          // navigate(`/eventdetails/${request?.id}`);
+        }}
+      >
+        <div className="request-header d-flex align-items-center">
+          <div className="align-content-center">
+            <img
+              src={request?.profilePic || profImg}
+              alt="Profile"
+              className="profile_img"
+            />
+          </div>
+          <div className="request-details ms-3">
+            <div className="text-start fw-bold">{request?.title}</div>
+            {/* <div className="text-start">Blood units: {request?.units}</div> */}
+            <div className="text-start">{formatDate(request?.event_date)}</div>
+            <div className="text-start">{request?.location}</div>
+            <div className="text-start" style={{ color: "#0d6efd" }}>
+              Status: {request?.status}
+            </div>
+          </div>
+          {/* <div className="blood-group ms-auto">
+            <img
+              src={request?.bloodGroupImage || bloodGroupImage}
+              alt="Blood Group"
+              style={{ maxWidth: "130px" }}
+            />
+          </div> */}
         </div>
-        <div className="request-details ms-3">
-          <div className="text-start fw-bold">{request?.title}</div>
-          <div className="text-start">Blood units: {request?.units}</div>
-          <div className="text-start">{formatDate(request?.event_date)}</div>
-          <div className="text-start">{request?.location}</div>
-        </div>
-        <div className="blood-group ms-auto">
-          <img
-            src={request?.bloodGroupImage || bloodGroupImage}
-            alt="Blood Group"
-            style={{ maxWidth: "130px" }}
-          />
-        </div>
-      </div>
-      <div className="mt-3">
-        <div className="d-flex mx-3">
-          <Link href="#" className="share-link me-2">
-            <img src={shareIcon} alt="Share" className="icon-img" />
-          </Link>
-          <Link
-            href={`https://www.google.com/maps?q=${request.lat},${request.lon}`}
-            className="location-link"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src={locationIcon} alt="Location" className="icon-img" />
-          </Link>
-        </div>
-      </div>
-      <div className="mt-3">
-        <div className="d-flex me-3 justify-content-around">
-          {request?.option === "Participate" || request?.option === "Both" ? (
-            <button
-              className="accepted-donors-btn btn"
-              style={{
-                background: request?.participate === 1 ? "gray" : "green",
-                color: "#fff",
-                // cursor: request?.participate === 1 ? "not-allowed" : "pointer",
-              }}
-              onClick={(event) => {
-                event.stopPropagation();
-                if (request?.participate === 1) return; // Prevent function if already participated
-                handleParticipate(request);
-              }}
-              disabled={request?.participate === 1}
+        <div className="mt-3">
+          <div className="d-flex mx-3">
+            <Link to="#" className="share-link me-2">
+              <img
+                src={shareIcon}
+                alt="Share"
+                className="icon-img"
+                onClick={(event) => handleShareClick1(event, request)}
+              />
+            </Link>
+            <Link
+              to={`https://www.google.com/maps?q=${request.lat},${request.lon}`}
+              className="location-link"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              {request?.participate === 1 ? "Participated" : "Participate"}
-            </button>
-          ) : null}
-          {request?.option === "Both" ? (
-            <button
-              className={`accepted-donors-btn btn ${
-                request?.contribute === 1 ? "btn-disabled" : "btn-primary"
-              }`}
-              style={{
-                color: "#fff",
-                // cursor: request?.participate === 1 ? "not-allowed" : "pointer",
-              }}
-              onClick={(event) => {
-                event.stopPropagation();
-                if (request?.contribute === 1) return; // Prevent click if already contributed
-                handleContribute(request);
-              }}
-              disabled={request?.contribute === 1}
-            >
-              {request?.contribute === 1 ? "Contributed" : "Contribute"}
-            </button>
-          ) : null}
+              <img src={locationIcon} alt="Location" className="icon-img" />
+            </Link>
+          </div>
+        </div>
+        <div className="mt-3">
+          <div className="d-flex me-3 justify-content-around">
+            {request?.option === "Participate" || request?.option === "Both" ? (
+              <button
+                className="accepted-donors-btn btn"
+                style={{
+                  background: request?.participate === 1 ? "gray" : "green",
+                  color: "#fff",
+                  // cursor: request?.participate === 1 ? "not-allowed" : "pointer",
+                }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  if (request?.participate === 1) return; // Prevent function if already participated
+                  handleParticipate(request);
+                }}
+                disabled={request?.participate === 1}
+              >
+                {request?.participate === 1 ? "Participated" : "Participate"}
+              </button>
+            ) : null}
+            {request?.option === "Both" ? (
+              <button
+                className={`accepted-donors-btn btn ${
+                  request?.contribute === 1 ? "btn-disabled" : "btn-primary"
+                }`}
+                style={{
+                  color: "#fff",
+                  // cursor: request?.participate === 1 ? "not-allowed" : "pointer",
+                }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  if (request?.contribute === 1) return; // Prevent click if already contributed
+                  handleContribute(request);
+                }}
+                disabled={request?.contribute === 1}
+              >
+                {request?.contribute === 1 ? "Contributed" : "Contribute"}
+              </button>
+            ) : null}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <>

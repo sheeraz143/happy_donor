@@ -68,6 +68,8 @@ import { requestForToken } from "./pushnotification/firebase";
 import PaginatedList from "./pages/pagination";
 import BloodrequestDetailPage from "./pages/BloodRequests/BloodrequestDetailPage";
 import ViewrequestDetailPage from "./pages/BloodRequests/ViewRequestDetail";
+import ViewEventDetails from "./pages/Bloodcamps/ViewEventDetails";
+import ViewCampDetails from "./pages/Bloodcamps/ViewCampDetails";
 // import FirebaseComponent from "./pushnotification/FirebaseComponent";
 
 function App() {
@@ -213,7 +215,9 @@ function App() {
           <Route path="/bloodcamps" element={<BloodMedicalCamps />} />
           <Route path="/funddonation" element={<FundDonation />} />
           <Route path="/campdetails" element={<CampDetails />} />
+          <Route path="/viewcampdetails/:id" element={<ViewCampDetails />} />
           <Route path="/eventdetails" element={<EventDetails />} />
+          <Route path="/vieweventdetails/:id" element={<ViewEventDetails />} />
           <Route path="/contributefund" element={<ContributeFund />} />
           <Route
             path="/bloodrequestdetail/:id"

@@ -7,9 +7,11 @@ import locationIcon from "../assets/Mappoint.png";
 import { useDispatch } from "react-redux";
 import { BloodDonateList, DonateAccept, setLoader } from "../redux/product";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Pagination } from "antd";
 import { formatDate } from "../utils/dateUtils";
+
+const ITEMS_PER_PAGE = 10; // Number of items per page
 
 function Donate() {
   const [activeTab, setActiveTab] = useState("matched");
@@ -24,45 +26,80 @@ function Donate() {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const fetchData = (tab) => {
-    dispatch(setLoader(true)); // Start loading
-    dispatch(
-      BloodDonateList(tab, (res) => {
-        dispatch(setLoader(false));
+  // const fetchData = (tab, page) => {
+  //   dispatch(setLoader(true)); // Start loading
+  //   dispatch(
+  //     BloodDonateList(tab, page, (res) => {
+  //       console.log('res: ', res);
+  //       dispatch(setLoader(false));
 
-        if (res.errors) {
-          toast.error(res.errors);
+  //       if (res.errors) {
+  //         toast.error(res.errors);
+  //         dispatch(setLoader(false));
+  //       } else {
+  //         if (tab === "matched") {
+  //           setOpenRequests(res?.requests);
+  //           setRequestCount((prevCount) => ({
+  //             ...prevCount,
+  //             matched: res?.pagination?.total,
+  //           }));
+  //         } else {
+  //           setClosedRequests(res?.requests);
+  //           setRequestCount((prevCount) => ({
+  //             ...prevCount,
+  //             unmatched: res?.pagination?.total,
+  //           }));
+  //         }
+  //       }
+  //     })
+  //   ).catch((error) => {
+  //     toast.error(error.message || "Error fetching requests");
+  //     dispatch(setLoader(false));
+  //   });
+  // };
+
+  // Load data for open and closed requests
+  const fetchData = useCallback(
+    (tab, page = 1) => {
+      dispatch(setLoader(true));
+      dispatch(
+        BloodDonateList(tab, page, (res) => {
           dispatch(setLoader(false));
-        } else {
-          if (tab === "matched") {
-            setOpenRequests(res?.requests);
-            setRequestCount((prevCount) => ({
-              ...prevCount,
-              matched: res?.pagination?.total,
-            }));
+          if (res.errors) {
+            toast.error(res.errors);
           } else {
-            setClosedRequests(res?.requests);
-            setRequestCount((prevCount) => ({
-              ...prevCount,
-              unmatched: res?.pagination?.total,
-            }));
+            if (tab === "matched") {
+              setOpenRequests(res.requests);
+              setRequestCount((prevCount) => ({
+                ...prevCount,
+                matched: res?.pagination?.total,
+              }));
+            } else {
+              setClosedRequests(res.requests);
+              setRequestCount((prevCount) => ({
+                ...prevCount,
+                unmatched: res?.pagination?.total,
+              }));
+            }
           }
-        }
-      })
-    ).catch((error) => {
-      toast.error(error.message || "Error fetching requests");
-      dispatch(setLoader(false));
-    });
-  };
+        })
+      );
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     fetchData("matched", 1);
     fetchData("unmatched", 1);
-  }, [dispatch]);
+  }, [fetchData, refresh]);
 
   useEffect(() => {
     fetchData(activeTab, currentPage);
-  }, [activeTab, currentPage, refresh]);
+  }, [activeTab, currentPage, fetchData]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   const handleCardClick = (request) => {
     // console.log("request: ", request);
@@ -88,17 +125,23 @@ function Donate() {
     }
   };
   const handleShareClick = (request) => {
+    const shareMessage = `${request.name} requires ${request.units_required} units of ${request.blood_group} blood at ${request.location}. View details here: https://happydonorsdev.devdemo.tech/viewbloodrequest/${request?.request_id}`;
+
     if (navigator.share) {
-      const shareMessage = `${request.name} requires ${request.units_required} Units of ${request.blood_group} blood at ${request.location}. https/app.happydonors.ngo/viewbloodrequest/${request?.request_id}`;
+      // Use Web Share API if available
       navigator
         .share({
           title: "Blood Donation Request",
           text: shareMessage,
-          // url: , // You can include the URL of the page if needed
+          url: `https://happydonorsdev.devdemo.tech/viewbloodrequest/${request?.request_id}`,
         })
         .catch((error) => console.log("Error sharing", error));
     } else {
-      alert("Web Share API is not supported in your browser.");
+      // WhatsApp fallback if Web Share API isn't available
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
+        shareMessage
+      )}`;
+      window.open(whatsappUrl, "_blank"); // Opens WhatsApp share URL in a new tab
     }
   };
 
@@ -260,7 +303,7 @@ function Donate() {
             <h4 className="mx-auto mb-3 ">No Data available.</h4>
           )}
         </div>
-        <Pagination
+        {/* <Pagination
           align="center"
           className="mb-4"
           current={currentPage}
@@ -269,6 +312,14 @@ function Donate() {
             setCurrentPage(page);
             fetchData(activeTab, page);
           }}
+        /> */}
+        <Pagination
+          align="center"
+          className="mb-4"
+          current={currentPage}
+          total={requestCount[activeTab]}
+          pageSize={ITEMS_PER_PAGE}
+          onChange={handlePageChange}
         />
       </div>
     </>

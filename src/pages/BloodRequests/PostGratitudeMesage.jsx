@@ -223,6 +223,7 @@ export default function PostGratitudeMessage() {
         <button
           className="btn flex-fill me-2 fw-bold"
           style={{ padding: "15px", background: "#D9D9D9", color: "gray" }}
+          onClick={() => navigate(`/camplist/${requestId}`)}
         >
           Cancel
         </button>
