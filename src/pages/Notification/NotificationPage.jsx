@@ -85,19 +85,35 @@ export default function NotificationPage({ onRefreshNavbar }) {
     );
   };
 
-  // Handler to navigate to the appropriate screen when a notification is clicked
   const handleNotificationClick = (notification) => {
-    console.log("notification: ", notification);
-    if (notification.screen === "Request") {
-      navigate(`/bloodrequestdetail/${notification.link}`);
-    }
-    console.log("notification: ", notification);
-    if (notification.screen === "Donor") {
-      navigate(`/donate`);
-    }
+    const { screen, link } = notification;
 
-    if (notification.screen === "Çamp") {
-      navigate(`/campdetails/${notification.link}`);
+    switch (screen) {
+      case "Request":
+        navigate(`/bloodrequestdetail/${link}`);
+        break;
+      case "Donor":
+        navigate(`/donate`);
+        break;
+      case "Camp":
+        navigate(`/campdetails/${link}`);
+        break;
+      case "Event":
+        // navigate(`/eventdetails`);
+        navigate(`/bloodcamps`);
+        break;
+      case "DonationHistory":
+        navigate(`/donationhistory`);
+        break;
+      case "Profile":
+        navigate(`/viewprofile`);
+        break;
+      case "Donation":
+        navigate(`/viewbloodrequest/${link}`);
+        break;
+      default:
+        console.log("Unknown screen type:", screen);
+        break;
     }
   };
 

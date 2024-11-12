@@ -122,7 +122,6 @@ export default function ContributeFund() {
   const location = useLocation();
 
   const eventData = location?.state?.request || {};
-  console.log("eventData: ", eventData);
   const {
     register,
     handleSubmit,
@@ -181,7 +180,7 @@ export default function ContributeFund() {
           console.log("res: ", res);
           if (res.code === 201) {
             const transaction_id = res.transaction_id;
-            // console.log("transaction_id: ", transaction_id);
+            console.log("transaction_id: ", transaction_id);
             const amountInPaise = Math.max(Math.round(data.amount * 100), 100); // Ensure amount in paise and minimum of ₹1
 
             const options = {
@@ -191,14 +190,18 @@ export default function ContributeFund() {
               name: "Happy Donors NGO",
               description: "Donation",
               order_id: res.order_id,
-              handler: () => {
-                // console.log("response handler: ", response);
+              handler: (res) => {
+                console.log("handler res: ", res);
                 dispatch(setLoader(true));
                 const paymentStatusData = {
-                  transaction_id,
+                  transaction_id: transaction_id,
+                  razorpay_payment_id: res?.razorpay_payment_id,
+                  razorpay_order_id: res?.razorpay_order_id,
+                  razorpay_signature: res?.razorpay_signature,
+                  response: res,
                   status: "success",
                 };
-                // console.log("paymentStatusData: ", paymentStatusData);
+                console.log("paymentStatusData: ", paymentStatusData);
                 dispatch(
                   paymentStatus(paymentStatusData, (statusRes) => {
                     if (statusRes.code === 200) {
@@ -221,6 +224,23 @@ export default function ContributeFund() {
                   console.log("Payment modal closed");
                   setLoading(false);
                   dispatch(setLoader(false));
+                  dispatch(setLoader(true));
+                  const paymentStatusData = {
+                    transaction_id,
+                    status: "failed",
+                  };
+                  console.log("payfailed: ", paymentStatusData);
+                  dispatch(
+                    paymentStatus(paymentStatusData, (statusRes) => {
+                      if (statusRes.code === 200) {
+                        toast.success(statusRes.message);
+                        navigate("/home");
+                      } else {
+                        toast.error(statusRes.message);
+                      }
+                      dispatch(setLoader(false));
+                    })
+                  );
                 },
               },
               theme: {

@@ -33,6 +33,12 @@ const LoginComponent = () => {
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      onSubmit();
+    }
+  };
+
   const onSubmit = () => {
     if (inputValue.trim() === "+91") {
       toast.error("Phone number cannot be empty");
@@ -69,7 +75,7 @@ const LoginComponent = () => {
   return (
     <div className="container">
       <img src={logo} alt="Happy Donors" className="donar-logo" />
-      <h2 className="welcomeText">Welcome Back! Saving Lives Starts Here Dev</h2>
+      <h2 className="welcomeText">Welcome Back! Saving Lives Starts Here</h2>
 
       <div className="inputContainer">
         <span className="icon">📞</span>
@@ -78,12 +84,13 @@ const LoginComponent = () => {
           type="text"
           value={inputValue}
           onChange={handleChange}
+          onKeyUp={handleKeyPress} // Add this line to listen for Enter key
           placeholder="Enter up to 10 digits"
           style={{ margin: "0", border: "unset", padding: "0" }}
         />
       </div>
 
-      <button className="button" onClick={onSubmit}>
+      <button className="button" type="submit" onClick={onSubmit}>
         Get OTP
       </button>
     </div>

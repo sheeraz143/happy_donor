@@ -1,8 +1,5 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-// import bloodGroupImage from "../../assets/bloodimage.png";
-// import profilePic from "../../assets/profpic.png";
-// import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { DonateHistory, setLoader } from "../../redux/product";
@@ -12,18 +9,17 @@ import { formatDate } from "../../utils/dateUtils";
 import Modal from "react-modal";
 import profPicImg from "../../assets/prof_img.png";
 
+const ITEMS_PER_PAGE = 10; // Number of items per page
+
 function DonationHistory() {
-  // const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [openRequests, setOpenRequests] = useState([]);
+  const [donors, setDonors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRequests, setTotalRequests] = useState(0);
-  const perPage = 10;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedDonor, setSelectedDonor] = useState(null);
 
   const openModal = (donor) => {
-    console.log("donor: ", donor);
     setSelectedDonor(donor);
     setModalIsOpen(true);
   };
@@ -33,37 +29,40 @@ function DonationHistory() {
     setSelectedDonor(null);
   };
 
-  useEffect(() => {
+  // Fetch donation history data based on the current page
+  const fetchDonationHistory = (page = 1) => {
     dispatch(setLoader(true));
     try {
       dispatch(
-        DonateHistory((res) => {
-          if (res.code === 200) {
-            // console.log(res?.requests);
-            setOpenRequests(res?.donors);
-            setTotalRequests(res?.pagination?.total);
+        DonateHistory(page, (res) => {
+          // Provide page directly
+          if (res.code === 200 && res.donors && res.donors.length > 0) {
+            setDonors(res.donors);
+            setTotalRequests(res.pagination.total);
           } else {
-            toast.error(res.message);
+            setDonors([]);
+            toast.error(res.message || "No data found.");
           }
           dispatch(setLoader(false));
         })
       );
     } catch (error) {
       toast.error(error.message || "An unexpected error occurred.");
+      setDonors([]);
       dispatch(setLoader(false));
     }
-  }, [dispatch]);
+  };
 
-  // const handleButtonClick = (request) => {
-  //   if (request?.requestType === "gratitude") {
-  //     navigate("/gratitude", { state: { request } });
-  //   } else {
-  //     navigate("/report", { state: { request } });
-  //   }
-  // };
+  useEffect(() => {
+    fetchDonationHistory(currentPage); // Fetch data for the current page
+  }, [currentPage]); // Re-run on page change
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   const renderRequestCard = (request) => (
-    <div className="request-card" key={request?.request_id}>
+    <div className="request-card" key={request?.request_id || request?.camp_id}>
       <div className="request-header d-flex align-items-center">
         <div className="align-content-center">
           <img
@@ -71,20 +70,20 @@ function DonationHistory() {
             alt="Profile"
             style={{ width: "50px", height: "50px", borderRadius: "50%" }}
             onError={(e) => {
-              e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
-              e.target.src = profPicImg; // Set to default image on error
+              e.target.onerror = null;
+              e.target.src = profPicImg;
             }}
           />
         </div>
         <div className="request-details ms-3">
-          {/* Bootstrap's `ms-3` adds left margin */}
-
           <div className="request-date text-start">
             {request?.patient_name ?? request?.donor_name}
           </div>
           <div className="request-date text-start">
-            Donate on:
-            {formatDate(request?.date)}
+            Donated on: {formatDate(request?.donated_date)}
+          </div>
+          <div className="request-date text-start">
+            Status: {request?.status}
           </div>
           <div className="request-date text-start">{request?.location}</div>
           <div className="request-date text-start" style={{ color: "blue" }}>
@@ -93,23 +92,13 @@ function DonationHistory() {
           </div>
         </div>
         <div className="blood-group ms-auto">
-          {/* <img src={bloodGroupImage} alt="Blood Group" /> */}
           <h3 className="blood-group" style={{ color: "red" }}>
             {request.blood_group || ""}
-          </h3>{" "}
-          {/* Show blood group text */}
+          </h3>
         </div>
       </div>
 
       <div className="accept-donar-button d-flex align-items-center mt-3 justify-content-end">
-        {/* <button
-          className="accepted-donors-btn btn btn-primary"
-          onClick={() => handleButtonClick(request)}
-        >
-          {request.requestType === "gratitude"
-            ? "View Gratitude Message"
-            : "TTI Report"}
-        </button> */}
         <div className="accept-donar-button d-flex justify-content-end gap-3 mt-2">
           {(request.donation_status === "Completed" ||
             request.donation_status === "Donated" ||
@@ -119,8 +108,8 @@ function DonationHistory() {
                 Donated
               </button>
 
-              {request?.type == "BloodRequestDonor" &&
-                request?.gratitude_msg !== "" && (
+              {request?.type === "BloodRequestDonor" &&
+                request?.gratitude_msg && (
                   <button
                     className="accepted-donors-btn"
                     onClick={() => openModal(request)}
@@ -128,15 +117,14 @@ function DonationHistory() {
                     View Gratitude Message
                   </button>
                 )}
-              {request?.type == "CampDonor" &&
-                request?.gratitude_msg !== "" && (
-                  <button
-                    className="accepted-donors-btn"
-                    onClick={() => openModal(request)}
-                  >
-                    View TTI Report
-                  </button>
-                )}
+              {request?.type === "CampDonor" && request?.gratitude_msg && (
+                <button
+                  className="accepted-donors-btn"
+                  onClick={() => openModal(request)}
+                >
+                  View TTI Report
+                </button>
+              )}
             </>
           )}
         </div>
@@ -149,26 +137,21 @@ function DonationHistory() {
       <h2 className="text-center">Donation History</h2>
       <div className="blood-request-container">
         <div className="requests mt-5">
-          {openRequests?.map(renderRequestCard)}
+          {donors.length > 0 ? (
+            donors.map(renderRequestCard)
+          ) : (
+            <h4 className="mx-auto mb-5 text-center">No Data available.</h4>
+          )}
         </div>
       </div>
-      <div>
-        {openRequests?.length === 0 && (
-          <h4 className="mx-auto mb-5 text-center">No Data available.</h4>
-        )}
-      </div>
-      <div>
-        <Pagination
-          align="center"
-          className="mb-4 mt-5"
-          current={currentPage}
-          total={totalRequests}
-          pageSize={perPage}
-          onChange={(page) => {
-            setCurrentPage(page);
-          }}
-        />
-      </div>
+      <Pagination
+        align="center"
+        className="mb-4"
+        current={currentPage}
+        total={totalRequests}
+        pageSize={ITEMS_PER_PAGE}
+        onChange={handlePageChange}
+      />
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -180,7 +163,7 @@ function DonationHistory() {
         {selectedDonor && (
           <div className="d-flex flex-column align-items-center ">
             <h2>
-              {selectedDonor?.type == "BloodRequestDonor"
+              {selectedDonor?.type === "BloodRequestDonor"
                 ? "Gratitude Message"
                 : "TTI Report"}
             </h2>

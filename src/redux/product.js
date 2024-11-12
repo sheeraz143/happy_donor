@@ -467,13 +467,12 @@ export const donateApprove =
     }
   };
 export const BloodDonateList =
-  (type, callback = () => {}) =>
+  (type, page, callback = () => {}) =>
   async () => {
     try {
       const response = await Helper.getData(
-        baseUrl + `app/blood-donate/${type}`
+        baseUrl + `app/blood-donate/${type}?page=${page}&limit=${10}`
       );
-
       const result = {
         ...response.data,
         code: response.status,
@@ -1145,6 +1144,7 @@ export const ViewEventRequest =
       const response = await Helper.getData(
         baseUrl + `app/events/matched/${id}/view`
       );
+      console.log('response: ', response);
 
       const result = {
         ...response.data,
@@ -1159,7 +1159,7 @@ export const ViewEventRequest =
         callback({
           status: false,
           code: response.status,
-          message: response?.response?.data.message,
+          message: response?.data.message,
         });
       }
     } catch (err) {
@@ -1277,11 +1277,14 @@ export const RejectBloodDonorByAdmin =
   };
 
 export const DonateHistory =
-  (callback = () => {}) =>
+  (
+    page,
+    callback = () => {} // Default callback as empty function
+  ) =>
   async () => {
     try {
       const response = await Helper.getData(
-        baseUrl + `app/blood-donors/history`
+        baseUrl + `app/blood-donors/history?page=${page}&limit=${10}`
       );
 
       const result = {
@@ -1289,25 +1292,34 @@ export const DonateHistory =
         code: response.status,
       };
 
-      // If response is 200, send the data
+      // If response is 200, execute the callback with the result
       if (response.status === 200) {
-        callback(result);
+        if (typeof callback === "function") {
+          // Ensure callback is a function
+          callback(result);
+        }
       } else {
         // If not 200, send an error message
-        callback({
-          status: false,
-          code: response.status,
-          message: response?.response?.data.message,
-        });
+        if (typeof callback === "function") {
+          callback({
+            status: false,
+            code: response.status,
+            message: response?.response?.data.message,
+          });
+        }
       }
     } catch (err) {
-      callback({
-        status: false,
-        code: err.response?.status || 500,
-        message: err.response?.data?.message || "An unexpected error occurred.",
-      });
+      if (typeof callback === "function") {
+        callback({
+          status: false,
+          code: err.response?.status || 500,
+          message:
+            err.response?.data?.message || "An unexpected error occurred.",
+        });
+      }
     }
   };
+
 export const writeToUs =
   (data, callback = () => {}) =>
   async () => {
@@ -1509,7 +1521,7 @@ export const fundInitiate =
         baseUrl + `app/fund-donation/initiate`,
         data
       );
-      console.log("response: ", response.response);
+      console.log("response: ", response.response.data);
 
       const result = {
         ...response.data,

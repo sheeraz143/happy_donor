@@ -1,7 +1,6 @@
 import BloodCamps from "../../assets/BloodCamps.png";
-import shareIcon from "../../assets/Share.png";
-import locationIcon from "../../assets/Mappoint.png";
-import { Link, useLocation } from "react-router-dom";
+
+import { useParams } from "react-router-dom";
 import MapComponent from "../../components/map/MapComponent";
 // import { formatDate } from "../../utils/dateUtils";
 import { useEffect, useState } from "react";
@@ -9,11 +8,9 @@ import { setLoader, ViewCampsRequest } from "../../redux/product";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
-export default function CampDetails() {
-  const location = useLocation();
-  console.log("location: ", location);
-  const id = location.state.request || {}; // Retrieve the passed request object
-  console.log('id: ', id);
+export default function ViewCampDetails() {
+  const campId = useParams();
+  console.log("campId: ", campId);
   const dispatch = useDispatch();
   const [data, setData] = useState({});
 
@@ -21,7 +18,8 @@ export default function CampDetails() {
     dispatch(setLoader(true));
     try {
       dispatch(
-        ViewCampsRequest(id, (res) => {
+        ViewCampsRequest(campId?.id, (res) => {
+          console.log("res: ", res);
           if (res.code === 200) {
             setData(res);
           } else {
@@ -51,31 +49,6 @@ export default function CampDetails() {
             </div>
             <div className="text-start">Location: {camp.location}</div>
           </div>
-        </div>
-
-        <div className="d-flex align-items-center mt-3 justify-content-between">
-          <div className="icon-container d-flex me-3">
-            <Link to="#" className="share-link me-2">
-              <img src={shareIcon} alt="Share" className="icon-img" />
-            </Link>
-            <Link
-              to={`https://www.google.com/maps?q=${camp.lat},${camp.lon}`}
-              className="location-link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src={locationIcon} alt="Location" className="icon-img" />
-            </Link>
-          </div>
-          <button
-            className={`accepted-donors-btn btn ${
-              camp.is_accepted ? "btn-secondary" : "btn-primary"
-            }`}
-            style={{ width: "7.5rem" }}
-            disabled={camp.is_accepted}
-          >
-            {camp.is_accepted ? "Accepted" : "Accept"}
-          </button>
         </div>
       </div>
     );

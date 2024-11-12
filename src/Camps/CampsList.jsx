@@ -8,6 +8,7 @@ import { CampsLists, CancelBloodCamp, setLoader } from "../redux/product";
 import { Pagination } from "antd";
 import Modal from "react-modal";
 import { formatDate } from "../utils/dateUtils";
+import { FaTimes } from "react-icons/fa";
 
 const ITEMS_PER_PAGE = 10; // Set items per page
 
@@ -143,9 +144,33 @@ const CampsList = () => {
       <div
         className="request-card"
         key={`${request.camp_id}-${index}`}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer", position: "relative" }}
         onClick={() => handleCardClick(request)}
       >
+        {/* Close Icon in the top-right corner */}
+        <button
+          className="close-button"
+          onClick={(event) => openModal(request, event)}
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+            background: "white", // White background for contrast
+            border: "1px solid lightgray", // Light gray border for better visibility
+            borderRadius: "50%", // Circle shape
+            color: "gray",
+            cursor: "pointer",
+            fontSize: "16px",
+            width: "24px",
+            height: "24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)", // Optional shadow for depth
+          }}
+        >
+          <FaTimes />
+        </button>
         <div className="request-header">
           <div className="request-details">
             <div className="request-date text-start"> {request?.title}</div>
@@ -175,7 +200,7 @@ const CampsList = () => {
               className="img_fluid"
               src={request.camp_image || bloodGroupImg}
               alt="Blood Group"
-              onClick={(event) => openModal(request, event)}
+              // onClick={(event) => openModal(request, event)}
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src = bloodGroupImg;

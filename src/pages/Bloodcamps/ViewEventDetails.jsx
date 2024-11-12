@@ -1,21 +1,15 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import shareIcon from "../../assets/Share.png";
 import locationIcon from "../../assets/Mappoint.png";
 // import { formatDate } from "../../utils/dateUtils";
 import { useEffect, useState } from "react";
-import {
-  DonateAcceptCamp,
-  setLoader,
-  ViewEventRequest,
-} from "../../redux/product";
+import { setLoader, ViewEventRequest } from "../../redux/product";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
-export default function EventDetails() {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const id = location?.state?.request || {}; // Retrieve the passed request object
+export default function ViewEventDetails() {
+  const eventId = useParams();
+  console.log("eventId: ", eventId.id);
   const dispatch = useDispatch();
   const [data, setData] = useState({});
 
@@ -23,10 +17,12 @@ export default function EventDetails() {
     dispatch(setLoader(true));
     try {
       dispatch(
-        ViewEventRequest(id, (res) => {
+        ViewEventRequest(eventId?.id, (res) => {
           console.log("res: ", res);
           if (res.code === 200) {
+            // setData(res?.events[0]);
             setData(res);
+            console.log("res?.events[0]: ", res);
           } else {
             toast.error(res.message);
           }
@@ -39,27 +35,6 @@ export default function EventDetails() {
     }
   }, []);
 
-  const handleParticipate = () => {
-    dispatch(setLoader(true));
-
-    try {
-      dispatch(
-        DonateAcceptCamp(data?.id, (res) => {
-          if (res.code === 200) {
-            toast.success(res.message);
-            navigate("/bloodcamps");
-          } else {
-            toast.error(res.message);
-            navigate("/bloodcamps");
-          }
-          dispatch(setLoader(false));
-        })
-      );
-    } catch (error) {
-      toast.error(error.message || "An unexpected error occurred.");
-      dispatch(setLoader(false));
-    }
-  };
   return (
     <div className="mt-4 mb-5">
       <h2 className="mb-3 text-center">Event Details</h2>
@@ -80,12 +55,7 @@ export default function EventDetails() {
                 style={{ width: "24px", height: "24px" }}
               />
             </Link>
-            {/* <a
-            href=
-            className="location-link"
-            target="_blank"
-            rel="noopener noreferrer"
-          > */}
+
             <Link
               to={`https://www.google.com/maps?q=${data.lat},${data.lon}`}
               target="_blank"
@@ -106,22 +76,6 @@ export default function EventDetails() {
         style={{ color: "blue" }}
       >
         <h6 className="mb-1 text-start">Description:</h6>
-      </div>
-
-      <div className="col-lg-8 col-md-8 col-sm-8 mx-auto d-flex justify-content-between">
-        <button
-          className="btn btn-success flex-fill me-2 fw-bold"
-          style={{ padding: "20px", background: "green" }}
-          onClick={() => handleParticipate()}
-        >
-          Participate
-        </button>
-        <button
-          className="btn btn-primary flex-fill ms-2 fw-bold"
-          style={{ padding: "20px" }}
-        >
-          Contribute
-        </button>
       </div>
     </div>
   );

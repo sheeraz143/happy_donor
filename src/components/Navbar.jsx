@@ -240,7 +240,13 @@ function Navbar({ refreshNavbar }) {
           />
           {showProfileMenu && (
             <div className="profile-menu ">
-              <p style={{ fontSize: "16px" }}>
+              <p
+                style={{
+                  fontSize: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
                 <FaRegUserCircle
                   style={{
                     height: "20px",

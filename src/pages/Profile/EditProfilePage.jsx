@@ -217,7 +217,9 @@ const EditProfilePage = () => {
       </div>
       {/* Title */}
       <div className="form-group">
-        <label>Title</label>
+        <label>
+          Title <span className="required-asterisk">*</span>
+        </label>
         <select
           className="form-input"
           {...register("title", { required: false })}
@@ -234,7 +236,9 @@ const EditProfilePage = () => {
 
       {/* First Name */}
       <div className="form-group">
-        <label>First Name</label>
+        <label>
+          First Name <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
           type="text"
@@ -248,7 +252,9 @@ const EditProfilePage = () => {
 
       {/* Last Name */}
       <div className="form-group">
-        <label>Last Name</label>
+        <label>
+          Last Name <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
           type="text"
@@ -262,7 +268,9 @@ const EditProfilePage = () => {
 
       {/* Phone Number */}
       <div className="form-group">
-        <label>Phone Number</label>
+        <label>
+          Phone Number <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
           type="tel"
@@ -285,7 +293,9 @@ const EditProfilePage = () => {
 
       {/* Email */}
       <div className="form-group">
-        <label>Email</label>
+        <label>
+          Email <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
           type="email"
@@ -299,7 +309,9 @@ const EditProfilePage = () => {
 
       {/* Blood Group */}
       <div className="form-group">
-        <label>Blood Group</label>
+        <label>
+          Blood Group <span className="required-asterisk">*</span>
+        </label>
         <select
           className="form-input"
           {...register("blood_group", { required: false })}
@@ -322,7 +334,9 @@ const EditProfilePage = () => {
 
       {/* Date of Birth */}
       <div className="form-group">
-        <label>Date of Birth</label>
+        <label>
+          Date of Birth <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
           type="date"
@@ -340,7 +354,9 @@ const EditProfilePage = () => {
 
       {/* Gender */}
       <div className="form-group">
-        <label>Gender</label>
+        <label>
+          Gender <span className="required-asterisk">*</span>
+        </label>
         <select
           className="form-input"
           {...register("gender", { required: false })}
@@ -354,36 +370,11 @@ const EditProfilePage = () => {
         {errors.gender && <p className="error-message">Gender is required</p>}
       </div>
 
-      {/* Address */}
-      {/* <div className="form-group">
-        <label>Address</label>
-        <textarea
-          className="form-input"
-          type="text"
-          {...register("address", { required: true })}
-        />
-        {errors.address && <p className="error-message">Address is required</p>}
-      </div> */}
-
       {/* Location */}
       <div className="form-group">
-        <label>Address</label>
-        {/* <Autocomplete
-          apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
-          onPlaceSelected={handlePlaceSelected}
-          className="form-input"
-          defaultValue={location}
-          onChange={(e) => {
-            console.log("e.target.value: ", e.target.value);
-            setLocation(e.target.value);
-          }}
-          {...register("address", { required: false })}
-          options={{
-            componentRestrictions: { country: "IN" },
-            // types: ["point_of_interest", "health", "(establishment)", "hospital"],
-            // types: ["establishment"],
-          }}
-        /> */}
+        <label>
+          Address <span className="required-asterisk">*</span>
+        </label>
         <Autocomplete
           apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
           className="form-input"
@@ -400,7 +391,6 @@ const EditProfilePage = () => {
             types: ["establishment"],
             componentRestrictions: { country: "IN" },
           }}
-          // defaultValue="Amsterdam"
         />
 
         {errors.address && (
@@ -434,12 +424,12 @@ const EditProfilePage = () => {
           className="form-input"
           type="text"
           inputMode="numeric"
-          maxLength="16"
+          maxLength="12"
           {...register("aadhar_id", {
             required: false,
             pattern: {
-              value: /^\d{16}$/,
-              message: "Aadhar Number must be exactly 16 digits",
+              value: /^\d{12}$/,
+              message: "Aadhar Number must be exactly 12 digits",
             },
           })}
         />
