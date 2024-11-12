@@ -22,6 +22,7 @@ import {
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { formatDate } from "../utils/dateUtils";
 
 function Home() {
   const navigate = useNavigate();
@@ -196,18 +197,21 @@ function Home() {
           <div className="request-details ms-3">
             <div
               className="request-date text-start fw-bold "
-              style={{ color: "#000",fontSize:"20px" }}
+              style={{ color: "#000", fontSize: "20px" }}
             >
               {request?.username} {/* {request?.attender_last_name} */}
             </div>
-            <div className="request-units text-start" style={{ color: "#000", }}>
+            <div className="request-units text-start" style={{ color: "#000" }}>
               Units Required: {request?.quantity_units}
             </div>
-            <div className="request-address text-start" style={{ color: "#000", }}>
+            <div
+              className="request-address text-start"
+              style={{ color: "#000" }}
+            >
               Address: {request?.delivery_address}
             </div>
-            <div className="request-address text-start" style={{ color: "#000", }}>
-              Date: {request?.required_date}
+            <div className="request-address text-start">
+              Date: {formatDate(request?.required_date)}
             </div>
             {request?.phone_number && (
               <div>
