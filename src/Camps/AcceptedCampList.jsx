@@ -5,7 +5,7 @@ import { AcceptedCamps, MarkCampDonated, setLoader } from "../redux/product";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
 import "../css/BloodRequest.css";
-import CampImg from "../assets/bloodcamps.png";
+import CampImg from "../assets/BloodCamps.png";
 import profPicImg from "../assets/prof_img.png";
 import { formatDate } from "../utils/dateUtils";
 
