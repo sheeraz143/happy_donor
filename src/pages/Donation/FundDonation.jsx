@@ -73,6 +73,7 @@ export default function FundDonation() {
           setValue("mobile", user?.phone_number);
           setValue("email", user?.email);
           setValue("gender", user?.gender);
+          setPhoneNumber(user?.phone_number);
 
           if (res.errors) {
             toast.error(res.errors);

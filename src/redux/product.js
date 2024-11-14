@@ -986,10 +986,12 @@ export const ViewCampsRequest =
     }
   };
 export const ViewNotifications =
-  (callback = () => {}) =>
+  (page, callback = () => {}) =>
   async () => {
     try {
-      const response = await Helper.getData(baseUrl + `app/notifications`);
+      const response = await Helper.getData(
+        baseUrl + `app/notifications?page=${page}&limit=${10}`
+      );
       const result = {
         ...response.data,
         code: response.status,

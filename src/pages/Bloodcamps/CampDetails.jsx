@@ -4,10 +4,11 @@ import locationIcon from "../../assets/Mappoint.png";
 import { Link, useLocation } from "react-router-dom";
 import MapComponent from "../../components/map/MapComponent";
 // import { formatDate } from "../../utils/dateUtils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DonateAcceptCamp,
   setLoader,
+  ViewCampsRequest,
   // ViewCampsRequest,
 } from "../../redux/product";
 import { useDispatch } from "react-redux";
@@ -15,29 +16,32 @@ import { toast } from "react-toastify";
 
 export default function CampDetails() {
   const location = useLocation();
-  console.log("location: ", location);
-  const campData = location.state?.request || {}; // Retrieve the passed request object
+  const campID = location.state?.request || {}; // Retrieve the passed request object
   const dispatch = useDispatch();
   // const [data, setData] = useState({});
   const [refresh, setRefresh] = useState(false);
+  const [data, setData] = useState({});
 
+  useEffect(() => {
+    dispatch(setLoader(true));
+    try {
+      dispatch(
+        ViewCampsRequest(campID, (res) => {
+          if (res.code === 200) {
+            setData(res);
+          } else {
+            toast.error(res.message);
+          }
+          dispatch(setLoader(false));
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "Error fetching requests");
+      dispatch(setLoader(false));
+    }
+  }, []);
   // useEffect(() => {
-  //   dispatch(setLoader(true));
-  //   try {
-  //     dispatch(
-  //       ViewCampsRequest(campData?.id, (res) => {
-  //         if (res.code === 200) {
-  //           setData(res);
-  //         } else {
-  //           toast.error(res.message);
-  //         }
-  //         dispatch(setLoader(false));
-  //       })
-  //     );
-  //   } catch (error) {
-  //     toast.error(error.message || "Error fetching requests");
-  //     dispatch(setLoader(false));
-  //   }
+  //   setData(campID);
   // }, []);
 
   const handleCardClick = (request, event) => {
@@ -91,17 +95,15 @@ export default function CampDetails() {
 
   const renderRequestCard = () => {
     return (
-      <div className="request-card mb-4" key={campData.camp_id}>
+      <div className="request-card mb-4" key={data.camp_id}>
         <div className="d-flex align-items-start">
           <div className="request-details ms-3">
-            <h4 className="text-start fw-bold" style={{ color: "green" }}>
-              {campData.title || "Camp"}
-            </h4>
-            <div className="text-start">Date: {campData.date}</div>
+            <h4 className="text-start fw-bold">{data.title || "Camp"}</h4>
+            <div className="text-start">Date: {data.date}</div>
             <div className="text-start">
-              Time: {campData.time || "Not specified"}
+              Time: {data.time || "Not specified"}
             </div>
-            <div className="text-start">Location: {campData.location}</div>
+            <div className="text-start">Location: {data.location}</div>
           </div>
         </div>
 
@@ -112,11 +114,11 @@ export default function CampDetails() {
                 src={shareIcon}
                 alt="Share"
                 className="icon-img"
-                onClick={() => handleShareClick(campData)}
+                onClick={() => handleShareClick(data)}
               />
             </Link>
             <Link
-              to={`https://www.google.com/maps?q=${campData.latitude},${campData.longitude}`}
+              to={`https://www.google.com/maps?q=${data.latitude},${data.longitude}`}
               className="location-link"
               target="_blank"
               rel="noopener noreferrer"
@@ -126,13 +128,13 @@ export default function CampDetails() {
           </div>
           <button
             className={`accepted-donors-btn btn ${
-              campData.is_accepted ? "btn-secondary" : "btn-primary"
+              data.is_accepted ? "btn-secondary" : "btn-primary"
             }`}
             style={{ width: "7.5rem" }}
-            onClick={(event) => handleCardClick(campData, event)}
-            disabled={campData?.is_accepted}
+            onClick={(event) => handleCardClick(data, event)}
+            disabled={data?.is_accepted}
           >
-            {campData.is_accepted ? "Accepted" : "Accept"}
+            {data.is_accepted ? "Accepted" : "Accept"}
           </button>
         </div>
       </div>
@@ -144,26 +146,22 @@ export default function CampDetails() {
       <h3 className="mt-3 mb-4 text-center">Camp Details</h3>
       <div className="d-flex justify-content-center ms-auto mb-4">
         <img
-          src={campData?.camp_image || BloodCamps}
+          src={data?.camp_image || BloodCamps}
           alt="Camp"
           style={{ maxWidth: "100%", maxHeight: "200px" }}
         />
       </div>
       <div className="col-lg-6 col-md-8 col-sm-8 mx-auto">
         <div className="mb-2">
-          {campData ? (
-            renderRequestCard(campData)
-          ) : (
-            <p>No camp details available.</p>
-          )}
+          {data ? renderRequestCard(data) : <p>No camp details available.</p>}
         </div>
         <div className="mb-5">
           {/* <MapComponent latitude={data?.latitude} longitude={data?.longitude} /> */}
           <MapComponent
             path={[
               {
-                lat: parseFloat(campData.latitude),
-                lng: parseFloat(campData.longitude),
+                lat: parseFloat(data.latitude),
+                lng: parseFloat(data.longitude),
               },
             ]}
           />

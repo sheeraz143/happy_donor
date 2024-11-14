@@ -137,28 +137,30 @@ export default function EventDetails() {
         <button
           className="btn btn-success flex-fill me-2 fw-bold"
           style={{
-            padding: "20px",
-            backgroundColor: data?.participate === 1 ? "gray" : "green",
-            border: data?.participate === 1 ? "gray" : "green",
+            color: "#fff",
+            padding: "13px 20px", // Reduced padding for smaller height
+            backgroundColor: data?.participate === 1 ? "#e6e6e6" : "green",
+            borderColor: data?.participate === 1 ? "#e6e6e6" : "green",
           }}
           onClick={() => handleParticipate()}
           disabled={data?.participate === 1}
         >
-          Participate
+          {data?.participate === 1 ? "Participated" : "Participate"}
         </button>
         <button
           className={`btn flex-fill ms-2 fw-bold ${
             data?.contribute === 1 ? "btn-secondary" : "btn-primary"
           }`}
           style={{
-            padding: "20px",
+            color: "#fff",
+            padding: "10px 20px", // Reduced padding for smaller height
             backgroundColor: data?.contribute === 1 ? "gray" : "", // Use "" for the default primary color
             borderColor: data?.contribute === 1 ? "gray" : "",
           }}
           disabled={data?.contribute === 1}
           onClick={() => navigate("/contributefund", { state: { data } })}
         >
-          Contribute
+          {data?.contribute === 1 ? "Contributed" : "Contribute"}
         </button>
       </div>
     </div>

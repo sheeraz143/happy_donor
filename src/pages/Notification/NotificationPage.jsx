@@ -1,6 +1,6 @@
 // NotificationPage.js
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./Notification.css";
 import { useDispatch } from "react-redux";
 import {
@@ -15,30 +15,43 @@ import { formatDistanceToNow } from "date-fns";
 import { FaCheck, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import { Pagination } from "antd";
 
 export default function NotificationPage({ onRefreshNavbar }) {
+  const ITEMS_PER_PAGE = 10; // Number of items per page
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Use navigate hook from react-router-dom
   const [data, setData] = useState([]);
   const [refresh, setRefresh] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0); // Track total items for pagination
+
+  const fetchData = useCallback(
+    (page = 1) => {
+      dispatch(setLoader(true));
+      dispatch(
+        ViewNotifications(page, (res) => {
+          dispatch(setLoader(false));
+          if (res.errors) {
+            toast.error(res.errors);
+          } else {
+            setData(res?.notifications);
+            setTotalItems(res.pagination?.total || 0); // Set total items for pagination
+
+            // onRefreshNavbar();
+          }
+        })
+      ).catch((error) => {
+        toast.error(error.message || "Error fetching notifications");
+        dispatch(setLoader(false));
+      });
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
-    dispatch(setLoader(true));
-    dispatch(
-      ViewNotifications((res) => {
-        dispatch(setLoader(false));
-        if (res.errors) {
-          toast.error(res.errors);
-        } else {
-          setData(res?.notifications);
-          // onRefreshNavbar();
-        }
-      })
-    ).catch((error) => {
-      toast.error(error.message || "Error fetching notifications");
-      dispatch(setLoader(false));
-    });
-  }, [dispatch, refresh]);
+    fetchData(currentPage);
+  }, [currentPage, fetchData]);
 
   // Handler to mark all notifications as read
   const handleMarkAllAsRead = () => {
@@ -96,11 +109,11 @@ export default function NotificationPage({ onRefreshNavbar }) {
         navigate(`/donarlist/${link}`);
         break;
       case "Camp":
-        navigate(`/campdetails/${link}`);
+        navigate(`/campdetails`, { state: { request: link } });
         break;
       case "Event":
         // navigate(`/eventdetails`);
-        navigate(`/vieweventdetails/${link}`);
+        navigate(`/eventdetails`, { state: { request: link } });
         break;
       case "DonationHistory":
         navigate(`/donationhistory`);
@@ -115,6 +128,10 @@ export default function NotificationPage({ onRefreshNavbar }) {
         console.log("Unknown screen type:", screen);
         break;
     }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -161,6 +178,14 @@ export default function NotificationPage({ onRefreshNavbar }) {
           </div>
         ))
       )}
+      <Pagination
+        align="center"
+        className="mb-4"
+        current={currentPage}
+        total={totalItems}
+        pageSize={ITEMS_PER_PAGE}
+        onChange={handlePageChange}
+      />
     </div>
   );
 }
