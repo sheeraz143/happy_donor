@@ -76,6 +76,9 @@ export default function ViewEventDetails() {
         style={{ color: "blue" }}
       >
         <h6 className="mb-1 text-start">Description:</h6>
+        <p className="mt-3" style={{ color: "#000" }}>
+          {data?.description}
+        </p>
       </div>
     </div>
   );

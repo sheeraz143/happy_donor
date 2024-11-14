@@ -67,19 +67,12 @@ export default function FundDonation() {
       dispatch(
         getProfile((res) => {
           const user = res?.user;
-          console.log("user: ", user);
           setValue("title", user?.title);
           setValue("first_name", user?.first_name);
           setValue("last_name", user?.last_name);
           setValue("mobile", user?.phone_number);
           setValue("email", user?.email);
-          // setValue("blood_group", user?.blood_group);
-          // setValue("date_of_birth", user?.date_of_birth);
           setValue("gender", user?.gender);
-          // setValue("address", user?.location);
-          // setValue("last_blood_donation_date", user?.last_blood_donation_date);
-          // setValue("aadhar_id", user?.aadhar_id);
-          // setValue("abhid", user?.abhid);
 
           if (res.errors) {
             toast.error(res.errors);
@@ -96,12 +89,10 @@ export default function FundDonation() {
   }, [dispatch, setValue]);
 
   const onSubmit = (data) => {
-    console.log(data);
     dispatch(setLoader(true));
     try {
       dispatch(
         fundInitiate(data, (res) => {
-          console.log("res: ", res);
           if (res.code === 200) {
             const transaction_id = res.transaction_id;
             // console.log("transaction_id: ", transaction_id);
@@ -115,7 +106,6 @@ export default function FundDonation() {
               description: "Donation",
               order_id: res.order_id,
               handler: (res) => {
-                console.log("handler res: ", res);
                 dispatch(setLoader(true));
                 const paymentStatusData = {
                   transaction_id: transaction_id,
@@ -126,7 +116,6 @@ export default function FundDonation() {
                   status: "success",
                 };
 
-                console.log("paymentStatusData: ", paymentStatusData);
                 dispatch(
                   fundStatus(paymentStatusData, (statusRes) => {
                     if (statusRes.code === 200) {
@@ -145,9 +134,7 @@ export default function FundDonation() {
                 contact: data.phoneNumber,
               },
               modal: {
-                ondismiss: (res) => {
-                  console.log("ondismiss res: ", res);
-                  console.log("Payment modal closed");
+                ondismiss: () => {
                   // setLoading(false);
                   dispatch(setLoader(false));
                   dispatch(setLoader(true));
@@ -155,7 +142,6 @@ export default function FundDonation() {
                     transaction_id,
                     status: "failed",
                   };
-                  console.log("payfailed: ", paymentStatusData);
                   dispatch(
                     fundStatus(paymentStatusData, (statusRes) => {
                       if (statusRes.code === 200) {
@@ -197,34 +183,6 @@ export default function FundDonation() {
       toast.error(error.message || "Error initiating payment");
       dispatch(setLoader(false));
     }
-
-    // try {
-    //   dispatch(
-    //     fundInitiate(data, (res) => {
-    //       console.log("res: ", res);
-
-    //       if (res.code === 200) {
-    //         toast.success(res.message);
-
-    //       } else if (res.code === 422 && res.data?.errors) {
-    //         // If the response contains validation errors, loop through them
-    //         Object.entries(res.data.errors).forEach(([messages]) => {
-    //           messages.forEach((error) => {
-    //             toast.error(error); // Display each validation error message
-    //           });
-    //         });
-    //       } else {
-    //         // For other types of errors, show a generic error message
-    //         toast.error(res.message);
-    //       }
-
-    //       dispatch(setLoader(false));
-    //     })
-    //   );
-    // } catch (error) {
-    //   toast.error(error.message || "An unexpected error occurred.");
-    //   dispatch(setLoader(false));
-    // }
   };
 
   return (
@@ -297,24 +255,6 @@ export default function FundDonation() {
         </select>
         {errors.gender && <p className="error-message">Gender is required</p>}
       </div>
-
-      {/* Contact Number */}
-      {/* <div className="form-group">
-        <label>
-          Contact Number <span className="required-asterisk">*</span>
-        </label>
-        <input
-          className="form-input"
-          type="number"
-          {...register("mobile", {
-            required: true,
-            pattern: /^[0-9]{10}$/,
-          })}
-        />
-        {errors.mobile && (
-          <p className="error-message">Contact Number is required</p>
-        )}
-      </div> */}
 
       <div className="form-group">
         <label>Phone Number</label>

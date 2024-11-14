@@ -32,7 +32,6 @@ import Faqs from "./pages/Faqs/Faqs";
 import WriteToUs from "./pages/WriteToUs/WriteToUs";
 import GratitudePage from "./pages/Gratitude/GratitudePage";
 import TTIReport from "./pages/Gratitude/TTIReport";
-import BloodMedicalCamps from "./pages/Bloodcamps/BloodMedicalCamps";
 import FundDonation from "./pages/Donation/FundDonation";
 import CampDetails from "./pages/Bloodcamps/CampDetails";
 import RequestDetail from "./pages/DonateBlood/DetailsPage";
@@ -51,6 +50,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Camps from "./Camps/Camps";
 import CampsList from "./Camps/CampsList";
 import CampsrequestDetailPage from "./CampsrequestDetailPage";
+import BloodMedicalCamps from "../pages/Bloodcamps/BloodMedicalCamps";
 
 function App() {
   const darkMode = useSelector((state) => state.theme.darkMode);

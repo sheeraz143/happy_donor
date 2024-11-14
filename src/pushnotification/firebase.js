@@ -29,7 +29,7 @@ export const requestForToken = async (onMessageReceived) => {
       serviceWorkerRegistration: registration,
     });
     if (currentToken) {
-      console.log("FCM Token:", currentToken);
+      // console.log("FCM Token:", currentToken);
       return currentToken;
     } else {
       console.log(

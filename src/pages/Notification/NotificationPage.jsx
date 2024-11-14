@@ -93,20 +93,20 @@ export default function NotificationPage({ onRefreshNavbar }) {
         navigate(`/bloodrequestdetail/${link}`);
         break;
       case "Donor":
-        navigate(`/donate`);
+        navigate(`/donarlist/${link}`);
         break;
       case "Camp":
         navigate(`/campdetails/${link}`);
         break;
       case "Event":
         // navigate(`/eventdetails`);
-        navigate(`/bloodcamps`);
+        navigate(`/vieweventdetails/${link}`);
         break;
       case "DonationHistory":
         navigate(`/donationhistory`);
         break;
       case "Profile":
-        navigate(`/viewprofile`);
+        navigate(`/editprofile`);
         break;
       case "Donation":
         navigate(`/viewbloodrequest/${link}`);

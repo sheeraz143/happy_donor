@@ -19,7 +19,6 @@ const AcceptDonorList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
-  console.log("id: ", id);
   const [donors, setDonors] = useState([]);
   const [requestId, setRequestId] = useState({});
   // const [donationStatus, setDonationStatus] = useState({});
@@ -40,11 +39,6 @@ const AcceptDonorList = () => {
           } else {
             setDonors(res.donors || []);
             setRequestId(res.request_id);
-            // const initialStatus = res.donors.reduce((acc, donor) => {
-            //   acc[donor.donor_id] = donor.donation_status !== "Donated";
-            //   return acc;
-            // }, {});
-            // // setDonationStatus(initialStatus);
           }
         })
       );

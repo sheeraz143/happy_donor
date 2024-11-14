@@ -6,7 +6,12 @@ import locationIcon from "../../assets/Mappoint.png";
 import { toast } from "react-toastify";
 import { Pagination } from "antd";
 import { formatDate } from "../../utils/dateUtils";
-import { CampsList, DonateAcceptCamp, setLoader } from "../../redux/product";
+import {
+  CampsList,
+  DonateAcceptCamp,
+  ParticipateAccept,
+  setLoader,
+} from "../../redux/product";
 import profImg from "../../assets/prof_img.png";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
@@ -82,12 +87,13 @@ const BloodMedicalCamps = () => {
       dispatch(setLoader(false));
     }
   };
+
   const handleParticipate = (request) => {
     dispatch(setLoader(true));
 
     try {
       dispatch(
-        DonateAcceptCamp(request?.id, (res) => {
+        ParticipateAccept(request?.id, (res) => {
           if (res.code === 200) {
             toast.success(res.message);
             setRefresh(!refresh);
@@ -156,13 +162,13 @@ const BloodMedicalCamps = () => {
       <div
         className="request-header cursor-pointer"
         onClick={() => {
-          navigate("/campdetails", { state: { request: request?.camp_id } });
+          navigate("/campdetails", { state: { request: request } });
         }}
       >
         {request?.is_critical && (
           <div className="emergency-tag position-absolute">Emergency</div>
         )}
-        <img
+        {/* <img
           src={request?.camp_image || profImg}
           alt="Profile"
           className="profile_img"
@@ -170,7 +176,7 @@ const BloodMedicalCamps = () => {
             e.target.onerror = null;
             e.target.src = profImg;
           }}
-        />
+        /> */}
         <div className="request-details">
           <div className="text-start fw-bold">{request?.title}</div>
           <div className="text-start">{request?.location}</div>
@@ -181,9 +187,13 @@ const BloodMedicalCamps = () => {
         </div>
         <div className="blood-group">
           <img
-            src={BloodCamps}
+            src={request?.camp_image || BloodCamps}
             alt="Blood Group"
-            style={{ maxWidth: "160px" }}
+            style={{ maxWidth: "150px", height: "150px" }}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = profImg;
+            }}
           />
         </div>
       </div>
@@ -223,7 +233,7 @@ const BloodMedicalCamps = () => {
   const renderOthersCard = (request) => {
     return (
       <div
-        className="request-card"
+        className="request-card cursor-pointer"
         key={request?.id}
         onClick={() => {
           // console.log("request?.id: ", request?.id);
@@ -234,11 +244,11 @@ const BloodMedicalCamps = () => {
       >
         <div className="request-header d-flex align-items-center">
           <div className="align-content-center">
-            <img
+            {/* <img
               src={request?.profilePic || profImg}
               alt="Profile"
               className="profile_img"
-            />
+            /> */}
           </div>
           <div className="request-details ms-3">
             <div className="text-start fw-bold">{request?.title}</div>
@@ -283,7 +293,7 @@ const BloodMedicalCamps = () => {
               <button
                 className="accepted-donors-btn btn"
                 style={{
-                  background: request?.participate === 1 ? "gray" : "green",
+                  background: request?.participate === 1 ? "" : "green",
                   color: "#fff",
                   // cursor: request?.participate === 1 ? "not-allowed" : "pointer",
                 }}
