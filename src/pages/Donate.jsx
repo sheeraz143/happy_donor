@@ -11,7 +11,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Pagination } from "antd";
 import { formatDate } from "../utils/dateUtils";
 
-
 const ITEMS_PER_PAGE = 10; // Number of items per page
 
 function Donate() {
@@ -62,7 +61,6 @@ function Donate() {
   // };
 
   const handlePageChange = (page) => {
-    console.log("page: ", page);
     setCurrentPage(page);
   };
 
@@ -90,7 +88,6 @@ function Donate() {
               }));
             }
             setTotalItems(res.pagination?.total || 0); // Set total items for pagination
-
           }
         })
       );
@@ -106,7 +103,6 @@ function Donate() {
   useEffect(() => {
     fetchData(activeTab, currentPage);
   }, [activeTab, currentPage, fetchData]);
-  
 
   const handleCardClick = (request) => {
     dispatch(setLoader(true));

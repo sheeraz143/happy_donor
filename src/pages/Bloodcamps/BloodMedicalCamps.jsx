@@ -162,7 +162,7 @@ const BloodMedicalCamps = () => {
       <div
         className="request-header cursor-pointer"
         onClick={() => {
-          navigate("/campdetails", { state: { request: request } });
+          navigate("/campdetails", { state: { request: request?.camp_id } });
         }}
       >
         {request?.is_critical && (
@@ -179,11 +179,15 @@ const BloodMedicalCamps = () => {
         /> */}
         <div className="request-details">
           <div className="text-start fw-bold">{request?.title}</div>
-          <div className="text-start">{request?.location}</div>
+          <div className="text-start">Date: {request.date}</div>
           <div className="text-start">
-            Blood units: {request?.units_required}
+            Time: {request.time || "Not specified"}
           </div>
-          <div className="text-start">{formatDate(request?.date)}</div>
+          <div className="text-start">{request?.location}</div>
+          {/* <div className="text-start">
+            Blood units: {request?.units_required}
+          </div> */}
+          {/* <div className="text-start">{formatDate(request?.date)}</div> */}
         </div>
         <div className="blood-group">
           <img
@@ -198,7 +202,8 @@ const BloodMedicalCamps = () => {
         </div>
       </div>
 
-      <div className="accept-donar-button d-flex justify-content-around">
+      {/* <div className="accept-donar-button d-flex justify-content-around"> */}
+      <div className="d-flex align-items-center mt-3 justify-content-between">
         <div className="icon-container">
           <Link href="#" className="share-link">
             <img
@@ -267,28 +272,29 @@ const BloodMedicalCamps = () => {
             />
           </div> */}
         </div>
+
         <div className="mt-3">
-          <div className="d-flex mx-3">
-            <Link to="#" className="share-link me-2">
-              <img
-                src={shareIcon}
-                alt="Share"
-                className="icon-img"
-                onClick={(event) => handleShareClick1(event, request)}
-              />
-            </Link>
-            <Link
-              to={`https://www.google.com/maps?q=${request.lat},${request.lon}`}
-              className="location-link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src={locationIcon} alt="Location" className="icon-img" />
-            </Link>
-          </div>
-        </div>
-        <div className="mt-3">
-          <div className="d-flex me-3 justify-content-around">
+          <div className="d-flex me-3 justify-content-around align-items-center">
+            <div className="">
+              <div className="">
+                <Link to="#" className="share-link me-2">
+                  <img
+                    src={shareIcon}
+                    alt="Share"
+                    className="icon-img"
+                    onClick={(event) => handleShareClick1(event, request)}
+                  />
+                </Link>
+                <Link
+                  to={`https://www.google.com/maps?q=${request.lat},${request.lon}`}
+                  className="location-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src={locationIcon} alt="Location" className="icon-img" />
+                </Link>
+              </div>
+            </div>
             {request?.option === "Participate" || request?.option === "Both" ? (
               <button
                 className="accepted-donors-btn btn"

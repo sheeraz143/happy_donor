@@ -1,6 +1,6 @@
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import "./NavBar.css";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getProfile, setLoader, ViewNotifications } from "../redux/product";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -56,22 +56,47 @@ function Navbar({ refreshNavbar }) {
     setActiveLink(location.pathname);
   }, [location.pathname]);
 
-  useEffect(() => {
-    dispatch(setLoader(true));
-    dispatch(
-      ViewNotifications((res) => {
+  const fetchData = useCallback(
+    (page = 1) => {
+      dispatch(setLoader(true));
+      dispatch(
+        ViewNotifications(page, (res) => {
+          dispatch(setLoader(false));
+          if (res.errors) {
+            toast.error(res.errors);
+          } else {
+            setCount(res?.count);
+            // onRefreshNavbar();
+          }
+        })
+      ).catch((error) => {
+        toast.error(error.message || "Error fetching notifications");
         dispatch(setLoader(false));
-        if (res.errors) {
-          toast.error(res.errors);
-        } else {
-          setCount(res?.count);
-        }
-      })
-    ).catch((error) => {
-      toast.error(error.message || "Error fetching notifications");
-      dispatch(setLoader(false));
-    });
-  }, [refreshNavbar]);
+      });
+    },
+    [refreshNavbar]
+  );
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+  // useEffect(() => {
+  //   dispatch(setLoader(true));
+  //   dispatch(
+  //     ViewNotifications(page= ,(res) => {
+  //       dispatch(setLoader(false));
+  //       if (res.errors) {
+  //         toast.error(res.errors);
+  //       } else {
+  //         setCount(res?.count);
+  //         console.log('res?.count: ', res?.count);
+  //       }
+  //     })
+  //   ).catch((error) => {
+  //     toast.error(error.message || "Error fetching notifications");
+  //     dispatch(setLoader(false));
+  //   });
+  // }, [refreshNavbar]);
 
   const handleNavigation = (path) => {
     if (

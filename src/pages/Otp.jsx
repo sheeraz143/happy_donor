@@ -15,14 +15,20 @@ const OTPVerificationComponent = () => {
 
   const handleChange = (element, index) => {
     const value = element.value.replace(/[^0-9]/g, ""); // Restrict to numbers only
-    if (value.length > 1) return; // Prevent more than one digit
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
 
-    // Focus on next input
+    // Move to the next input if there is a value
     if (value && index < otp.length - 1) {
       document.getElementById(`otp-input-${index + 1}`).focus();
+    }
+  };
+
+  const handleBackspace = (e, index) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      // Move focus to the previous input if it's empty
+      document.getElementById(`otp-input-${index - 1}`).focus();
     }
   };
 
@@ -35,7 +41,7 @@ const OTPVerificationComponent = () => {
   const handleResend = () => {
     // Clear the OTP fields
     setOtp(new Array(4).fill(""));
-    
+
     const data = {
       phone_number: phoneNum,
     };
@@ -83,7 +89,7 @@ const OTPVerificationComponent = () => {
             localStorage.setItem("user_type", res.user_type);
             localStorage.setItem("is_profile_update", res.is_profile_update);
             localStorage.setItem("oAuth", `Bearer ${res.token}`);
-            toast.success("Otp verified successfully");
+            toast.success("OTP verified successfully");
             if (res.is_profile_update === 0) {
               navigate("/profile");
             } else {
@@ -119,7 +125,10 @@ const OTPVerificationComponent = () => {
             id={`otp-input-${index}`}
             value={value}
             onChange={(e) => handleChange(e.target, index)}
-            onKeyDown={handleKeyDown} // Updated to use onKeyDown instead of onKeyPress
+            onKeyDown={(e) => {
+              handleKeyDown(e); // Handle Enter key to submit
+              handleBackspace(e, index); // Handle Backspace for moving focus
+            }}
             className="otp-input"
           />
         ))}
