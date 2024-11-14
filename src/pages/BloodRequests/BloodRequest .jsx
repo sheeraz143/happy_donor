@@ -32,6 +32,7 @@ const BloodRequest = () => {
   const [additionalComments, setAdditionalComments] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [refresh, setRefresh] = useState(false);
+  const [totalItems, setTotalItems] = useState(0); // Track total items for pagination
 
   const openModal = (request, event) => {
     event.stopPropagation();
@@ -45,32 +46,42 @@ const BloodRequest = () => {
     setModalIsOpen(false);
   };
 
-  // Load data for open and closed requests
   const loadData = useCallback(
-    (tab, page = 1) => {
+    (tab, page) => {
       dispatch(setLoader(true));
-      dispatch(
-        donateBloods(tab, page, (res) => {
-          dispatch(setLoader(false));
-          if (res.errors) {
-            toast.error(res.errors);
-          } else {
-            if (tab === "open") {
-              setOpenRequests(res.requests);
-              setRequestCount((prevCount) => ({
-                ...prevCount,
-                matched: res.pagination.total,
-              }));
-            } else {
-              setClosedRequests(res.requests);
-              setRequestCount((prevCount) => ({
-                ...prevCount,
-                unmatched: res.pagination.total,
-              }));
-            }
-          }
-        })
-      );
+      try {
+        dispatch(
+          donateBloods(
+            tab,
+            page,
+            (res) => {
+              dispatch(setLoader(false));
+              if (res.errors) {
+                toast.error(res.errors);
+              } else {
+                if (tab === "open") {
+                  setOpenRequests(res.requests);
+                  setRequestCount((prevCount) => ({
+                    ...prevCount,
+                    matched: res.pagination?.total,
+                  }));
+                } else {
+                  setClosedRequests(res.requests);
+                  setRequestCount((prevCount) => ({
+                    ...prevCount,
+                    unmatched: res.pagination?.total,
+                  }));
+                }
+                setTotalItems(res.pagination?.total || 0); // Set total items for pagination
+              }
+            },
+            page
+          )
+        );
+      } catch (error) {
+        toast.error(error.message || "Error fetching requests");
+        dispatch(setLoader(false));
+      }
     },
     [dispatch]
   );
@@ -228,7 +239,7 @@ const BloodRequest = () => {
           <button
             className={`tab ${activeTab === "open" ? "active" : ""}`}
             onClick={() => {
-              setCurrentPage(1);
+              // setCurrentPage(1);
               setActiveTab("open");
             }}
           >
@@ -237,7 +248,7 @@ const BloodRequest = () => {
           <button
             className={`tab ${activeTab === "closed" ? "active" : ""}`}
             onClick={() => {
-              setCurrentPage(1);
+              // setCurrentPage(1);
               setActiveTab("closed");
             }}
           >
@@ -262,7 +273,7 @@ const BloodRequest = () => {
           align="center"
           className="mb-4"
           current={currentPage}
-          total={requestCount[activeTab]}
+          total={totalItems}
           pageSize={ITEMS_PER_PAGE}
           onChange={handlePageChange}
         />

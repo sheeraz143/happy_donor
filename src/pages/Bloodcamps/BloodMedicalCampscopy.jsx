@@ -5,7 +5,7 @@ import shareIcon from "../../assets/Share.png";
 import locationIcon from "../../assets/Mappoint.png";
 import { Link, useNavigate } from "react-router-dom";
 
-const BloodMedicalCamps = () => {
+const BloodMedicalCampsCopy = () => {
   const [activeTab, setActiveTab] = useState("open");
   const navigate = useNavigate();
 
@@ -197,4 +197,4 @@ const BloodMedicalCamps = () => {
   );
 };
 
-export default BloodMedicalCamps;
+export default BloodMedicalCampsCopy;

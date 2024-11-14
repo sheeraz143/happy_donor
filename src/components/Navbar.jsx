@@ -73,24 +73,7 @@ function Navbar({ refreshNavbar }) {
     });
   }, [refreshNavbar]);
 
-  // const handleNavigation = (path) => {
-  //   console.log("path: ", path);
-  //   if (profileVerified == null || profileVerified == "0") {
-  //     toast.error("Please update your profile");
-  //     navigate("/profile");
-  //     return;
-  //   } else {
-  //     navigate(path);
-  //   }
-  //   setActiveLink(path); // Set active link
-  //   setIsOpen(false);
-  // };
-
   const handleNavigation = (path) => {
-    console.log("path: ", path);
-    console.log("profileVerified: ", profileVerified);
-    console.log("userType: ", userType);
-
     if (
       (profileVerified == null || profileVerified == "0") &&
       !(userType == 4 || userType == 5)

@@ -61,9 +61,6 @@ import Registerbloodbank from "./pages/Bloodbanks/RegisterBloodbank";
 import LoginBloodBank from "./pages/Bloodbanks/LoginBloodBank";
 import PostGratitudeCampMesage from "./Camps/PostGratitudeCampMesage";
 import NotificationPage from "./pages/Notification/NotificationPage";
-
-// import { toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
 import { requestForToken } from "./pushnotification/firebase";
 import PaginatedList from "./pages/pagination";
 import BloodrequestDetailPage from "./pages/BloodRequests/BloodrequestDetailPage";
@@ -75,10 +72,6 @@ import ViewCampDetails from "./pages/Bloodcamps/ViewCampDetails";
 function App() {
   const darkMode = useSelector((state) => state.theme.darkMode);
   const location = useLocation();
-  // const [notification, setNotification] = useState({ title: "", body: "" });
-
-  // const navigate = useNavigate();
-
   useEffect(() => {
     if (location.pathname === "/") {
       window.location.href = "/index.html";
@@ -87,42 +80,12 @@ function App() {
     document.body.className = darkMode ? "dark-mode" : "";
   }, [darkMode, location.pathname]);
 
-  // useEffect(() => {
-  //   // console.log("notification: ", notification);
-
-  //   // Request permission and get FCM token
-  //   requestForToken()
-  //     .then((token) => {
-  //       if (token) {
-  //         localStorage.setItem("fcmToken", token);
-  //         // console.log("FCM Token:", token);
-  //         // Optionally, send the token to your backend for later use
-  //       }
-  //     })
-  //     .catch((err) => console.log("Notification permission denied:", err));
-
-  //   // // Listen for foreground messages
-  //   // onMessageListener()
-  //   //   .then((payload) => {
-  //   //     console.log("Received notification:", payload);
-  //   //     setNotification({
-  //   //       title: payload.notification.title,
-  //   //       body: payload.notification.body,
-  //   //     });
-  //   //     toast.info(
-  //   //       `${payload.notification.title}: ${payload.notification.body}`
-  //   //     );
-  //   //   })
-  //   //   .catch((err) => console.log("Failed to receive message:", err));
-  // }, []);
-
   useEffect(() => {
     // Request permission and get FCM token, and listen for new messages
     requestForToken(handleRefreshNavbar)
       .then((token) => {
         if (token) {
           localStorage.setItem("fcmToken", token);
-          console.log("FCM Token:", token);
         }
       })
       .catch((err) => console.log("Notification permission denied:", err));
@@ -140,8 +103,6 @@ function App() {
     location.pathname === "/terms" ||
     location.pathname.includes("viewbloodrequest") ||
     location.pathname === "/privacypolicy";
-  // const storedUserType = localStorage.getItem("user_type");
-  // const storedUserType = localStorage.getItem("user_type");
 
   const [refreshNavbar, setRefreshNavbar] = useState(false);
 
@@ -178,26 +139,13 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<Home />} />
           <Route path="/pagination" element={<PaginatedList />} />
-          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-          <Route element={<ProtectedRoute />}>
-            {/* <Route
-              path="/home"
-              element={storedUserType == 5 ? <Dashboard /> : <Home />}
-            />
-            <Route
-              path="/dashboard"
-              element={
-                storedUserType == 5 ? <Dashboard /> : <Navigate to="/home" />
-              }
-            /> */}
-          </Route>
+          <Route element={<ProtectedRoute />}></Route>
           <Route path="/profile" element={<Profile />} />
           <Route path="/viewprofile" element={<ViewProfilepage />} />
           <Route path="/approvals" element={<Approvals />} />
           <Route path="/approve-requests" element={<ApproveRequests />} />
           <Route path="/approve-donors" element={<ApproveDonors />} />
           <Route path="/editprofile" element={<EditProfilePage />} />
-          {/* <Route path="/map" element={<MapComponent />} /> */}
           <Route path="/bloodrequest" element={<BloodRequest />} />
           <Route path="/donate" element={<Donate />} />
           <Route path="/donationhistory" element={<DonationHistory />} />

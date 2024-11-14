@@ -172,7 +172,6 @@ export const registerOrg =
         ...response.data,
         code: response.status,
       };
-      console.log("result: ", result);
 
       // If response is 200, send the data
       if (response.status === 201) {
@@ -639,7 +638,6 @@ export const MarkDonated =
         baseUrl + `app/blood-requests/confirm-donation`,
         data
       );
-      console.log("response: ", response);
 
       const result = {
         ...response.data,
@@ -1144,7 +1142,6 @@ export const ViewEventRequest =
       const response = await Helper.getData(
         baseUrl + `app/events/matched/${id}/view`
       );
-      console.log('response: ', response);
 
       const result = {
         ...response.data,
@@ -1521,7 +1518,6 @@ export const fundInitiate =
         baseUrl + `app/fund-donation/initiate`,
         data
       );
-      console.log("response: ", response.response.data);
 
       const result = {
         ...response.data,
@@ -1560,7 +1556,6 @@ export const fundStatus =
         baseUrl + `app/fund-donation/update-status`,
         data
       );
-      console.log("response: ", response);
 
       const result = {
         ...response.data,

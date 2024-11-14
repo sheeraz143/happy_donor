@@ -11,6 +11,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Pagination } from "antd";
 import { formatDate } from "../utils/dateUtils";
 
+
 const ITEMS_PER_PAGE = 10; // Number of items per page
 
 function Donate() {
@@ -23,6 +24,8 @@ function Donate() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [refresh, setRefresh] = useState(false);
+  const [totalItems, setTotalItems] = useState(0); // Track total items for pagination
+
   // const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -58,6 +61,11 @@ function Donate() {
   //   });
   // };
 
+  const handlePageChange = (page) => {
+    console.log("page: ", page);
+    setCurrentPage(page);
+  };
+
   // Load data for open and closed requests
   const fetchData = useCallback(
     (tab, page = 1) => {
@@ -81,6 +89,8 @@ function Donate() {
                 unmatched: res?.pagination?.total,
               }));
             }
+            setTotalItems(res.pagination?.total || 0); // Set total items for pagination
+
           }
         })
       );
@@ -96,15 +106,9 @@ function Donate() {
   useEffect(() => {
     fetchData(activeTab, currentPage);
   }, [activeTab, currentPage, fetchData]);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+  
 
   const handleCardClick = (request) => {
-    // console.log("request: ", request);
-    // navigate(`/request/${request?.request_id}`, { state: { request } });
-
     dispatch(setLoader(true));
 
     try {
@@ -317,7 +321,7 @@ function Donate() {
           align="center"
           className="mb-4"
           current={currentPage}
-          total={requestCount[activeTab]}
+          total={totalItems}
           pageSize={ITEMS_PER_PAGE}
           onChange={handlePageChange}
         />
