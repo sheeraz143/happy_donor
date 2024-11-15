@@ -136,7 +136,7 @@ function DonationHistory() {
     <div className="home-container">
       <h2 className="text-center">Donation History</h2>
       <div className="blood-request-container">
-        <div className="requests mt-5">
+        <div className="requests mt-5 mb-5">
           {donors.length > 0 ? (
             donors.map(renderRequestCard)
           ) : (

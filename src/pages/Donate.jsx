@@ -158,11 +158,11 @@ function Donate() {
         />
         <div className="request-details">
           <div className="text-start fw-bold">{request?.name}</div>
-          <div className="text-start">{request?.location}</div>
+          <div className="text-start">{formatDate(request?.date)}</div>
           <div className="text-start">
             Blood units: {request?.units_required}
           </div>
-          <div className="text-start">{formatDate(request?.date)}</div>
+          <div className="text-start">{request?.location}</div>
         </div>
         <div className="blood-group">
           {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
@@ -173,7 +173,7 @@ function Donate() {
         </div>
       </div>
 
-      <div className="accept-donar-button d-flex justify-content-around">
+      <div className="accept-donar-button d-flex justify-content-between">
         <div className="icon-container">
           <Link to="#" className="share-link">
             <img
@@ -228,12 +228,13 @@ function Donate() {
         </div>
         <div className="request-details ms-3">
           <div className="text-start fw-bold">{request?.name}</div>
-          <div className="text-start">{request?.location}</div>
+          <div className="text-start">{formatDate(request.date)}</div>
           <div className="text-start">
             Blood units: {request?.units_required}
           </div>
-          <div className="text-start">{formatDate(request.date)}</div>
+          <div className="text-start">{request?.location}</div>
         </div>
+
         <div className="blood-group ms-auto">
           {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
           <h3 className="blood-group" style={{ color: "red" }}>

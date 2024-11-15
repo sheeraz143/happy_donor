@@ -86,6 +86,7 @@ function App() {
       .then((token) => {
         if (token) {
           localStorage.setItem("fcmToken", token);
+          
         }
       })
       .catch((err) => console.log("Notification permission denied:", err));
