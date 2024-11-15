@@ -188,9 +188,7 @@ const BloodRequest = () => {
             Units Required: {request.units_required}
           </div>
           <div className="request-address text-start">{request.location}</div>
-          <div className="request-status text-start">
-            Status: {request.status}
-          </div>
+
           {!isOpen && (
             <>
               <div className="request-units text-start">
@@ -201,6 +199,9 @@ const BloodRequest = () => {
               </div>
             </>
           )}
+          <div className="request-status text-start">
+            Status: {request.status}
+          </div>
         </div>
         {isOpen && (
           <div className="blood-group text-start">

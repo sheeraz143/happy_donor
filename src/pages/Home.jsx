@@ -225,14 +225,15 @@ function Home() {
               className="request-address text-start"
               style={{ color: "#000" }}
             >
-              Address: {request?.delivery_address}
+              Date: {formatDate(request?.required_date)}
             </div>
             <div
               className="request-address text-start"
               style={{ color: "#000" }}
             >
-              Date: {formatDate(request?.required_date)}
+              Address: {request?.delivery_address}
             </div>
+
             {request?.phone_number && (
               <div>
                 <label>Phone Number: </label>
@@ -260,7 +261,7 @@ function Home() {
           </div>
         </div>
 
-        <div className="accept-donor-button d-flex justify-content-around align-items-center ">
+        <div className="accept-donor-button d-flex justify-content-between align-items-center ">
           <div className="icon-container d-flex me-3">
             <Link to="#" className="share-link me-2">
               <img
