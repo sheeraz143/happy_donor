@@ -279,7 +279,6 @@ const BloodRequest = () => {
           onChange={handlePageChange}
         />
       </div>
-
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -288,8 +287,8 @@ const BloodRequest = () => {
         className="Modal"
         overlayClassName="Overlay"
       >
-        <div className="d-flex flex-column align-items-center">
-          <h3 className="cancel_blood_req">Close Request</h3>
+        <div className="Modal-header">Close Request</div>
+        <div className="Modal-body">
           <label className="text-start w-100">
             Reason for closing the request
           </label>
@@ -311,14 +310,14 @@ const BloodRequest = () => {
             value={additionalComments}
             onChange={(e) => setAdditionalComments(e.target.value)}
           />
-          <div className="d-flex justify-content-evenly w-100">
-            <button onClick={closeModal} className="btn btn-primary">
-              Close
-            </button>
-            <button onClick={handleSubmit} className="btn btn-primary">
-              Submit
-            </button>
-          </div>
+        </div>
+        <div className="Modal-footer mt-3">
+          <button onClick={closeModal} className="btn btn-danger">
+            Close
+          </button>
+          <button onClick={handleSubmit} className="btn btn-primary">
+            Submit
+          </button>
         </div>
       </Modal>
     </>

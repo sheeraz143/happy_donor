@@ -108,8 +108,8 @@ export default function PostGratitudeMessage() {
     formData.append("camp_id", requestId);
     formData.append("donor_id", donorId);
     formData.append("message", textMessage);
-    formData.append("abnormal", isAbnormal);
-    // formData.append("abnormal", isAbnormal == true ? "1" : "0");
+    // formData.append("abnormal", isAbnormal);
+    formData.append("abnormal", isAbnormal == true ? "1" : "0");
 
     if (media) {
       formData.append("media[]", media); // Append the single media file

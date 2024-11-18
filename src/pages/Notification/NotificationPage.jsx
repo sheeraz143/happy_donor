@@ -180,7 +180,7 @@ export default function NotificationPage({ onRefreshNavbar }) {
       )}
       <Pagination
         align="center"
-        className="mb-4"
+        className="mb-2 mt-4"
         current={currentPage}
         total={totalItems}
         pageSize={ITEMS_PER_PAGE}
