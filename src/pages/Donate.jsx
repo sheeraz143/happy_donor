@@ -212,7 +212,7 @@ function Donate() {
       {request.is_critical && (
         <div className="emergency-tag position-absolute">Emergency</div>
       )}
-      <div className="request-header d-flex align-items-center">
+      {/* <div className="request-header d-flex align-items-center">
         <div className="align-content-center">
           <img
             src={request?.profile_picture || profImg}
@@ -236,6 +236,26 @@ function Donate() {
         </div>
 
         <div className="blood-group ms-auto">
+          <h3 className="blood-group" style={{ color: "red" }}>
+            {request.blood_group || "Unknown"}
+          </h3>{" "}
+        </div>
+      </div> */}
+      <div className="request-header">
+        <img
+          src={request?.profile_picture || profImg}
+          alt="Profile"
+          className="profile_img"
+        />
+        <div className="request-details">
+          <div className="text-start fw-bold">{request?.name}</div>
+          <div className="text-start">{formatDate(request?.date)}</div>
+          <div className="text-start">
+            Blood units: {request?.units_required}
+          </div>
+          <div className="text-start">{request?.location}</div>
+        </div>
+        <div className="blood-group">
           {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
           <h3 className="blood-group" style={{ color: "red" }}>
             {request.blood_group || "Unknown"}
@@ -243,7 +263,6 @@ function Donate() {
           {/* Show blood group text */}
         </div>
       </div>
-
       <div className="accept-donar-button d-flex align-items-center mt-3">
         <div className="icon-container d-flex me-3">
           <Link to="#" className="share-link me-2">

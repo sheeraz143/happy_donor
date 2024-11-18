@@ -74,19 +74,12 @@
   justify-content: space-between;
   height: 100%;
 }
-.request-header {
-  display: flex; /* Align items in a row */
-  flex-wrap: wrap; /* Allow wrapping for small screens */
-  align-items: flex-start; /* Align items at the top */
-  gap: 10px; /* Add spacing between elements */
-  margin-bottom: 10px;
-}
 
-/* .request-header {
+.request-header {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-} */
+}
 
 .request-details {
   flex: 1;
@@ -414,113 +407,4 @@
 
 .close-button:hover {
   color: red;
-}
-
-.img_fluid {
-  max-width: 100%; /* Make the image scale with the container width */
-  height: auto; /* Maintain aspect ratio */
-  display: block; /* Remove inline-block spacing */
-  margin: 0 auto; /* Center the image if needed */
-}
-
-.request-header .blood-group img {
-  max-width: 100%; /* Make it responsive within its container */
-  height: 100px; /* Maintain aspect ratio */
-  border-radius: 8px; /* Optional: Add rounded corners for aesthetic appeal */
-}
-
-@media (max-width: 768px) {
-  .request-header {
-    flex-direction: column; /* Stack items vertically */
-    align-items: center; /* Center items */
-    margin-bottom: 10px;
-  }
-
-  .blood-group img {
-    width: 100%; /* Make image fill the container */
-    max-width: 300px; /* Optional: Limit the maximum width */
-  }
-}
-
-@media (max-width: 768px) {
-  .requests {
-    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-  }
-
-  .request-header {
-    flex-direction: column; /* Stack items vertically */
-    align-items: center; /* Center items */
-  }
-
-  .blood-group img {
-    width: 100%; /* Make image fill the container */
-    max-width: 300px; /* Optional: Limit the maximum width */
-  }
-}
-
-@media (max-width: 576px) {
-  .requests {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  }
-
-  .Modal {
-    width: 90%; /* Adjust modal width for small screens */
-  }
-
-  .request-card {
-    padding: 8px; /* Reduce padding for smaller screens */
-  }
-
-  .request-details {
-    font-size: 12px; /* Adjust font size for readability */
-  }
-
-  .blood-group img {
-    max-width: 250px; /* Limit image width */
-  }
-}
-
-@media (max-width: 480px) {
-  .requests {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  }
-
-  .request-card {
-    padding: 6px; /* Further reduce padding */
-  }
-
-  .request-details {
-    font-size: 11px; /* Smaller font size for narrow screens */
-  }
-
-  .blood-group img {
-    max-width: 200px; /* Further limit image width */
-  }
-
-  .Modal {
-    width: 95%; /* Maximize modal space on smaller devices */
-  }
-}
-
-@media (max-width: 320px) {
-  .requests {
-    grid-template-columns: 1fr; /* Single column layout for very small screens */
-  }
-
-  .request-card {
-    padding: 4px; /* Minimal padding */
-  }
-
-  .request-details {
-    font-size: 10px; /* Minimize font size */
-  }
-
-  .blood-group img {
-    max-width: 180px; /* Further limit image width */
-  }
-
-  .Modal {
-    width: 100%; /* Use full width */
-    padding: 10px; /* Adjust padding */
-  }
 }

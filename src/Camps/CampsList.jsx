@@ -57,7 +57,6 @@ const CampsList = () => {
               } else {
                 if (tab === "open") {
                   setOpenRequests(res.camps);
-                  console.log("res.camps: ", res.camps);
 
                   setRequestCount((prevCount) => ({
                     ...prevCount,
@@ -70,6 +69,7 @@ const CampsList = () => {
                     unmatched: res.pagination?.total,
                   }));
                 }
+
                 setTotalItems(res.pagination?.total || 0); // Set total items for pagination
               }
             },
@@ -83,6 +83,12 @@ const CampsList = () => {
     },
     [dispatch]
   );
+
+  useEffect(() => {
+    // Fetch data for both tabs on initial load
+    loadData("open", 1); // Load open requests
+    loadData("closed", 1); // Load closed requests
+  }, [loadData]);
 
   // Reload data on tab or page change
   useEffect(() => {
@@ -194,7 +200,7 @@ const CampsList = () => {
               Status: {request.status}
             </div>
           </div>
-          <div className="blood-group text-start">
+          {/* <div className="blood-group text-start">
             <img
               style={{ maxWidth: "200px" }}
               className="img_fluid"
@@ -206,10 +212,21 @@ const CampsList = () => {
                 e.target.src = bloodGroupImg;
               }}
             />
+          </div> */}
+          <div className="blood-group text-start">
+            <img
+              className="img_fluid"
+              src={request.camp_image || bloodGroupImg}
+              alt="Camp Image"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = bloodGroupImg; // Fallback image
+              }}
+            />
           </div>
         </div>
 
-        <div className="accept-donar-button d-flex justify-content-center">
+        <div className="accept-donar-button d-flex justify-content-center mb-3">
           {request.view_donors && (
             <button
               className="accepted-donors-btn"
