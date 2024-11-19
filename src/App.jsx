@@ -3,6 +3,7 @@ import {
   Route,
   Routes,
   useLocation,
+  Navigate,
   // Navigate,
   // useNavigate,
 } from "react-router-dom";
@@ -86,7 +87,6 @@ function App() {
       .then((token) => {
         if (token) {
           localStorage.setItem("fcmToken", token);
-          
         }
       })
       .catch((err) => console.log("Notification permission denied:", err));
@@ -103,6 +103,8 @@ function App() {
     location.pathname === "/login/bloodbank" ||
     location.pathname === "/terms" ||
     location.pathname.includes("viewbloodrequest") ||
+    location.pathname.includes("vieweventdetails") ||
+    location.pathname.includes("viewcampdetails") ||
     location.pathname === "/privacypolicy";
 
   const [refreshNavbar, setRefreshNavbar] = useState(false);
@@ -201,6 +203,8 @@ function App() {
             element={<NotificationPage onRefreshNavbar={handleRefreshNavbar} />}
           />
         </Route>
+        {/* Catch-all route for undefined paths */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
       {!hideNavbarAndFooter && <Footer />}
     </>

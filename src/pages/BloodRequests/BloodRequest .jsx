@@ -240,7 +240,7 @@ const BloodRequest = () => {
           <button
             className={`tab ${activeTab === "open" ? "active" : ""}`}
             onClick={() => {
-              // setCurrentPage(1);
+              setCurrentPage(1);
               setActiveTab("open");
             }}
           >
@@ -249,7 +249,7 @@ const BloodRequest = () => {
           <button
             className={`tab ${activeTab === "closed" ? "active" : ""}`}
             onClick={() => {
-              // setCurrentPage(1);
+              setCurrentPage(1);
               setActiveTab("closed");
             }}
           >

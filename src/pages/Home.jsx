@@ -172,7 +172,8 @@ function Home() {
   };
 
   const handleShareClick = (request) => {
-    const shareMessage = `${request.username} requires ${request.quantity_units} units of ${request.blood_group} blood at ${request.delivery_address}. View details here: https://app.happydonors.ngo/donate`;
+    // console.log('request: ', request);
+    const shareMessage = `${request.username} requires ${request.quantity_units} units of ${request.blood_group} blood at ${request.delivery_address}. View details here: https://app.happydonors.ngo/bloodrequestdetail/${request?.id}`;
 
     if (navigator.share) {
       // Use Web Share API if available
@@ -180,7 +181,7 @@ function Home() {
         .share({
           title: "Blood Donation Request",
           text: shareMessage,
-          url: "https://app.happydonors.ngo/donate",
+          url: `https://app.happydonors.ngo/bloodrequestdetail/${request?.id}`,
         })
         .catch((error) => console.log("Error sharing", error));
     } else {
@@ -212,12 +213,12 @@ function Home() {
             />
           </div>
           <div className="request-details ms-4">
-            <div
+            <h5
               className="request-date text-start fw-bold "
-              style={{ color: "#000", fontSize: "20px" }}
+              style={{ color: "#000" }}
             >
               {request?.username} {/* {request?.attender_last_name} */}
-            </div>
+            </h5>
             <div className="request-units text-start" style={{ color: "#000" }}>
               Units Required: {request?.quantity_units}
             </div>
