@@ -74,6 +74,8 @@ function Request() {
         mobile_number: data?.mobileNumber,
         willing_to_arrange_transport: Boolean(data?.willing),
         terms_agreed: data?.terms,
+        required_from: data?.required_from,
+        required_to: data?.required_to,
       };
 
       dispatch(
@@ -240,18 +242,43 @@ function Request() {
         )}
       </div>
 
-      {/* Location */}
-      {/* <div className="form-group">
-        <label>Location</label>
+      {/* From Time */}
+      <div className="form-group">
+        <label>
+          From Time <span className="required-asterisk">*</span>
+        </label>
         <input
           className="form-input"
-          type="text"
-          {...register("location", { required: true })}
+          type="time"
+          onFocus={(e) => {
+            e.target.showPicker();
+          }}
+          style={{ cursor: "pointer" }}
+          {...register("required_from", { required: true })}
         />
-        {errors.location && (
-          <p className="error-message">Location is required</p>
+        {errors.required_from && (
+          <p className="error-message">From time is required</p>
         )}
-      </div> */}
+      </div>
+
+      {/* To Time */}
+      <div className="form-group">
+        <label>
+          To Time <span className="required-asterisk">*</span>
+        </label>
+        <input
+          className="form-input"
+          type="time"
+          onFocus={(e) => {
+            e.target.showPicker();
+          }}
+          style={{ cursor: "pointer" }}
+          {...register("required_to", { required: true })}
+        />
+        {errors.required_to && <p className="error-message">To time is required</p>}
+      </div>
+
+      {/* Location */}
       <div className="form-group">
         <label>
           Location <span className="required-asterisk">*</span>
