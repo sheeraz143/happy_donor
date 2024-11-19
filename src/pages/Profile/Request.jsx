@@ -98,7 +98,7 @@ function Request() {
   return (
     <form className="form-container mb-4" onSubmit={handleSubmit(onSubmit)}>
       {/* Title */}
-      <h3 style={{ color: "black" }}>Request for blood</h3>
+      <h3 style={{ color: "black" }}>Request Blood</h3>
       <div className="form-group">
         <label>
           Title <span className="required-asterisk">*</span>
@@ -289,7 +289,9 @@ function Request() {
 
       {/* Critical*/}
       <div className="form-group">
-        <label>Emergency? <span className="required-asterisk">*</span></label>
+        <label>
+          Emergency? <span className="required-asterisk">*</span>
+        </label>
         <select
           className="form-input"
           {...register("critical", { required: true })}

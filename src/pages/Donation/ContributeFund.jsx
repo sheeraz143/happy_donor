@@ -20,8 +20,7 @@ export default function ContributeFund() {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const eventData = location?.state?.data || {};
-  console.log("eventData: ", eventData);
+  const eventData = location?.state?.request || {};
   const {
     register,
     handleSubmit,
@@ -45,7 +44,6 @@ export default function ContributeFund() {
       dispatch(
         getProfile((res) => {
           const user = res?.user;
-          console.log("user: ", user);
           setValue("title", user?.title);
           setValue("name", user?.name);
           setValue("contact", user?.phone_number);
@@ -107,11 +105,9 @@ export default function ContributeFund() {
     try {
       dispatch(
         paymentInitiate(modifiedData, (res) => {
-          console.log("res: ", res);
           if (res.code === 201) {
             const transaction_id = res.transaction_id;
-            console.log("transaction_id: ", transaction_id);
-            const amountInPaise = Math.max(Math.round(data.amount * 100), 100); // Ensure amount in paise and minimum of ₹1
+            const amountInPaise = Math.max(Math.round(data.amount * 100), 100);
 
             const options = {
               key: razorKey,
@@ -121,17 +117,13 @@ export default function ContributeFund() {
               description: "Donation",
               order_id: res.order_id,
               handler: (res) => {
-                console.log("handler res: ", res);
-                dispatch(setLoader(true));
                 const paymentStatusData = {
                   transaction_id: transaction_id,
                   razorpay_payment_id: res?.razorpay_payment_id,
                   razorpay_order_id: res?.razorpay_order_id,
                   razorpay_signature: res?.razorpay_signature,
-                  response: res,
                   status: "success",
                 };
-                console.log("paymentStatusData: ", paymentStatusData);
                 dispatch(
                   paymentStatus(paymentStatusData, (statusRes) => {
                     if (statusRes.code === 200) {
@@ -152,23 +144,19 @@ export default function ContributeFund() {
               modal: {
                 ondismiss: () => {
                   console.log("Payment modal closed");
-                  setLoading(false);
+                  setLoading(false); // Ensure button is clickable again
                   dispatch(setLoader(false));
-                  dispatch(setLoader(true));
                   const paymentStatusData = {
                     transaction_id,
                     status: "failed",
                   };
-                  console.log("payfailed: ", paymentStatusData);
                   dispatch(
                     paymentStatus(paymentStatusData, (statusRes) => {
                       if (statusRes.code === 200) {
                         toast.success(statusRes.message);
-                        navigate("/home");
                       } else {
                         toast.error(statusRes.message);
                       }
-                      dispatch(setLoader(false));
                     })
                   );
                 },
@@ -178,28 +166,24 @@ export default function ContributeFund() {
               },
             };
 
-            if (Razorpay) {
-              try {
-                const razorpayInstance = new Razorpay(options);
-                razorpayInstance.open();
-              } catch (error) {
-                console.error("Razorpay initialization error:", error);
-                toast.error("Something went wrong while initiating payment.");
-                dispatch(setLoader(false));
-              }
-            } else {
-              toast.error("Razorpay SDK is not available");
-              dispatch(setLoader(false));
+            try {
+              const razorpayInstance = new Razorpay(options);
+              razorpayInstance.open();
+              setLoading(false); // Ensure loading state is reset
+            } catch (error) {
+              console.error("Razorpay initialization error:", error);
+              toast.error("Something went wrong while initiating payment.");
+              setLoading(false);
             }
           } else {
             toast.error(res.message);
-            dispatch(setLoader(false));
+            setLoading(false);
           }
         })
       );
     } catch (error) {
       toast.error(error.message || "Error initiating payment");
-      dispatch(setLoader(false));
+      setLoading(false);
     }
   };
 

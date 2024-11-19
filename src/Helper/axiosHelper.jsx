@@ -1,14 +1,14 @@
 import axios from "axios";
 
 const helper = {
-  
   baseUrl: function () {
     const URL = "https://happydonorsdev.devdemo.tech/api/";
 
     return URL;
   },
   razorPayKey: function () {
-    const key = "rzp_test_xMw7fbS5jks9Ye";
+    // const key = "rzp_test_xMw7fbS5jks9Ye";
+    const key = "rzp_live_koTSgNVBozLvcc";
 
     return key;
   },

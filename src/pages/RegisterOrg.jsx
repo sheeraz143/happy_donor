@@ -99,6 +99,7 @@ const RegisterOrg = () => {
         password: data?.password,
         password_confirmation: data?.password,
         user_type_id: 5,
+        collaborate_as: data?.collaborate_as,
       };
 
       // console.log("payload: ", payload);
@@ -406,6 +407,29 @@ const RegisterOrg = () => {
           </div>
           <input type="hidden" {...register("lat", { required: false })} />
           <input type="hidden" {...register("lon", { required: false })} />
+
+          {/* Collaborate as */}
+          <div className="form-group">
+            <label>
+              Collaborate as <span className="required-asterisk">*</span>
+            </label>
+            <select
+              className="form-input"
+              {...register("collaborate_as", { required: true })}
+            >
+              <option value="">Select</option>
+              <option value="CSR Partners">CSR Partners</option>
+              <option value="Hospital Support">Hospital Support</option>
+              <option value="NGO and Local Associations">
+                NGO and Local Associations
+              </option>
+              <option value="Society">Society</option>
+              <option value="Others">Others</option>
+            </select>
+            {errors.collaborate_as && (
+              <p className="error-message">collaborate as is required</p>
+            )}
+          </div>
 
           {/* Terms and Conditions */}
           <div className="text-start">

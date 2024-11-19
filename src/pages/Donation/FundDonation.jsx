@@ -305,8 +305,8 @@ export default function FundDonation() {
           {...register("donate_for", { required: true })}
         >
           <option value="">Select</option>
-          <option value="Happy Donors Trust">Happy Donar Trust</option>
-          <option value="Recent Series">Recent Series</option>
+          <option value="Happy Donors Trust">Happy Donors Trust</option>
+          {/* <option value="Recent Series">Recent Series</option> */}
           <option value="Camps/Events">Camps/Events</option>
           <option value="CSR Contribution">CSR Contribution</option>
         </select>
