@@ -258,6 +258,17 @@ const Profile = () => {
           <option value="AB-">AB-</option>
           <option value="O+">O+</option>
           <option value="O-">O-</option>
+          <option value="A1+ve">A1+ve</option>
+          <option value="A1-ve">A1-ve</option>
+          <option value="A1B+ve">A1B+ve</option>
+          <option value="A1B-ve">A1B-ve</option>
+          <option value="A2+ve">A2+ve</option>
+          <option value="A2-ve">A2-ve</option>
+          <option value="A2B+ve">A2B+ve</option>
+          <option value="A2B-ve">A2B-ve</option>
+          <option value="Bombay Blood Group">Bombay Blood Group</option>
+          <option value="INRA">INRA</option>
+          <option value="Any">Any</option>
         </select>
         {errors.bloodGroup && (
           <p className="error-message">Blood Group is required</p>

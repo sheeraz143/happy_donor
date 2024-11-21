@@ -73,23 +73,18 @@ export default function CampDetails() {
   };
 
   const handleShareClick = (request) => {
-    const shareMessage = `${request.title} camp at ${request.location}. View details here: https://happydonorsdev.devdemo.tech/viewcampdetails/${request?.camp_id}`;
-
     if (navigator.share) {
-      // Use Web Share API if available
+      const shareMessage = `${request.title}  time ${request?.time} at ${request.location}. View details here: https://app.happydonors.ngo/viewcampdetails/${request?.id}.`;
+
       navigator
         .share({
-          title: "Blood Donation Request",
-          text: shareMessage,
-          url: `https://happydonorsdev.devdemo.tech/viewcampdetails/${request?.camp_id}`,
+          title: "Event Request",
+          text: shareMessage, // Combine message and URL here
+          url: `https://app.happydonors.ngo/viewcampdetails/${request?.id}`,
         })
         .catch((error) => console.log("Error sharing", error));
     } else {
-      // WhatsApp fallback if Web Share API isn't available
-      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
-        shareMessage
-      )}`;
-      window.open(whatsappUrl, "_blank"); // Opens WhatsApp share URL in a new tab
+      alert("Web Share API is not supported in your browser.");
     }
   };
 

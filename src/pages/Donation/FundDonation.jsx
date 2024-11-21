@@ -321,8 +321,9 @@ export default function FundDonation() {
           Amount <span className="required-asterisk">*</span>
         </label>
         <input
+          type="number"
+          onWheel={(e) => e.target.blur()}
           className="form-input"
-          type="text"
           {...register("amount", { required: true })}
         />
         {errors.amount && <p className="error-message">Amount is required</p>}

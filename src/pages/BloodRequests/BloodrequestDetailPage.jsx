@@ -165,9 +165,8 @@ export default function BloodrequestDetailPage() {
                   />
                 </div>
                 <div className="request-details ms-3">
-                  <div className="text-start">
-                    Date: {formatDate(data.date)}
-                  </div>
+                  <div className="text-start fw-bold">{data.name}</div>
+                  <div className="text-start">{formatDate(data.date)}</div>
                   <div className="text-start">Units: {data.units_required}</div>
                   <div className="text-start">Address: {data.address}</div>
                 </div>

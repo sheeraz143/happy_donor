@@ -68,6 +68,10 @@ import BloodrequestDetailPage from "./pages/BloodRequests/BloodrequestDetailPage
 import ViewrequestDetailPage from "./pages/BloodRequests/ViewRequestDetail";
 import ViewEventDetails from "./pages/Bloodcamps/ViewEventDetails";
 import ViewCampDetails from "./pages/Bloodcamps/ViewCampDetails";
+import ChangeRequests from "./pages/Approvals/ChangeRequests";
+import CampsEvents from "./pages/Approvals/CampsEvents";
+import Forgotpassword from "./pages/Forgotpassword";
+import ResetPassword from "./pages/ResetPassword";
 // import FirebaseComponent from "./pushnotification/FirebaseComponent";
 
 function App() {
@@ -105,6 +109,8 @@ function App() {
     location.pathname.includes("viewbloodrequest") ||
     location.pathname.includes("vieweventdetails") ||
     location.pathname.includes("viewcampdetails") ||
+    location.pathname.includes("forgotPassword") ||
+    location.pathname.includes("resetpassword") ||
     location.pathname === "/privacypolicy";
 
   const [refreshNavbar, setRefreshNavbar] = useState(false);
@@ -124,6 +130,8 @@ function App() {
           path="/login/organisation"
           element={<LoginOrg onRefreshNavbar={handleRefreshNavbar} />}
         />
+        <Route path="/forgotpassword" element={<Forgotpassword />} />
+        <Route path="/resetpassword" element={<ResetPassword />} />
         <Route
           path="/login/bloodbank"
           element={<LoginBloodBank onRefreshNavbar={handleRefreshNavbar} />}
@@ -148,6 +156,8 @@ function App() {
           <Route path="/approvals" element={<Approvals />} />
           <Route path="/approve-requests" element={<ApproveRequests />} />
           <Route path="/approve-donors" element={<ApproveDonors />} />
+          <Route path="/campsevents" element={<CampsEvents />} />
+          <Route path="/change-requests" element={<ChangeRequests />} />
           <Route path="/editprofile" element={<EditProfilePage />} />
           <Route path="/bloodrequest" element={<BloodRequest />} />
           <Route path="/donate" element={<Donate />} />

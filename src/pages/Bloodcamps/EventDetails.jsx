@@ -61,15 +61,15 @@ export default function EventDetails() {
   };
 
   const handleShareClick = () => {
-    const shareMessage = `${data?.title}  event at ${data.location}. View details here: https://app.happydonors.ngo/eventdetails`;
+    const shareMessage = `${data?.title}  event at ${data.location}. 
+    View details here: https://app.happydonors.ngo/ViewEventDetails/${data?.id}`;
 
     if (navigator.share) {
       // Use Web Share API if available
       navigator
         .share({
           title: "Blood Donation Request",
-          text: `${data?.title}  event at ${data.location}. View details here: https://app.happydonors.ngo/eventdetails`,
-          url: "https://app.happydonors.ngo/eventdetails",
+          text: shareMessage,
         })
         .catch((error) => console.log("Error sharing", error));
     } else {

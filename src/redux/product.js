@@ -385,29 +385,32 @@ export const CreateCamp =
     }
   };
 
-export const donateBloods =
-  (type, page, callback = () => {}) =>
-  async () => {
-    try {
-      const response = await Helper.getData(
-        baseUrl + `app/blood-requests/${type}?page=${page}&limit=${10}`
-      );
+export const donateBloods = (type, page,callback) => async () => {
+  try {
+    const response = await Helper.getData(
+      baseUrl + `app/blood-requests/${type}?page=${page}&limit=${10}`
+    );
 
-      const result = {
-        ...response.data,
-        code: response.status,
-      };
+    const result = {
+      ...response.data,
+      code: response.status,
+    };
 
+    if (typeof callback === "function") {
       callback(result);
-    } catch (err) {
-      console.error("Update profile error: ", err);
+    }
+  } catch (err) {
+    console.error("Update profile error: ", err);
+
+    if (typeof callback === "function") {
       callback({
         status: false,
         code: err.response?.status || 500,
         message: err.response?.data?.message || "An unexpected error occurred.",
       });
     }
-  };
+  }
+};
 
 export const CampsLists =
   (type, page, callback = () => {}) =>
@@ -1612,5 +1615,234 @@ export const viewEmergency =
         code: err.response?.status || 500,
         message: err.response?.data?.message || "An unexpected error occurred.",
       });
+    }
+  };
+
+export const PendingApprovals =
+  (callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(baseUrl + `app/pending-approvals`);
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      if (response.status === 200) {
+        if (typeof callback === "function") {
+          callback(result);
+        }
+      } else {
+        // If not 200, send an error message
+        if (typeof callback === "function") {
+          callback({
+            status: false,
+            code: response.status,
+            message: response?.response?.data.message,
+          });
+        }
+      }
+    } catch (err) {
+      if (typeof callback === "function") {
+        callback({
+          status: false,
+          code: err.response?.status || 500,
+          message:
+            err.response?.data?.message || "An unexpected error occurred.",
+        });
+      }
+    }
+  };
+export const PendingApprovalsView =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(
+        baseUrl + `app/pending-approvals/${id}`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      if (response.status === 200) {
+        if (typeof callback === "function") {
+          callback(result);
+        }
+      } else {
+        // If not 200, send an error message
+        if (typeof callback === "function") {
+          callback({
+            status: false,
+            code: response.status,
+            message: response?.response?.data.message,
+          });
+        }
+      }
+    } catch (err) {
+      if (typeof callback === "function") {
+        callback({
+          status: false,
+          code: err.response?.status || 500,
+          message:
+            err.response?.data?.message || "An unexpected error occurred.",
+        });
+      }
+    }
+  };
+export const PendingApprovalsAccept =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.putData(
+        baseUrl + `app/pending-approvals/${id}/approve`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      if (response.status === 200) {
+        if (typeof callback === "function") {
+          callback(result);
+        }
+      } else {
+        // If not 200, send an error message
+        if (typeof callback === "function") {
+          callback({
+            status: false,
+            code: response.status,
+            message: response?.response?.data.message,
+          });
+        }
+      }
+    } catch (err) {
+      if (typeof callback === "function") {
+        callback({
+          status: false,
+          code: err.response?.status || 500,
+          message:
+            err.response?.data?.message || "An unexpected error occurred.",
+        });
+      }
+    }
+  };
+export const DeletePendingApprovals =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.deleteData(
+        baseUrl + `app/pending-approvals/${id}/reject`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      if (response.status === 200) {
+        if (typeof callback === "function") {
+          callback(result);
+        }
+      } else {
+        // If not 200, send an error message
+        if (typeof callback === "function") {
+          callback({
+            status: false,
+            code: response.status,
+            message: response?.response?.data.message,
+          });
+        }
+      }
+    } catch (err) {
+      if (typeof callback === "function") {
+        callback({
+          status: false,
+          code: err.response?.status || 500,
+          message:
+            err.response?.data?.message || "An unexpected error occurred.",
+        });
+      }
+    }
+  };
+
+export const AdminCampsList =
+  (callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(
+        baseUrl + `app/blood-camps/all/admin`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      if (response.status === 200) {
+        if (typeof callback === "function") {
+          callback(result);
+        }
+      } else {
+        // If not 200, send an error message
+        if (typeof callback === "function") {
+          callback({
+            status: false,
+            code: response.status,
+            message: response?.response?.data.message,
+          });
+        }
+      }
+    } catch (err) {
+      if (typeof callback === "function") {
+        callback({
+          status: false,
+          code: err.response?.status || 500,
+          message:
+            err.response?.data?.message || "An unexpected error occurred.",
+        });
+      }
+    }
+  };
+
+export const CampApproved =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(
+        baseUrl + `app/blood-camps/${id}/approve/admin`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      if (response.status === 200) {
+        if (typeof callback === "function") {
+          callback(result);
+        }
+      } else {
+        // If not 200, send an error message
+        if (typeof callback === "function") {
+          callback({
+            status: false,
+            code: response.status,
+            message: response?.response?.data.message,
+          });
+        }
+      }
+    } catch (err) {
+      if (typeof callback === "function") {
+        callback({
+          status: false,
+          code: err.response?.status || 500,
+          message:
+            err.response?.data?.message || "An unexpected error occurred.",
+        });
+      }
     }
   };
