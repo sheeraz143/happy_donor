@@ -122,13 +122,13 @@ function Donate() {
   const toggleShareOptions = (cardId, message, url) => {
     setVisibleShareCard((prev) => (prev === cardId ? null : cardId));
 
-    const fullMessage = `${message}\nView details here: ${url}`; // Combine message with URL
+    const fullMessage = `Blood Donation Request\n${message}\nView details here: ${url}`; // Combine message with URL
 
     // Copy to clipboard when the share icon is clicked
     navigator.clipboard
       .writeText(fullMessage)
       .then(() => {
-        // alert("Copied to clipboard!");
+        alert("Copied to clipboard!");
       })
       .catch((err) => {
         console.error("Failed to copy text: ", err);
@@ -137,7 +137,8 @@ function Donate() {
 
   const renderRequestCard = (request, showAcceptButton) => {
     // Create the share message and URL
-    const shareMessage = `${request?.name} requires ${request?.units_required} units of ${request?.blood_group} blood at ${request?.delivery_address}.`;
+    console.log(request);
+    const shareMessage = `${request?.name} requires ${request?.units_required} units of ${request?.blood_group} blood at ${request?.location}.`;
     const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${request?.request_id}`;
     return (
       <div
@@ -235,7 +236,9 @@ function Donate() {
 
   const renderOthersCard = (request) => {
     // Create the share message and URL
-    const shareMessage = `${request?.name} requires ${request?.units_required} units of ${request?.blood_group} blood at ${request?.delivery_address}.`;
+
+    console.log(request);
+    const shareMessage = `${request?.name} requires ${request?.units_required} units of ${request?.blood_group} blood at ${request?.location}.`;
     const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${request?.request_id}`;
     return (
       <div className="request-card position-relative" key={request?.request_id}>

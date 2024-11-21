@@ -83,7 +83,7 @@ export default function RequestDetail() {
       });
   };
 
-  const shareMessage = `${data?.name} requires ${data?.units_required} units of ${data?.blood_group} blood at ${data?.location}.`;
+  const shareMessage = `Blood Donation Request\n${data?.name} requires ${data?.units_required} units of ${data?.blood_group} blood at ${data?.location}.`;
   const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${data?.request_id}`;
   const showAcceptButton = data?.view_donors == true;
 
