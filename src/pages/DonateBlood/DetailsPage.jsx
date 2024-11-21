@@ -85,7 +85,8 @@ export default function RequestDetail() {
 
   const shareMessage = `Blood Donation Request\n${data?.name} requires ${data?.units_required} units of ${data?.blood_group} blood at ${data?.location}.`;
   const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${data?.request_id}`;
-  const showAcceptButton = data?.view_donors == true;
+  // const showAcceptButton = data?.view_donors == true;
+  
 
   const handleCardClick = (request) => {
     dispatch(setLoader(true));
@@ -211,8 +212,7 @@ export default function RequestDetail() {
                     />
                   </Link>
                 </div>
-                {showAcceptButton && (
-                  <button
+                <button
                     className={`accepted-donors-btn btn ${
                       data?.is_accepted ? "btn-secondary" : "btn-primary"
                     }`}
@@ -221,7 +221,6 @@ export default function RequestDetail() {
                   >
                     {data?.is_accepted ? "Accepted" : "Accept"}
                   </button>
-                )}
               </div>
             </div>
           </div>

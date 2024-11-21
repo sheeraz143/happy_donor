@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import {
   AdminCampsList,
   CampApproved,
-  // PendingApprovalsAccept,
-  // PendingApprovalsView,
+  CampReject,
   setLoader,
 } from "../../redux/product";
 import { toast } from "react-toastify";
@@ -135,27 +134,30 @@ export default function CampsEvents() {
       dispatch(setLoader(false));
     }
   };
-  // const handleDelete = (requestId) => {
-  //   dispatch(setLoader(true));
+  const handleDelete = (requestId) => {
+    const dataToSend = {
+      closure_reason: "rejected",
+      additional_comments: "",
+    };
+    dispatch(setLoader(true));
 
-  //   try {
-  //     dispatch(
-  //       PendingApprovalsAccept(requestId, (res) => {
-  //         if (res.code === 200) {
-  //           toast.success(res.message);
-  //           setRefresh(!refresh);
-  //           closeModal();
-  //         } else {
-  //           toast.error(res.message);
-  //         }
-  //         dispatch(setLoader(false));
-  //       })
-  //     );
-  //   } catch (error) {
-  //     toast.error(error.message || "An unexpected error occurred.");
-  //     dispatch(setLoader(false));
-  //   }
-  // };
+    try {
+      dispatch(
+        CampReject(dataToSend, requestId, (res) => {
+          if (res.code === 200) {
+            toast.success(res.message);
+            setRefresh(!refresh);
+          } else {
+            toast.error(res.message);
+          }
+          dispatch(setLoader(false));
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "An unexpected error occurred.");
+      dispatch(setLoader(false));
+    }
+  };
 
   return (
     <div className="cards-container my-5 mx-5">
@@ -206,7 +208,7 @@ export default function CampsEvents() {
                 <div className="d-flex  mt-2 gap-3 ">
                   <button
                     className="btn btn-danger"
-                    // onClick={() => openModal(request.request_id)}
+                    onClick={() => handleDelete(request.camp_id)}
                   >
                     Reject
                   </button>

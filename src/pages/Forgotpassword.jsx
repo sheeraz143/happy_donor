@@ -1,13 +1,13 @@
 import { useState } from "react";
 import logo from "../assets/logo.png";
 import "../css/LoginComponent.css";
-import { useNavigate } from "react-router";
+// import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { setLoader, OrgLogin } from "../redux/product";
+import { setLoader, ForgotPassword } from "../redux/product";
 
 const Forgotpassword = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
 
@@ -21,7 +21,6 @@ const Forgotpassword = () => {
   // }, []);
 
   const onSubmit = () => {
-    navigate("/resetpassword");
     if (!email) {
       toast.error("Email cannot be empty");
       return;
@@ -37,20 +36,16 @@ const Forgotpassword = () => {
     dispatch(setLoader(true));
     const orgData = {
       email,
+      user_type: 5,
     };
+    console.log("orgData: ", orgData);
     try {
       dispatch(
-        OrgLogin(orgData, (res) => {
-          // return;
+        ForgotPassword(orgData, (res) => {
+          console.log('res: ', res);
           if (res.code === 200) {
-            // localStorage.setItem("user_type", res.data?.user_type);
-            // localStorage.setItem(
-            //   "is_profile_update",
-            //   res?.data?.is_profile_update
-            // );
-            // localStorage.setItem("oAuth", `Bearer ${res?.data?.token}`);
-            // navigate("/home");
-            toast.success(res.message);
+            // navigate("/resetpassword");
+            toast.success(res.data?.message);
           } else {
             toast.error(res.message);
           }

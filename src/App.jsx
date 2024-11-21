@@ -70,8 +70,8 @@ import ViewEventDetails from "./pages/Bloodcamps/ViewEventDetails";
 import ViewCampDetails from "./pages/Bloodcamps/ViewCampDetails";
 import ChangeRequests from "./pages/Approvals/ChangeRequests";
 import CampsEvents from "./pages/Approvals/CampsEvents";
-import Forgotpassword from "./pages/Forgotpassword";
 import ResetPassword from "./pages/ResetPassword";
+import Forgotpassword from "./pages/Forgotpassword";
 // import FirebaseComponent from "./pushnotification/FirebaseComponent";
 
 function App() {

@@ -111,6 +111,42 @@ export const OrgLogin =
       });
     }
   };
+export const ForgotPassword =
+  (data, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postDataOrg(
+        baseUrl + "auth/forget-organization",
+        data
+      );
+      console.log("response: ", response);
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback({
+          status: true,
+          code: response.status,
+          data: response.data,
+        });
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.response.status,
+          message: response.response.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Verify OTP error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message:
+          err.response?.response?.data?.message ||
+          "An unexpected error occurred.",
+      });
+    }
+  };
 
 export const updateProfile =
   (data, callback = () => {}) =>
@@ -385,7 +421,7 @@ export const CreateCamp =
     }
   };
 
-export const donateBloods = (type, page,callback) => async () => {
+export const donateBloods = (type, page, callback) => async () => {
   try {
     const response = await Helper.getData(
       baseUrl + `app/blood-requests/${type}?page=${page}&limit=${10}`
@@ -1814,6 +1850,45 @@ export const CampApproved =
     try {
       const response = await Helper.postData(
         baseUrl + `app/blood-camps/${id}/approve/admin`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      if (response.status === 200) {
+        if (typeof callback === "function") {
+          callback(result);
+        }
+      } else {
+        // If not 200, send an error message
+        if (typeof callback === "function") {
+          callback({
+            status: false,
+            code: response.status,
+            message: response?.response?.data.message,
+          });
+        }
+      }
+    } catch (err) {
+      if (typeof callback === "function") {
+        callback({
+          status: false,
+          code: err.response?.status || 500,
+          message:
+            err.response?.data?.message || "An unexpected error occurred.",
+        });
+      }
+    }
+  };
+export const CampReject =
+  (data, id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.postData(
+        baseUrl + `app/blood-camps/${id}/reject/admin`,
+        data
       );
 
       const result = {

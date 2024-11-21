@@ -17,6 +17,13 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 
+import {
+  WhatsappShareButton,
+  EmailShareButton,
+  WhatsappIcon,
+  EmailIcon,
+} from "react-share";
+
 const BloodMedicalCamps = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -26,6 +33,24 @@ const BloodMedicalCamps = () => {
   const [events, setEvents] = useState([]);
   const [activeTab, setActiveTab] = useState("matched");
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [visibleShareCard, setVisibleShareCard] = useState(null); // Track visible card
+
+  const toggleShareOptions = (cardId, message, url) => {
+    setVisibleShareCard((prev) => (prev === cardId ? null : cardId));
+
+    const fullMessage = `\n${message}\nView details here: ${url}`; // Combine message with URL
+
+    // Copy to clipboard when the share icon is clicked
+    navigator.clipboard
+      .writeText(fullMessage)
+      .then(() => {
+        toast.success("Copied to clipboard!");
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -109,51 +134,21 @@ const BloodMedicalCamps = () => {
     }
   };
 
-  const handleShareClick = (request) => {
-    if (navigator.share) {
-      const shareMessage = `${request.title} time ${request?.time} at ${request.location}. View details here: https://app.happydonors.ngo/viewcampdetails/${request?.camp_id}`;
-      navigator
-        .share({
-          title: "Camp Request",
-          text: shareMessage, // Combine message and URL here
-          url: `https://app.happydonors.ngo/viewcampdetails/${request?.camp_id}`,
-        })
-        .catch((error) => console.log("Error sharing", error));
-    } else {
-      alert("Web Share API is not supported in your browser.");
-    }
-    
-  };
-  const handleShareClick1 = (event, request) => {
-    event.stopPropagation();
-    event.preventDefault();
-    if (navigator.share) {
-      const shareMessage = `${request.title}  time ${request?.time} at ${request.location}. View details here: https://app.happydonors.ngo/vieweventdetails/${request?.id}.`;
-
-      navigator
-        .share({
-          title: "Event Request",
-          text: shareMessage, // Combine message and URL here
-          url: `https://app.happydonors.ngo/vieweventdetails/${request?.id}`,
-        })
-        .catch((error) => console.log("Error sharing", error));
-    } else {
-      alert("Web Share API is not supported in your browser.");
-    }
-  };
-
-  const renderRequestCard = (request) => (
-    <div className="request-card position-relative" key={request?.camp_id}>
-      <div
-        className="request-header cursor-pointer"
-        onClick={() => {
-          navigate("/campdetails", { state: { request: request?.camp_id } });
-        }}
-      >
-        {request?.is_critical && (
-          <div className="emergency-tag position-absolute">Emergency</div>
-        )}
-        {/* <img
+  const renderRequestCard = (request) => {
+    const shareMessage = `New Blood Camp\nCamp title: ${request?.title} on ${request?.date} from ${request?.time} at ${request?.location}.`;
+    const shareUrl = `https://app.happydonors.ngo/viewcampdetails/${request?.camp_id}`;
+    return (
+      <div className="request-card position-relative" key={request?.camp_id}>
+        <div
+          className="request-header cursor-pointer"
+          onClick={() => {
+            navigate("/campdetails", { state: { request: request?.camp_id } });
+          }}
+        >
+          {request?.is_critical && (
+            <div className="emergency-tag position-absolute">Emergency</div>
+          )}
+          {/* <img
           src={request?.camp_image || profImg}
           alt="Profile"
           className="profile_img"
@@ -162,65 +157,88 @@ const BloodMedicalCamps = () => {
             e.target.src = profImg;
           }}
         /> */}
-        <div className="request-details">
-          <div className="text-start fw-bold">{request?.title}</div>
-          <div className="text-start">Date: {request.date}</div>
-          <div className="text-start">
-            Time: {request.time || "Not specified"}
-          </div>
-          <div className="text-start">{request?.location}</div>
-          {/* <div className="text-start">
+          <div className="request-details">
+            <div className="text-start fw-bold">{request?.title}</div>
+            <div className="text-start">Date: {request.date}</div>
+            <div className="text-start">
+              Time: {request.time || "Not specified"}
+            </div>
+            <div className="text-start">{request?.location}</div>
+            {/* <div className="text-start">
             Blood units: {request?.units_required}
           </div> */}
-          {/* <div className="text-start">{formatDate(request?.date)}</div> */}
+            {/* <div className="text-start">{formatDate(request?.date)}</div> */}
+          </div>
+          <div className="blood-group">
+            <img
+              src={request?.camp_image || BloodCamps}
+              alt="Blood Group"
+              style={{ maxWidth: "150px", height: "150px" }}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = profImg;
+              }}
+            />
+          </div>
         </div>
-        <div className="blood-group">
-          <img
-            src={request?.camp_image || BloodCamps}
-            alt="Blood Group"
-            style={{ maxWidth: "150px", height: "150px" }}
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = profImg;
-            }}
-          />
-        </div>
-      </div>
 
-      {/* <div className="accept-donar-button d-flex justify-content-around"> */}
-      <div className="d-flex align-items-center mt-3 justify-content-between">
-        <div className="icon-container">
-          <Link href="#" className="share-link">
+        {/* <div className="accept-donar-button d-flex justify-content-around"> */}
+        <div className="d-flex align-items-center mt-3 justify-content-between">
+          <div className="icon-container">
+            {/* Share Icon */}
             <img
               src={shareIcon}
               alt="Share"
               className="icon-img"
-              onClick={() => handleShareClick(request)}
+              onClick={(event) => {
+                toggleShareOptions(request?.camp_id, shareMessage, shareUrl);
+                event.stopPropagation();
+                event.preventDefault();
+              }}
+              style={{ cursor: "pointer" }}
             />
-          </Link>
-          <Link
-            to={`https://www.google.com/maps?q=${request.latitude},${request.longitude}`}
-            className="location-link"
-            target="_blank"
-            rel="noopener noreferrer"
+
+            {/* Share Options */}
+            {visibleShareCard === request.request_id && (
+              <div className="share-options">
+                <WhatsappShareButton url={shareUrl} title={shareMessage}>
+                  <WhatsappIcon size={32} round={true} />
+                </WhatsappShareButton>
+                <EmailShareButton
+                  url={shareUrl}
+                  subject="Urgent Blood Donation Request"
+                  body={shareMessage}
+                >
+                  <EmailIcon size={32} round={true} />
+                </EmailShareButton>
+              </div>
+            )}
+            <Link
+              to={`https://www.google.com/maps?q=${request.latitude},${request.longitude}`}
+              className="location-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={locationIcon} alt="Location" className="icon-img" />
+            </Link>
+          </div>
+          <button
+            className={`accepted-donors-btn btn ${
+              request?.is_accepted ? "btn-secondary" : "btn-primary"
+            }`}
+            onClick={(event) => handleCardClick(request, event)}
+            disabled={request?.is_accepted}
           >
-            <img src={locationIcon} alt="Location" className="icon-img" />
-          </Link>
+            {request?.is_accepted ? "Accepted" : "Accept"}
+          </button>
         </div>
-        <button
-          className={`accepted-donors-btn btn ${
-            request?.is_accepted ? "btn-secondary" : "btn-primary"
-          }`}
-          onClick={(event) => handleCardClick(request, event)}
-          disabled={request?.is_accepted}
-        >
-          {request?.is_accepted ? "Accepted" : "Accept"}
-        </button>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderOthersCard = (request) => {
+    const shareMessage = `New Event\nEvent title: ${request?.title} on ${request?.event_date} from ${request?.start_time} - ${request?.end_time}  at ${request?.location}.`;
+    const shareUrl = `https://app.happydonors.ngo/vieweventdetails/${request?.id}`;
     return (
       <div
         className="request-card cursor-pointer"
@@ -262,14 +280,34 @@ const BloodMedicalCamps = () => {
           <div className="d-flex me-3 justify-content-around align-items-center">
             <div className="">
               <div className="">
-                <Link to="#" className="share-link me-2">
-                  <img
-                    src={shareIcon}
-                    alt="Share"
-                    className="icon-img"
-                    onClick={(event) => handleShareClick1(event, request)}
-                  />
-                </Link>
+                {/* Share Icon */}
+                <img
+                  src={shareIcon}
+                  alt="Share"
+                  className="icon-img"
+                  onClick={(event) => {
+                    toggleShareOptions(request?.id, shareMessage, shareUrl);
+                    event.stopPropagation();
+                    event.preventDefault();
+                  }}
+                  style={{ cursor: "pointer" }}
+                />
+
+                {/* Share Options */}
+                {visibleShareCard === request.request_id && (
+                  <div className="share-options">
+                    <WhatsappShareButton url={shareUrl} title={shareMessage}>
+                      <WhatsappIcon size={32} round={true} />
+                    </WhatsappShareButton>
+                    <EmailShareButton
+                      url={shareUrl}
+                      subject="Urgent Blood Donation Request"
+                      body={shareMessage}
+                    >
+                      <EmailIcon size={32} round={true} />
+                    </EmailShareButton>
+                  </div>
+                )}
                 <Link
                   to={`https://www.google.com/maps?q=${request.lat},${request.lon}`}
                   className="location-link"

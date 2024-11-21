@@ -128,7 +128,7 @@ function Donate() {
     navigator.clipboard
       .writeText(fullMessage)
       .then(() => {
-        alert("Copied to clipboard!");
+        toast.success("Copied to clipboard!");
       })
       .catch((err) => {
         console.error("Failed to copy text: ", err);
@@ -137,7 +137,6 @@ function Donate() {
 
   const renderRequestCard = (request, showAcceptButton) => {
     // Create the share message and URL
-    console.log(request);
     const shareMessage = `${request?.name} requires ${request?.units_required} units of ${request?.blood_group} blood at ${request?.location}.`;
     const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${request?.request_id}`;
     return (
