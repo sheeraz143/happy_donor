@@ -116,7 +116,7 @@ const BloodMedicalCamps = () => {
         .share({
           title: "Camp Request",
           text: shareMessage, // Combine message and URL here
-          url: `https://app.happydonors.ngo/viewbloodrequest/${request?.id}`,
+          url: `https://app.happydonors.ngo/viewcampdetails/${request?.camp_id}`,
         })
         .catch((error) => console.log("Error sharing", error));
     } else {
@@ -128,13 +128,13 @@ const BloodMedicalCamps = () => {
     event.stopPropagation();
     event.preventDefault();
     if (navigator.share) {
-      const shareMessage = `${request.title}  time ${request?.time} at ${request.location}. View details here: https://app.happydonors.ngo/viewcampdetails/${request?.id}.`;
+      const shareMessage = `${request.title}  time ${request?.time} at ${request.location}. View details here: https://app.happydonors.ngo/vieweventdetails/${request?.id}.`;
 
       navigator
         .share({
           title: "Event Request",
           text: shareMessage, // Combine message and URL here
-          url: `https://app.happydonors.ngo/viewcampdetails/${request?.id}`,
+          url: `https://app.happydonors.ngo/vieweventdetails/${request?.id}`,
         })
         .catch((error) => console.log("Error sharing", error));
     } else {

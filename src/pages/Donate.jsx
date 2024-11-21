@@ -92,8 +92,10 @@ function Donate() {
       dispatch(setLoader(false));
     }
   };
-  const handleShareClick = (request) => {
-    const shareMessage = `${request.name} requires ${request.units_required} units of ${request.blood_group} blood at ${request.location}. View details here: https://app.happydonors.ngo/bloodrequestdetail/${request?.request_id}`;
+  const handleShareClick = (event,request) => {
+    event.stopPropagation();
+    event.preventDefault();
+    const shareMessage = `${request.name} requires ${request.units_required} units of ${request.blood_group} blood at ${request.location}. View details here: https://app.happydonors.ngo/request/${request?.request_id}`;
 
     if (navigator.share) {
       // Use Web Share API if available
@@ -101,7 +103,7 @@ function Donate() {
         .share({
           title: "Blood Donation Request",
           text: shareMessage,
-          url: `https://app.happydonors.ngo/bloodrequestdetail/${request?.request_id}`,
+          url: `https://app.happydonors.ngo/request/${request?.request_id}`,
         })
         .catch((error) => console.log("Error sharing", error));
     } else {
@@ -154,7 +156,7 @@ function Donate() {
               src={shareIcon}
               alt="Share"
               className="icon-img"
-              onClick={() => handleShareClick(request)}
+              onClick={(event) => handleShareClick(event,request)}
             />
           </Link>
           <Link
