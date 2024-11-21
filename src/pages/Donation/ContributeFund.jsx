@@ -258,16 +258,12 @@ export default function ContributeFund() {
       <div className="form-group">
         <label>Amount</label>
         <input
+          type="number"
+          onWheel={(e) => e.target.blur()}
           {...register("amount", { required: true })}
           className="form-input"
         />
-        {/* <select className="form-input">
-          <option value="">Select</option>
-          <option value="1">1 INR</option>
-          <option value="500">500 INR</option>
-          <option value="1000">1000 INR</option>
-          <option value="2000">2000 INR</option>
-        </select> */}
+
         {errors.amount && <p className="error-message">Amount is required</p>}
       </div>
 

@@ -81,7 +81,7 @@ export default function EmergenctContact() {
   }, [dispatch, setValue]);
   // Function to handle form submission
   const onSubmit = (data) => {
-    console.log(data);
+    // console.log(data);
     dispatch(setLoader(true));
     try {
       if (id !== -1) {

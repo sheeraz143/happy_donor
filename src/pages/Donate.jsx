@@ -1,6 +1,6 @@
 import "../css/BloodRequest.css";
 // import bloodGroupImg from "../assets/bloodimage.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import shareIcon from "../assets/Share.png";
 import profImg from "../assets/prof_img.png";
 import locationIcon from "../assets/Mappoint.png";
@@ -25,40 +25,8 @@ function Donate() {
   const [refresh, setRefresh] = useState(false);
   const [totalItems, setTotalItems] = useState(0); // Track total items for pagination
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  // const fetchData = (tab, page) => {
-  //   dispatch(setLoader(true)); // Start loading
-  //   dispatch(
-  //     BloodDonateList(tab, page, (res) => {
-  //       console.log('res: ', res);
-  //       dispatch(setLoader(false));
-
-  //       if (res.errors) {
-  //         toast.error(res.errors);
-  //         dispatch(setLoader(false));
-  //       } else {
-  //         if (tab === "matched") {
-  //           setOpenRequests(res?.requests);
-  //           setRequestCount((prevCount) => ({
-  //             ...prevCount,
-  //             matched: res?.pagination?.total,
-  //           }));
-  //         } else {
-  //           setClosedRequests(res?.requests);
-  //           setRequestCount((prevCount) => ({
-  //             ...prevCount,
-  //             unmatched: res?.pagination?.total,
-  //           }));
-  //         }
-  //       }
-  //     })
-  //   ).catch((error) => {
-  //     toast.error(error.message || "Error fetching requests");
-  //     dispatch(setLoader(false));
-  //   });
-  // };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -125,7 +93,7 @@ function Donate() {
     }
   };
   const handleShareClick = (request) => {
-    const shareMessage = `${request.name} requires ${request.units_required} units of ${request.blood_group} blood at ${request.location}. View details here: https://happydonorsdev.devdemo.tech/bloodrequestdetail/${request?.request_id}`;
+    const shareMessage = `${request.name} requires ${request.units_required} units of ${request.blood_group} blood at ${request.location}. View details here: https://app.happydonors.ngo/bloodrequestdetail/${request?.request_id}`;
 
     if (navigator.share) {
       // Use Web Share API if available
@@ -133,7 +101,7 @@ function Donate() {
         .share({
           title: "Blood Donation Request",
           text: shareMessage,
-          url: `https://happydonorsdev.devdemo.tech/bloodrequestdetail/${request?.request_id}`,
+          url: `https://app.happydonors.ngo/bloodrequestdetail/${request?.request_id}`,
         })
         .catch((error) => console.log("Error sharing", error));
     } else {
@@ -146,7 +114,13 @@ function Donate() {
   };
 
   const renderRequestCard = (request, showAcceptButton) => (
-    <div className="request-card position-relative" key={request?.request_id}>
+    <div
+      className="request-card position-relative cursor-pointer"
+      key={request?.request_id}
+      onClick={() =>
+        navigate(`/request/${request.request_id}`, { state: request })
+      }
+    >
       {request?.is_critical && (
         <div className="emergency-tag position-absolute">Emergency</div>
       )}

@@ -115,9 +115,15 @@ const LoginOrg = ({ onRefreshNavbar }) => {
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </span>
         </div>
+        <p className="login-option align-self-end mt-2">
+          <Link to="/forgotpassword" className="forgot-password-link">
+            Forgot Password?
+          </Link>
+        </p>
         <button className="button" onClick={onSubmit}>
           Login
         </button>
+
         <p className="login-option text-center mt-3">
           Dont have an account?
           <Link to="/register/organisation" className="login-link">

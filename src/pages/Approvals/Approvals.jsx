@@ -29,11 +29,23 @@ export default function Approvals() {
         <img src={donateblood} alt="Donate Blood" />
         <p>New Blood Donations</p>
       </div>
-      <div className="card" style={{ cursor: "pointer" }}>
+      <div
+        className="card"
+        style={{ cursor: "pointer" }}
+        onClick={() => {
+          navigate("/campsevents");
+        }}
+      >
         <img src={medicalcamps} alt="Blood-Medical Camps/Events" />
         <p>New Blood Camps/Events</p>
       </div>
-      <div className="card" style={{ cursor: "pointer" }}>
+      <div
+        className="card"
+        style={{ cursor: "pointer" }}
+        onClick={() => {
+          navigate("/change-requests");
+        }}
+      >
         <img src={funddonation} alt="Fund Donation" />
         <p>Change Requests</p>
       </div>

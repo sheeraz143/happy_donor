@@ -1,56 +1,104 @@
 import { useEffect, useState } from "react";
 import {
-  ApproveAdminBloodRequest,
-  CancelBloodRequest,
-  donateBloods,
+  // CancelBloodRequest,
+  PendingApprovals,
+  PendingApprovalsAccept,
+  PendingApprovalsView,
   setLoader,
 } from "../../redux/product";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { Pagination } from "antd";
 import Modal from "react-modal";
-import { formatDate } from "../../utils/dateUtils";
 import profImg from "../../assets/prof_img.png";
 
-export default function ApproveRequests() {
+export default function ChangeRequests() {
   const dispatch = useDispatch();
   const [requests, setRequests] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRequests, setTotalRequests] = useState(0);
   const perPage = 10;
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [closureReason, setClosureReason] = useState("");
-  const [additionalComments, setAdditionalComments] = useState("");
+  // const [closureReason, setClosureReason] = useState("");
+  // const [additionalComments, setAdditionalComments] = useState("");
   const [requestId, setRequestId] = useState("");
   const [refresh, setRefresh] = useState(false);
 
+  const [updatedContent, setUpdatedContent] = useState([]); // To store the updated fields
+
   const openModal = (request_id) => {
-    // console.log("request_id: ", request_id);
     setModalIsOpen(true);
     setRequestId(request_id);
+    viewRequests(request_id);
+  };
+
+  const viewRequests = async (request_id) => {
+    dispatch(setLoader(true));
+    try {
+      dispatch(
+        PendingApprovalsView(request_id, (res) => {
+          dispatch(setLoader(false));
+          if (res.errors) {
+            toast.error(res.errors);
+          } else {
+            const changes = res?.changes || {};
+            const updated = Object.entries(changes)
+              .filter(([, value]) => value.updated) // Keep only fields with "updated" content
+              .map(([field, value]) => ({
+                field: formatFieldLabel(field), // Format field labels
+                updated: value.updated,
+              }));
+            setUpdatedContent(updated);
+          }
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "Error fetching requests");
+      dispatch(setLoader(false));
+    }
+  };
+
+  // Helper function to format field labels
+  const formatFieldLabel = (field) => {
+    const fieldMap = {
+      aadhar_id: "Aadhar",
+      email: "Email",
+      blood_group: "Blood Group",
+      date_of_birth: "Date of Birth",
+      gender: "Gender",
+      address: "Address",
+      location: "Location",
+      lon: "Longitude",
+      lat: "Latitude",
+      last_blood_donation_date: "Last Blood Donation Date",
+    };
+    return (
+      fieldMap[field] ||
+      field.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+    );
   };
 
   const closeModal = () => {
     setModalIsOpen(false);
-    setClosureReason("");
-    setAdditionalComments("");
+    // setClosureReason("");
+    // setAdditionalComments("");
   };
 
   useEffect(() => {
     const fetchRequests = async () => {
       dispatch(setLoader(true));
-      const type = "all/admin";
+      // const type = "all/admin";
       try {
         dispatch(
-          donateBloods(
-            type,
+          PendingApprovals(
+            // type,
             (res) => {
               dispatch(setLoader(false));
               if (res.errors) {
                 toast.error(res.errors);
               } else {
-                setRequests(res?.requests);
-                console.log("res?.requests: ", res?.requests);
+                setRequests(res?.users);
+                // console.log("res?.requests: ", res?.users);
                 setTotalRequests(res?.pagination?.total);
               }
             },
@@ -72,10 +120,32 @@ export default function ApproveRequests() {
 
     try {
       dispatch(
-        ApproveAdminBloodRequest(requestId, (res) => {
+        PendingApprovalsAccept(requestId, (res) => {
           if (res.code === 200) {
             toast.success(res.message);
             setRefresh(!refresh);
+            closeModal();
+          } else {
+            toast.error(res.message);
+          }
+          dispatch(setLoader(false));
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "An unexpected error occurred.");
+      dispatch(setLoader(false));
+    }
+  };
+  const handleDelete = (requestId) => {
+    dispatch(setLoader(true));
+
+    try {
+      dispatch(
+        PendingApprovalsAccept(requestId, (res) => {
+          if (res.code === 200) {
+            toast.success(res.message);
+            setRefresh(!refresh);
+            closeModal();
           } else {
             toast.error(res.message);
           }
@@ -88,38 +158,38 @@ export default function ApproveRequests() {
     }
   };
 
-  const handleSubmit = () => {
-    if (!closureReason.trim()) {
-      toast.error("Closure reason is required");
-      return;
-    }
-    if (!additionalComments.trim()) {
-      toast.error("Additional comments are required");
-      return;
-    }
-    const dataToSend = {
-      closure_reason: closureReason,
-      additional_comments: additionalComments,
-    };
-    dispatch(setLoader(true));
-    try {
-      dispatch(
-        CancelBloodRequest(requestId, dataToSend, (res) => {
-          if (res.code === 200) {
-            toast.success(res.message);
-            closeModal();
-            setRefresh(!refresh);
-          } else {
-            toast.error(res.message);
-          }
-          dispatch(setLoader(false));
-        })
-      );
-    } catch (error) {
-      toast.error(error.message || "An unexpected error occurred.");
-      dispatch(setLoader(false));
-    }
-  };
+  // const handleSubmit = () => {
+  //   if (!closureReason.trim()) {
+  //     toast.error("Closure reason is required");
+  //     return;
+  //   }
+  //   if (!additionalComments.trim()) {
+  //     toast.error("Additional comments are required");
+  //     return;
+  //   }
+  //   const dataToSend = {
+  //     closure_reason: closureReason,
+  //     additional_comments: additionalComments,
+  //   };
+  //   dispatch(setLoader(true));
+  //   try {
+  //     dispatch(
+  //       CancelBloodRequest(requestId, dataToSend, (res) => {
+  //         if (res.code === 200) {
+  //           toast.success(res.message);
+  //           closeModal();
+  //           setRefresh(!refresh);
+  //         } else {
+  //           toast.error(res.message);
+  //         }
+  //         dispatch(setLoader(false));
+  //       })
+  //     );
+  //   } catch (error) {
+  //     toast.error(error.message || "An unexpected error occurred.");
+  //     dispatch(setLoader(false));
+  //   }
+  // };
 
   return (
     <div className="cards-container my-5 mx-5">
@@ -150,35 +220,30 @@ export default function ApproveRequests() {
                   />
                   <div className="request-details">
                     <div className="text-start">
-                      <p className="card-text ">Name: {request.patient_name}</p>
+                      <p className="card-text ">Name: {request.name}</p>
+                      <p className="card-text ">Email: {request.email}</p>
                       <p className="card-text ">
-                        Attender Name: {request.attender_name}
+                        Phone Number: {request.phone}
                       </p>
                       <p className="card-text ">
-                        Attender Mobile: {request.attender_mobile_number}
+                        Blood Group: {request.blood_group}
                       </p>
                       <p className="card-text ">
-                        Willing to arrange transport:{" "}
-                        {request?.willing_to_arrange_transport == true
-                          ? "Yes"
-                          : "No"}
+                        Created On: {request.created_on}
                       </p>
-
-                      <p className="card-text ">
-                        Date: {formatDate(request.date)}
-                      </p>
-                      <p className="card-text ">
-                        Units Required: {request.units_required}
-                      </p>
-                      <p className="card-text ">Address: {request.address}</p>
                     </div>
                   </div>
-                  {/* <div className="blood-group">
-                  <img src={bloodGroupImg} alt="Blood Group" />
-                </div> */}
                 </div>
 
                 <div className="d-flex  mt-2 gap-3 ">
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => openModal(request.id)}
+                  >
+                    Show
+                  </button>
+                </div>
+                {/* <div className="d-flex  mt-2 gap-3 ">
                   <button
                     className="btn btn-danger"
                     onClick={() => openModal(request.request_id)}
@@ -191,7 +256,7 @@ export default function ApproveRequests() {
                   >
                     Approve
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           ))
@@ -212,37 +277,44 @@ export default function ApproveRequests() {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        contentLabel="Gratitude Message"
+        contentLabel="User Profile"
         ariaHideApp={false}
         className="Modal"
         overlayClassName="Overlay"
       >
-        <div className="d-flex flex-column align-items-center">
-          <h3>Cancel Blood Request</h3>
-          <label className="text-start col-lg-6 col-md-6 col-sm-6">
-            Closure reason
-          </label>
-          <input
-            className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
-            value={closureReason}
-            onChange={(e) => setClosureReason(e.target.value)}
-          />
-          <label className="text-start col-lg-6 col-md-6 col-sm-6">
-            Additional comments
-          </label>
-          <input
-            className="form-input col-lg-6 col-md-6 col-sm-6 mb-3"
-            value={additionalComments}
-            onChange={(e) => setAdditionalComments(e.target.value)}
-          />
-          <div className="d-flex justify-content-evenly col-lg-6 col-md-6 col-sm-6">
-            <button onClick={closeModal} className="btn btn-primary">
-              Close
-            </button>
-            <button onClick={handleSubmit} className="btn btn-primary">
-              Submit
-            </button>
+        <div className="modal-header">
+          <h5>User Profile</h5>
+          {/* <button className="close-btn" onClick={closeModal}>
+            &times;
+          </button> */}
+        </div>
+        <div className="modal-body">
+          <div className="changes-list">
+            {updatedContent.length > 0 ? (
+              updatedContent.map((update, index) => (
+                <div key={index} className="update-item">
+                  <strong>{update.field}:</strong> {update.updated}
+                </div>
+              ))
+            ) : (
+              <p>No updates available.</p>
+            )}
           </div>
+        </div>
+        <div className="modal-footer">
+          <button
+            //  onClick={closeModal}
+            onClick={() => handleDelete(requestId)}
+            className="btn btn-danger"
+          >
+            Reject 
+          </button>
+          <button
+            className="btn btn-success"
+            onClick={() => handleApprove(requestId)}
+          >
+            Approve this User
+          </button>
         </div>
       </Modal>
     </div>

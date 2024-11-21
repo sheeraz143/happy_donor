@@ -168,6 +168,16 @@ function Request() {
           <option value="AB-">AB-</option>
           <option value="O+">O+</option>
           <option value="O-">O-</option>
+          <option value="A1+ve">A1+ve</option>
+          <option value="A1-ve">A1-ve</option>
+          <option value="A1B+ve">A1B+ve</option>
+          <option value="A1B-ve">A1B-ve</option>
+          <option value="A2+ve">A2+ve</option>
+          <option value="A2-ve">A2-ve</option>
+          <option value="A2B+ve">A2B+ve</option>
+          <option value="A2B-ve">A2B-ve</option>
+          <option value="Bombay Blood Group">Bombay Blood Group</option>
+          <option value="INRA">INRA</option>
           <option value="Any">Any</option>
         </select>
         {errors.bloodGroup && (
@@ -243,7 +253,7 @@ function Request() {
       </div>
 
       {/* From Time */}
-      <div className="form-group">
+      {/* <div className="form-group">
         <label>
           From Time <span className="required-asterisk">*</span>
         </label>
@@ -259,10 +269,10 @@ function Request() {
         {errors.required_from && (
           <p className="error-message">From time is required</p>
         )}
-      </div>
+      </div> */}
 
       {/* To Time */}
-      <div className="form-group">
+      {/* <div className="form-group">
         <label>
           To Time <span className="required-asterisk">*</span>
         </label>
@@ -275,7 +285,43 @@ function Request() {
           style={{ cursor: "pointer" }}
           {...register("required_to", { required: true })}
         />
-        {errors.required_to && <p className="error-message">To time is required</p>}
+        {errors.required_to && (
+          <p className="error-message">To time is required</p>
+        )}
+      </div> */}
+
+      <div className="form-group">
+        <label>
+          Blood Bank Timing <span className="required-asterisk">*</span>
+        </label>
+        <div className="time-input-row">
+          <div className="time-input-container">
+            <label>
+              From <span className="required-asterisk">*</span>
+            </label>
+            <input
+              className="form-input"
+              type="time"
+              {...register("required_from", { required: true })}
+            />
+            {errors.required_from && (
+              <p className="error-message">From time is required</p>
+            )}
+          </div>
+          <div className="time-input-container">
+            <label>
+              To <span className="required-asterisk">*</span>
+            </label>
+            <input
+              className="form-input"
+              type="time"
+              {...register("required_to", { required: true })}
+            />
+            {errors.required_to && (
+              <p className="error-message">To time is required</p>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Location */}

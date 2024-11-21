@@ -48,6 +48,24 @@ label {
   gap: 15px;
 }
 
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  /* font-weight: bold; */
+}
+
+.time-input-row {
+  display: flex;
+  gap: 10px; /* Space between the inputs */
+  justify-content: space-between; /* Ensure the inputs are spaced evenly */
+}
+
+.time-input-container {
+  flex: 1; /* Allow inputs to grow evenly */
+  max-width: 50%; /* Ensure each input takes 50% width */
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -55,6 +73,7 @@ label {
 }
 
 .form-input {
+  width: 100%; /* Input will fill its container */
   padding: 8px;
   font-size: 14px;
   border: 1px solid #e0e0e0;

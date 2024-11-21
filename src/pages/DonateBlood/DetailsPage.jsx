@@ -1,156 +1,269 @@
-// import { useParams, useNavigate } from "react-router-dom";
-// import {
-//   GoogleMap,
-//   useJsApiLoader,
-//   Polyline,
-//   Marker,
-// } from "@react-google-maps/api";
-// import profPicImg from "../../assets/profpic.png";
-// import bloodGroupImg from "../../assets/bloodimage.png";
-
-// const RequestDetail = () => {
-//   const { id } = useParams(); // Get the request ID from URL params
-//   const navigate = useNavigate(); // For navigating back
-
-//   // Mock data based on ID (in real scenarios, fetch this data from a server or context)
-//   const request = {
-//     id,
-//     name: "sheeraz",
-//     hospital: "Mount Sinal Hospital",
-//     units: 2,
-//     date: "2024.07.16,05:30",
-//     profilePic: profPicImg,
-//     bloodGroupImage: bloodGroupImg,
-//     path: [
-//       { lat: 12.9716, lng: 77.5946 }, // Example polyline path
-//       { lat: 12.9721, lng: 77.5949 },
-//     ],
-//   };
-
-//   const { isLoaded } = useJsApiLoader({
-//     googleMapsApiKey: "AIzaSyDfsJx7wDFEfu0_jKXwVHQBjFyLm8nfKvQ",
-//   });
-
-//   if (!isLoaded) return <div>Loading...</div>;
-
-//   return (
-//     <div className="request-detail-container">
-//       {/* Render map */}
-//       <GoogleMap
-//         mapContainerStyle={{ width: "100%", height: "400px" }}
-//         center={request.path[0]}
-//         zoom={15}
-//       >
-//         <Polyline
-//           path={request.path}
-//           options={{
-//             strokeColor: "#FF0000",
-//             strokeOpacity: 0.8,
-//             strokeWeight: 2,
-//           }}
-//         />
-//         {request.path.map((pos, index) => (
-//           <Marker key={index} position={pos} />
-//         ))}
-//       </GoogleMap>
-
-//       {/* Render detailed card information */}
-//       <div className="request-info">
-//         <img src={request.profilePic} alt="Profile" />
-//         <h4>{request.name}</h4>
-//         <p>{request.hospital}</p>
-//         <p>Blood Units: {request.units}</p>
-//         <p>Date: {request.date}</p>
-//         <button onClick={() => navigate("/")}>Back to List</button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default RequestDetail;
-
-// src/components/RequestDetail.js
-
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Steps } from "antd";
+import "../../css/BloodrequestDetailPage.css";
+import { useLocation, useNavigate, useParams } from "react-router";
+// import bloodGroupImg from "../../assets/bloodgroup.png";
 import profPicImg from "../../assets/prof_img.png";
-import bloodGroupImg from "../../assets/bloodimage.png";
-import MapComponent from "../MapComponent";
-// import profPicImg from "../../assets/profpic.png";
-import shareIcon from "../../assets/Share.png";
-import locationIcon from "../../assets/Mappoint.png";
+import { formatDate } from "../../utils/dateUtils";
 
-const RequestDetail = () => {
-  // const { id } = useParams();
+import MapComponent from "../../components/map/MapComponent";
+// import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import {
+  CancelBloodRequest,
+  setLoader,
+  ViewBloodRequest,
+} from "../../redux/product";
+import { toast } from "react-toastify";
+import Modal from "react-modal";
+// import { FaTimes } from "react-icons/fa";
+
+export default function RequestDetail() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
-  const request = location.state?.request || {};
+  const donorData = location.state || {};
+  console.log("donorData: ", donorData);
+  const { id } = useParams();
+  const [data, setData] = useState({});
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [closureReason, setClosureReason] = useState("");
+  const [additionalComments, setAdditionalComments] = useState("");
 
-  // Use requestId as needed
-  console.log("Request :", request);
-  const path = [
-    {
-      lat: parseFloat(request.lat),
-      lng: parseFloat(request.lon),
-    },
-  ];
+  // const openModal = () => {
+  //   setModalIsOpen(true);
+  // };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+
+  useEffect(() => {
+    dispatch(setLoader(true));
+    try {
+      dispatch(
+        ViewBloodRequest(id, (res) => {
+          dispatch(setLoader(false));
+
+          if (res.errors) {
+            toast.error(res.errors);
+          } else {
+            setData(res);
+          }
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "Error fetching requests");
+      dispatch(setLoader(false));
+    }
+  }, [dispatch, id]);
+
+  const statusToStep = {
+    Initiated: 0,
+    Active: 1,
+    "In Progress": 2,
+    Completed: 3,
+  };
+
+  const currentStep = statusToStep[data.status] || 0;
+
+  if (!data.request_id) {
+    return <h4 className="mt-4 mb-4">No data found!</h4>;
+  }
+
+  const handleSubmit = () => {
+    if (!closureReason.trim()) {
+      toast.error("Closure reason is required");
+      return;
+    }
+    if (!additionalComments.trim()) {
+      toast.error("Additional comments are required");
+      return;
+    }
+    const dataToSend = {
+      closure_reason: closureReason,
+      additional_comments: additionalComments,
+    };
+
+    dispatch(setLoader(true));
+
+    try {
+      dispatch(
+        CancelBloodRequest(data.request_id, dataToSend, (res) => {
+          if (res.code === 200) {
+            toast.success(res.message);
+            closeModal();
+            navigate("/bloodrequest");
+          } else {
+            toast.error(res.message);
+          }
+          dispatch(setLoader(false));
+        })
+      );
+    } catch (error) {
+      toast.error(error.message || "An unexpected error occurred.");
+      dispatch(setLoader(false));
+    }
+  };
 
   return (
-    <div className="request-detail-container mb-5 mt-5">
-      <MapComponent path={path} />
-
-      <div className="col-lg-6 col-md-8 col-sm-10 mx-auto mt-5">
-        <div className="request-card" key={request.id}>
-          <div className="request-header d-flex align-items-center">
-            <div className="align-content-center">
-              <img
-                src={request.profile_picture || profPicImg}
-                alt="Profile"
-                style={{ width: "70px", height: "70px", borderRadius: "50%" }}
-                onError={(e) => {
-                  e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
-                  e.target.src = profPicImg; // Set to default image on error
+    <>
+      <div
+        className="mb-5 mt-5 d-flex res_mobile mx-5"
+        style={{ maxWidth: "1280px", margin: "0 auto" }}
+      >
+        <div
+          className="flex-shrink-0"
+          style={{ flex: "0 0 40%", paddingRight: "20px" }}
+        >
+          <MapComponent
+            path={[
+              {
+                lat: parseFloat(donorData.lat),
+                lng: parseFloat(donorData.lon),
+              },
+            ]}
+          />
+        </div>
+        <div
+          className="col-lg-7 col-md-8 col-sm-10 d-flex flex-column"
+          style={{ flex: "0 0 60%" }}
+        >
+          <div className="col-lg-10 col-md-10 col-sm-10">
+            <div
+              className="request-card"
+              key={donorData.request_id}
+              style={{ position: "relative" }}
+            >
+              {/* Close Icon in the top-right corner */}
+              {/* <button
+                className="close-button"
+                onClick={(event) => openModal(donorData, event)}
+                style={{
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  background: "white", // White background for contrast
+                  border: "1px solid lightgray", // Light gray border for better visibility
+                  borderRadius: "50%", // Circle shape
+                  color: "gray",
+                  cursor: "pointer",
+                  fontSize: "16px",
+                  width: "24px",
+                  height: "24px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)", // Optional shadow for depth
                 }}
-              />
-            </div>
-            <div className="request-details ms-3">
-              <div className="text-start fw-bold">{request.name}</div>
-              <div className="text-start">{request.hospital}</div>
-              <div className="text-start">
-                Blood units: {request.quantity_units}
+              >
+                <FaTimes />
+              </button> */}
+
+              <div className="request-header d-flex align-items-center">
+                <div className="align-content-center">
+                  <img
+                    className="prof_img"
+                    src={donorData?.profile_picture || profPicImg}
+                    alt="Profile"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = profPicImg;
+                    }}
+                  />
+                </div>
+                <div className="request-details ms-3">
+                  <div className="text-start fw-bold">{donorData.name}</div>
+                  <div className="text-start">{formatDate(donorData.date)}</div>
+                  <div className="text-start">
+                    Units: {donorData.units_required}
+                  </div>
+                  <div className="text-start">
+                    Address: {donorData.location}
+                  </div>
+                </div>
+                <div className="blood-group ms-auto">
+                  {/*   <img
+                    src={bloodGroupImg}
+                    alt="Blood Group"
+                    onClick={openModal}
+                    className="cursor-pointer"
+                  /> */}
+                  <h3 className="blood-group" style={{ color: "red" }}>
+                    {donorData.blood_group || ""}
+                  </h3>
+                </div>
               </div>
-              <div className="text-start">
-                Date: {new Date(request.date).toLocaleDateString()}
-              </div>
-              <div className="text-start">Location: {request.location}</div>
-            </div>
-            <div className="blood-group ms-auto">
-              <img src={bloodGroupImg} alt="Blood Group" />
+
+              {donorData.view_donors && (
+                <div className="d-flex justify-content-center mt-3">
+                  <button
+                    className="btn btn-primary"
+                    style={{ padding: "10px" }}
+                    onClick={() => navigate(`/donarlist/${id}`)}
+                  >
+                    Accepted Donors
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="accept-donar-button d-flex align-items-center mt-3">
-            <div className="icon-container d-flex me-3">
-              <Link to="#" className="share-link me-2">
-                <img src={shareIcon} alt="Share" className="icon-img" />
-              </Link>
-              <Link to="#" className="location-link">
-                <img src={locationIcon} alt="Location" className="icon-img" />
-              </Link>
-            </div>
-
-            <button
-              className="accepted-donors-btn btn btn-primary"
-              onClick={() => {
-                navigate("/donate");
-              }}
-            >
-              Accept
-            </button>
+          <div className="col-lg-10 col-md-10 col-sm-10 mt-2">
+            <Steps
+              progressDot
+              current={currentStep}
+              direction="vertical"
+              items={[
+                { title: "Initiated", description: "" },
+                { title: "Active", description: "" },
+                { title: "In Progress", description: "" },
+                { title: "Completed", description: "" },
+              ]}
+            />
           </div>
         </div>
       </div>
-    </div>
-  );
-};
 
-export default RequestDetail;
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Gratitude Message"
+        ariaHideApp={false}
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <div className="d-flex flex-column align-items-center">
+          <h3 className="cancel_blood_req ">Cancel Blood Request</h3>
+          <label className="text-start w-100">Closure reason</label>
+          <select
+            className="form-input w-100 mb-3"
+            onChange={(e) => setClosureReason(e.target.value)}
+          >
+            <option value="">Select reason</option>
+            <option value="Request fulfilled">Request fulfilled</option>
+            <option value="Request canceled">Request canceled</option>
+            <option value="Found an alternate solution">
+              Found an alternate solution
+            </option>
+            <option value="Others">Others (please specify)</option>
+          </select>
+          <label className="text-start w-100">Additional comments</label>
+          <textarea
+            className="form-input w-100 mb-3"
+            value={additionalComments}
+            onChange={(e) => setAdditionalComments(e.target.value)}
+          />
+          <div className="d-flex justify-content-evenly w-100">
+            <button onClick={closeModal} className="btn btn-primary">
+              Close
+            </button>
+            <button onClick={handleSubmit} className="btn btn-primary">
+              Submit
+            </button>
+          </div>
+        </div>
+      </Modal>
+    </>
+  );
+}

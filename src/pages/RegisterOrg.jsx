@@ -24,6 +24,12 @@ const RegisterOrg = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
+  const [showSpecifyInput, setShowSpecifyInput] = useState(false);
+
+  const handleCollaborationChange = (event) => {
+    setShowSpecifyInput(event.target.value === "Others");
+  };
+
   const {
     register,
     handleSubmit,
@@ -99,7 +105,10 @@ const RegisterOrg = () => {
         password: data?.password,
         password_confirmation: data?.password,
         user_type_id: 5,
-        collaborate_as: data?.collaborate_as,
+        collaborate_as:
+          data?.collaborate_as === "Others"
+            ? data?.specify_others
+            : data?.collaborate_as,
       };
 
       // console.log("payload: ", payload);
@@ -416,6 +425,7 @@ const RegisterOrg = () => {
             <select
               className="form-input"
               {...register("collaborate_as", { required: true })}
+              onChange={handleCollaborationChange}
             >
               <option value="">Select</option>
               <option value="CSR Partners">CSR Partners</option>
@@ -427,7 +437,25 @@ const RegisterOrg = () => {
               <option value="Others">Others</option>
             </select>
             {errors.collaborate_as && (
-              <p className="error-message">collaborate as is required</p>
+              <p className="error-message">Collaborate as is required</p>
+            )}
+
+            {showSpecifyInput && (
+              <div className="form-group mt-2">
+                <label>
+                  Please Specify <span className="required-asterisk">*</span>
+                </label>
+                <textarea
+                  type="text"
+                  className="form-input"
+                  {...register("specify_others", { required: true })}
+                />
+                {errors.specify_others && (
+                  <p className="error-message">
+                    Please specify your collaboration
+                  </p>
+                )}
+              </div>
             )}
           </div>
 
