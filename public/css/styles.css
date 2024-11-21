@@ -7057,7 +7057,7 @@ ul.conapp4 li:before {
     color: #cc0000;
    content: "\f101";
 }
-
+ul.contact-info.social-icn span.icon-container a {  color: #fff;}
 ul.conapp4 {margin-left: 16px;}
 ul.conapp-decimal  li { font-size: 14px;}
 ul.conapp4 { margin-left: 20px;}

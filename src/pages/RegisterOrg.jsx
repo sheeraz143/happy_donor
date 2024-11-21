@@ -27,6 +27,9 @@ const RegisterOrg = () => {
   const [showSpecifyInput, setShowSpecifyInput] = useState(false);
 
   const handleCollaborationChange = (event) => {
+    // Clear errors for both fields whenever a new selection is made
+    clearErrors("collaborate_as");
+    clearErrors("specify_others");
     setShowSpecifyInput(event.target.value === "Others");
   };
 
@@ -35,6 +38,7 @@ const RegisterOrg = () => {
     handleSubmit,
     setValue,
     trigger,
+    clearErrors,
     formState: { errors },
   } = useForm();
 
@@ -106,7 +110,7 @@ const RegisterOrg = () => {
         password_confirmation: data?.password,
         user_type_id: 5,
         collaborate_as: data?.collaborate_as,
-        others: data?.specify_others,
+        other_collaborate_as: data?.specify_others,
       };
 
       // console.log("payload: ", payload);
@@ -434,7 +438,7 @@ const RegisterOrg = () => {
               <option value="Society">Society</option>
               <option value="Others">Others</option>
             </select>
-            {errors.collaborate_as && (
+            {errors.collaborate_as && !showSpecifyInput && (
               <p className="error-message">Collaborate as is required</p>
             )}
 
@@ -444,9 +448,10 @@ const RegisterOrg = () => {
                   Please Specify <span className="required-asterisk">*</span>
                 </label>
                 <textarea
-                  type="text"
                   className="form-input"
-                  {...register("specify_others", { required: true })}
+                  {...register("specify_others", {
+                    required: showSpecifyInput, // Required only when "Others" is selected
+                  })}
                 />
                 {errors.specify_others && (
                   <p className="error-message">

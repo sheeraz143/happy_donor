@@ -200,12 +200,12 @@ const BloodRequest = () => {
         <div className="request-details">
           <div className="request-date text-start">{request.name}</div>
           <div className="request-date text-start">
+            {formatDate(request.date)}
+          </div>
+          <div className="request-date text-start">
             Time:{" "}
             {request?.from && <span>{convertToLocalTime(request.from)}</span>}
             {request?.to && <span> to {convertToLocalTime(request.to)}</span>}
-          </div>
-          <div className="request-date text-start">
-            {formatDate(request.date)}
           </div>
           <div className="request-units text-start">
             Units Required: {request.units_required}
