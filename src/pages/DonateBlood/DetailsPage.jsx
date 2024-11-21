@@ -1,42 +1,46 @@
-import { Steps } from "antd";
 import "../../css/BloodrequestDetailPage.css";
-import { useLocation, useNavigate, useParams } from "react-router";
-// import bloodGroupImg from "../../assets/bloodgroup.png";
-import profPicImg from "../../assets/prof_img.png";
+import { useParams } from "react-router";
 import { formatDate } from "../../utils/dateUtils";
-
+import shareIcon from "../../assets/Share.png";
+import profImg from "../../assets/prof_img.png";
+import locationIcon from "../../assets/Mappoint.png";
 import MapComponent from "../../components/map/MapComponent";
-// import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import {
-  CancelBloodRequest,
-  setLoader,
-  ViewBloodRequest,
-} from "../../redux/product";
+import { DonateAccept, setLoader, ViewBloodRequest } from "../../redux/product";
 import { toast } from "react-toastify";
-import Modal from "react-modal";
-// import { FaTimes } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import {
+  WhatsappShareButton,
+  EmailShareButton,
+  WhatsappIcon,
+  EmailIcon,
+} from "react-share";
 
 export default function RequestDetail() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const location = useLocation();
-  const donorData = location.state || {};
-  console.log("donorData: ", donorData);
   const { id } = useParams();
   const [data, setData] = useState({});
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [closureReason, setClosureReason] = useState("");
-  const [additionalComments, setAdditionalComments] = useState("");
+  const [refresh, setRefresh] = useState(false);
+  const [visibleShareCard, setVisibleShareCard] = useState(null); // Track visible card
 
-  // const openModal = () => {
-  //   setModalIsOpen(true);
-  // };
+  function convertToLocalTime(timeString) {
+    // Check if the input is a valid time in "HH:mm" format
+    if (!timeString || !/^\d{2}:\d{2}$/.test(timeString)) {
+      return "Invalid time"; // Return a default message for invalid time
+    }
 
-  const closeModal = () => {
-    setModalIsOpen(false);
-  };
+    // Parse the valid time string
+    const [hours, minutes] = timeString.split(":").map(Number);
+
+    // Create a new Date object
+    const date = new Date();
+    date.setHours(hours, minutes);
+
+    // Format the time to a user-friendly format
+    const options = { hour: "numeric", minute: "numeric", hour12: true };
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+  }
 
   useEffect(() => {
     dispatch(setLoader(true));
@@ -49,6 +53,7 @@ export default function RequestDetail() {
             toast.error(res.errors);
           } else {
             setData(res);
+            console.log("res: ", res);
           }
         })
       );
@@ -56,44 +61,41 @@ export default function RequestDetail() {
       toast.error(error.message || "Error fetching requests");
       dispatch(setLoader(false));
     }
-  }, [dispatch, id]);
-
-  const statusToStep = {
-    Initiated: 0,
-    Active: 1,
-    "In Progress": 2,
-    Completed: 3,
-  };
-
-  const currentStep = statusToStep[data.status] || 0;
+  }, [dispatch, id, refresh]);
 
   if (!data.request_id) {
     return <h4 className="mt-4 mb-4">No data found!</h4>;
   }
 
-  const handleSubmit = () => {
-    if (!closureReason.trim()) {
-      toast.error("Closure reason is required");
-      return;
-    }
-    if (!additionalComments.trim()) {
-      toast.error("Additional comments are required");
-      return;
-    }
-    const dataToSend = {
-      closure_reason: closureReason,
-      additional_comments: additionalComments,
-    };
+  const toggleShareOptions = (cardId, message, url) => {
+    setVisibleShareCard((prev) => (prev === cardId ? null : cardId));
 
+    const fullMessage = `${message}\nView details here: ${url}`; // Combine message with URL
+
+    // Copy to clipboard when the share icon is clicked
+    navigator.clipboard
+      .writeText(fullMessage)
+      .then(() => {
+        // alert("Copied to clipboard!");
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
+  };
+
+  const shareMessage = `${data?.name} requires ${data?.units_required} units of ${data?.blood_group} blood at ${data?.location}.`;
+  const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${data?.request_id}`;
+  const showAcceptButton = data?.view_donors == true;
+
+  const handleCardClick = (request) => {
     dispatch(setLoader(true));
 
     try {
       dispatch(
-        CancelBloodRequest(data.request_id, dataToSend, (res) => {
+        DonateAccept(request?.request_id, (res) => {
           if (res.code === 200) {
             toast.success(res.message);
-            closeModal();
-            navigate("/bloodrequest");
+            setRefresh(!refresh);
           } else {
             toast.error(res.message);
           }
@@ -105,7 +107,6 @@ export default function RequestDetail() {
       dispatch(setLoader(false));
     }
   };
-
   return (
     <>
       <div
@@ -119,8 +120,8 @@ export default function RequestDetail() {
           <MapComponent
             path={[
               {
-                lat: parseFloat(donorData.lat),
-                lng: parseFloat(donorData.lon),
+                lat: parseFloat(data.lat),
+                lng: parseFloat(data.lon),
               },
             ]}
           />
@@ -131,139 +132,101 @@ export default function RequestDetail() {
         >
           <div className="col-lg-10 col-md-10 col-sm-10">
             <div
-              className="request-card"
-              key={donorData.request_id}
-              style={{ position: "relative" }}
+              className="request-card position-relative cursor-pointer"
+              key={data?.request_id}
             >
-              {/* Close Icon in the top-right corner */}
-              {/* <button
-                className="close-button"
-                onClick={(event) => openModal(donorData, event)}
-                style={{
-                  position: "absolute",
-                  top: "10px",
-                  right: "10px",
-                  background: "white", // White background for contrast
-                  border: "1px solid lightgray", // Light gray border for better visibility
-                  borderRadius: "50%", // Circle shape
-                  color: "gray",
-                  cursor: "pointer",
-                  fontSize: "16px",
-                  width: "24px",
-                  height: "24px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)", // Optional shadow for depth
-                }}
-              >
-                <FaTimes />
-              </button> */}
-
-              <div className="request-header d-flex align-items-center">
-                <div className="align-content-center">
-                  <img
-                    className="prof_img"
-                    src={donorData?.profile_picture || profPicImg}
-                    alt="Profile"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = profPicImg;
-                    }}
-                  />
-                </div>
-                <div className="request-details ms-3">
-                  <div className="text-start fw-bold">{donorData.name}</div>
-                  <div className="text-start">{formatDate(donorData.date)}</div>
+              {data?.is_critical && (
+                <div className="emergency-tag position-absolute">Emergency</div>
+              )}
+              <div className="request-header">
+                <img
+                  src={data?.profile_picture || profImg}
+                  alt="Profile"
+                  className="profile_img"
+                />
+                <div className="request-details">
+                  <div className="text-start fw-bold">{data?.name}</div>
                   <div className="text-start">
-                    Units: {donorData.units_required}
+                    Time:{" "}
+                    {data?.from && <span>{convertToLocalTime(data.from)}</span>}
+                    {data?.to && <span> to {convertToLocalTime(data.to)}</span>}
                   </div>
+                  <div className="text-start">{formatDate(data?.date)}</div>
                   <div className="text-start">
-                    Address: {donorData.location}
+                    Blood units: {data?.units_required}
                   </div>
+                  <div className="text-start">{data?.location}</div>
                 </div>
-                <div className="blood-group ms-auto">
-                  {/*   <img
-                    src={bloodGroupImg}
-                    alt="Blood Group"
-                    onClick={openModal}
-                    className="cursor-pointer"
-                  /> */}
+                <div className="blood-group">
+                  {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
                   <h3 className="blood-group" style={{ color: "red" }}>
-                    {donorData.blood_group || ""}
-                  </h3>
+                    {data.blood_group || "Unknown"}
+                  </h3>{" "}
+                  {/* Show blood group text */}
                 </div>
               </div>
 
-              {donorData.view_donors && (
-                <div className="d-flex justify-content-center mt-3">
-                  <button
-                    className="btn btn-primary"
-                    style={{ padding: "10px" }}
-                    onClick={() => navigate(`/donarlist/${id}`)}
-                  >
-                    Accepted Donors
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+              <div className="accept-donar-button d-flex justify-content-between">
+                <div className="icon-container">
+                  {/* Share Icon */}
+                  <img
+                    src={shareIcon}
+                    alt="Share"
+                    className="icon-img"
+                    onClick={() => {
+                      toggleShareOptions(
+                        data?.request_id,
+                        shareMessage,
+                        shareUrl
+                      );
+                    }}
+                    style={{ cursor: "pointer" }}
+                  />
 
-          <div className="col-lg-10 col-md-10 col-sm-10 mt-2">
-            <Steps
-              progressDot
-              current={currentStep}
-              direction="vertical"
-              items={[
-                { title: "Initiated", description: "" },
-                { title: "Active", description: "" },
-                { title: "In Progress", description: "" },
-                { title: "Completed", description: "" },
-              ]}
-            />
+                  {/* Share Options */}
+                  {visibleShareCard === data.request_id && (
+                    <div className="share-options">
+                      <WhatsappShareButton url={shareUrl} title={shareMessage}>
+                        <WhatsappIcon size={32} round={true} />
+                      </WhatsappShareButton>
+                      <EmailShareButton
+                        url={shareUrl}
+                        subject="Urgent Blood Donation Request"
+                        body={shareMessage}
+                      >
+                        <EmailIcon size={32} round={true} />
+                      </EmailShareButton>
+                    </div>
+                  )}
+                  <Link
+                    to={`https://www.google.com/maps?q=${data.lat},${data.lon}`}
+                    className="location-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src={locationIcon}
+                      alt="Location"
+                      className="icon-img"
+                    />
+                  </Link>
+                </div>
+                {showAcceptButton && (
+                  <button
+                    className={`accepted-donors-btn btn ${
+                      data?.is_accepted ? "btn-secondary" : "btn-primary"
+                    }`}
+                    onClick={() => handleCardClick(data)}
+                    disabled={data?.is_accepted}
+                  >
+                    {data?.is_accepted ? "Accepted" : "Accept"}
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Gratitude Message"
-        ariaHideApp={false}
-        className="Modal"
-        overlayClassName="Overlay"
-      >
-        <div className="d-flex flex-column align-items-center">
-          <h3 className="cancel_blood_req ">Cancel Blood Request</h3>
-          <label className="text-start w-100">Closure reason</label>
-          <select
-            className="form-input w-100 mb-3"
-            onChange={(e) => setClosureReason(e.target.value)}
-          >
-            <option value="">Select reason</option>
-            <option value="Request fulfilled">Request fulfilled</option>
-            <option value="Request canceled">Request canceled</option>
-            <option value="Found an alternate solution">
-              Found an alternate solution
-            </option>
-            <option value="Others">Others (please specify)</option>
-          </select>
-          <label className="text-start w-100">Additional comments</label>
-          <textarea
-            className="form-input w-100 mb-3"
-            value={additionalComments}
-            onChange={(e) => setAdditionalComments(e.target.value)}
-          />
-          <div className="d-flex justify-content-evenly w-100">
-            <button onClick={closeModal} className="btn btn-primary">
-              Close
-            </button>
-            <button onClick={handleSubmit} className="btn btn-primary">
-              Submit
-            </button>
-          </div>
-        </div>
-      </Modal>
     </>
   );
 }

@@ -131,3 +131,36 @@
 .card-text {
   color: green;
 }
+
+.icon-container {
+  position: relative;
+}
+
+.share-options {
+  position: absolute;
+  bottom: 40px; /* Adjust based on icon size */
+  left: 50%;
+  transform: translateX(-50%); /* Center align */
+  display: flex;
+  gap: 10px; /* Space between icons */
+  background: white;
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10; /* Ensure it appears above other elements */
+}
+
+.share-options button {
+  outline: none;
+  border: none;
+  background: none;
+}
+
+.icon-img {
+  height: 32px;
+  width: 32px;
+}
+
+.icon-img:hover {
+  transform: scale(1.1);
+}

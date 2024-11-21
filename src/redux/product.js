@@ -1734,7 +1734,7 @@ export const DeletePendingApprovals =
   (id, callback = () => {}) =>
   async () => {
     try {
-      const response = await Helper.deleteData(
+      const response = await Helper.deleteDataNew(
         baseUrl + `app/pending-approvals/${id}/reject`
       );
 

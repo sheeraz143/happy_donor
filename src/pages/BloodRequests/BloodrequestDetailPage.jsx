@@ -26,6 +26,24 @@ export default function BloodrequestDetailPage() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [closureReason, setClosureReason] = useState("");
   const [additionalComments, setAdditionalComments] = useState("");
+  
+  function convertToLocalTime(timeString) {
+    // Check if the input is a valid time in "HH:mm" format
+    if (!timeString || !/^\d{2}:\d{2}$/.test(timeString)) {
+      return "Invalid time"; // Return a default message for invalid time
+    }
+
+    // Parse the valid time string
+    const [hours, minutes] = timeString.split(":").map(Number);
+
+    // Create a new Date object
+    const date = new Date();
+    date.setHours(hours, minutes);
+
+    // Format the time to a user-friendly format
+    const options = { hour: "numeric", minute: "numeric", hour12: true };
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+  }
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -166,6 +184,12 @@ export default function BloodrequestDetailPage() {
                 </div>
                 <div className="request-details ms-3">
                   <div className="text-start fw-bold">{data.name}</div>
+                  <div className="text-start">
+                    Time:{" "}
+                    {data?.from && <span>{convertToLocalTime(data.from)}</span>}
+                    {data?.to && <span> to {convertToLocalTime(data.to)}</span>}
+                  </div>
+
                   <div className="text-start">{formatDate(data.date)}</div>
                   <div className="text-start">Units: {data.units_required}</div>
                   <div className="text-start">Address: {data.address}</div>

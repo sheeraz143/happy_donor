@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  DeletePendingApprovals,
   // CancelBloodRequest,
   PendingApprovals,
   PendingApprovalsAccept,
@@ -141,7 +142,7 @@ export default function ChangeRequests() {
 
     try {
       dispatch(
-        PendingApprovalsAccept(requestId, (res) => {
+        DeletePendingApprovals(requestId, (res) => {
           if (res.code === 200) {
             toast.success(res.message);
             setRefresh(!refresh);
@@ -307,7 +308,7 @@ export default function ChangeRequests() {
             onClick={() => handleDelete(requestId)}
             className="btn btn-danger"
           >
-            Reject 
+            Reject
           </button>
           <button
             className="btn btn-success"

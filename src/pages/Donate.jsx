@@ -10,6 +10,12 @@ import { toast } from "react-toastify";
 import { useCallback, useEffect, useState } from "react";
 import { Pagination } from "antd";
 import { formatDate } from "../utils/dateUtils";
+import {
+  WhatsappShareButton,
+  EmailShareButton,
+  WhatsappIcon,
+  EmailIcon,
+} from "react-share";
 
 const ITEMS_PER_PAGE = 10; // Number of items per page
 
@@ -27,6 +33,24 @@ function Donate() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  function convertToLocalTime(timeString) {
+    // Check if the input is a valid time in "HH:mm" format
+    if (!timeString || !/^\d{2}:\d{2}$/.test(timeString)) {
+      return "Invalid time"; // Return a default message for invalid time
+    }
+
+    // Parse the valid time string
+    const [hours, minutes] = timeString.split(":").map(Number);
+
+    // Create a new Date object
+    const date = new Date();
+    date.setHours(hours, minutes);
+
+    // Format the time to a user-friendly format
+    const options = { hour: "numeric", minute: "numeric", hour12: true };
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+  }
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -92,103 +116,133 @@ function Donate() {
       dispatch(setLoader(false));
     }
   };
-  const handleShareClick = (event,request) => {
-    event.stopPropagation();
-    event.preventDefault();
-    const shareMessage = `${request.name} requires ${request.units_required} units of ${request.blood_group} blood at ${request.location}. View details here: https://app.happydonors.ngo/request/${request?.request_id}`;
 
-    if (navigator.share) {
-      // Use Web Share API if available
-      navigator
-        .share({
-          title: "Blood Donation Request",
-          text: shareMessage,
-          url: `https://app.happydonors.ngo/request/${request?.request_id}`,
-        })
-        .catch((error) => console.log("Error sharing", error));
-    } else {
-      // WhatsApp fallback if Web Share API isn't available
-      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
-        shareMessage
-      )}`;
-      window.open(whatsappUrl, "_blank"); // Opens WhatsApp share URL in a new tab
-    }
+  const [visibleShareCard, setVisibleShareCard] = useState(null); // Track visible card
+
+  const toggleShareOptions = (cardId, message, url) => {
+    setVisibleShareCard((prev) => (prev === cardId ? null : cardId));
+
+    const fullMessage = `${message}\nView details here: ${url}`; // Combine message with URL
+
+    // Copy to clipboard when the share icon is clicked
+    navigator.clipboard
+      .writeText(fullMessage)
+      .then(() => {
+        // alert("Copied to clipboard!");
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
   };
 
-  const renderRequestCard = (request, showAcceptButton) => (
-    <div
-      className="request-card position-relative cursor-pointer"
-      key={request?.request_id}
-      onClick={() =>
-        navigate(`/request/${request.request_id}`, { state: request })
-      }
-    >
-      {request?.is_critical && (
-        <div className="emergency-tag position-absolute">Emergency</div>
-      )}
-      <div className="request-header">
-        <img
-          src={request?.profile_picture || profImg}
-          alt="Profile"
-          className="profile_img"
-        />
-        <div className="request-details">
-          <div className="text-start fw-bold">{request?.name}</div>
-          <div className="text-start">{formatDate(request?.date)}</div>
-          <div className="text-start">
-            Blood units: {request?.units_required}
+  const renderRequestCard = (request, showAcceptButton) => {
+    // Create the share message and URL
+    const shareMessage = `${request?.name} requires ${request?.units_required} units of ${request?.blood_group} blood at ${request?.delivery_address}.`;
+    const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${request?.request_id}`;
+    return (
+      <div
+        className="request-card position-relative cursor-pointer"
+        key={request?.request_id}
+        onClick={() =>
+          navigate(`/request/${request.request_id}`, { state: request })
+        }
+      >
+        {request?.is_critical && (
+          <div className="emergency-tag position-absolute">Emergency</div>
+        )}
+        <div className="request-header">
+          <img
+            src={request?.profile_picture || profImg}
+            alt="Profile"
+            className="profile_img"
+          />
+          <div className="request-details">
+            <div className="text-start fw-bold">{request?.name}</div>
+            <div className="text-start">{formatDate(request?.date)}</div>
+            <div className="text-start">
+              Time:{" "}
+              {request?.from && <span>{convertToLocalTime(request.from)}</span>}
+              {request?.to && <span> to {convertToLocalTime(request.to)}</span>}
+            </div>
+            <div className="text-start">
+              Blood units: {request?.units_required}
+            </div>
+            <div className="text-start">{request?.location}</div>
           </div>
-          <div className="text-start">{request?.location}</div>
+          <div className="blood-group">
+            {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
+            <h3 className="blood-group" style={{ color: "red" }}>
+              {request.blood_group || "Unknown"}
+            </h3>{" "}
+            {/* Show blood group text */}
+          </div>
         </div>
-        <div className="blood-group">
-          {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
-          <h3 className="blood-group" style={{ color: "red" }}>
-            {request.blood_group || "Unknown"}
-          </h3>{" "}
-          {/* Show blood group text */}
-        </div>
-      </div>
 
-      <div className="accept-donar-button d-flex justify-content-between">
-        <div className="icon-container">
-          <Link to="#" className="share-link">
+        <div className="accept-donar-button d-flex justify-content-between">
+          <div className="icon-container">
+            {/* Share Icon */}
             <img
               src={shareIcon}
               alt="Share"
               className="icon-img"
-              onClick={(event) => handleShareClick(event,request)}
+              onClick={(event) => {
+                toggleShareOptions(request?.request_id, shareMessage, shareUrl);
+                event.stopPropagation();
+                event.preventDefault();
+              }}
+              style={{ cursor: "pointer" }}
             />
-          </Link>
-          <Link
-            to={`https://www.google.com/maps?q=${request.lat},${request.lon}`}
-            className="location-link"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src={locationIcon} alt="Location" className="icon-img" />
-          </Link>
-        </div>
-        {showAcceptButton && (
-          <button
-            className={`accepted-donors-btn btn ${
-              request?.is_accepted ? "btn-secondary" : "btn-primary"
-            }`}
-            onClick={() => handleCardClick(request)}
-            disabled={request?.is_accepted}
-          >
-            {request?.is_accepted ? "Accepted" : "Accept"}
-          </button>
-        )}
-      </div>
-    </div>
-  );
 
-  const renderOthersCard = (request) => (
-    <div className="request-card position-relative" key={request?.request_id}>
-      {request.is_critical && (
-        <div className="emergency-tag position-absolute">Emergency</div>
-      )}
-      {/* <div className="request-header d-flex align-items-center">
+            {/* Share Options */}
+            {visibleShareCard === request.request_id && (
+              <div className="share-options">
+                <WhatsappShareButton url={shareUrl} title={shareMessage}>
+                  <WhatsappIcon size={32} round={true} />
+                </WhatsappShareButton>
+                <EmailShareButton
+                  url={shareUrl}
+                  subject="Urgent Blood Donation Request"
+                  body={shareMessage}
+                >
+                  <EmailIcon size={32} round={true} />
+                </EmailShareButton>
+              </div>
+            )}
+            <Link
+              to={`https://www.google.com/maps?q=${request.lat},${request.lon}`}
+              className="location-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={locationIcon} alt="Location" className="icon-img" />
+            </Link>
+          </div>
+          {showAcceptButton && (
+            <button
+              className={`accepted-donors-btn btn ${
+                request?.is_accepted ? "btn-secondary" : "btn-primary"
+              }`}
+              onClick={() => handleCardClick(request)}
+              disabled={request?.is_accepted}
+            >
+              {request?.is_accepted ? "Accepted" : "Accept"}
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderOthersCard = (request) => {
+    // Create the share message and URL
+    const shareMessage = `${request?.name} requires ${request?.units_required} units of ${request?.blood_group} blood at ${request?.delivery_address}.`;
+    const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${request?.request_id}`;
+    return (
+      <div className="request-card position-relative" key={request?.request_id}>
+        {request.is_critical && (
+          <div className="emergency-tag position-absolute">Emergency</div>
+        )}
+        {/* <div className="request-header d-flex align-items-center">
         <div className="align-content-center">
           <img
             src={request?.profile_picture || profImg}
@@ -217,50 +271,76 @@ function Donate() {
           </h3>{" "}
         </div>
       </div> */}
-      <div className="request-header">
-        <img
-          src={request?.profile_picture || profImg}
-          alt="Profile"
-          className="profile_img"
-        />
-        <div className="request-details">
-          <div className="text-start fw-bold">{request?.name}</div>
-          <div className="text-start">{formatDate(request?.date)}</div>
-          <div className="text-start">
-            Blood units: {request?.units_required}
+        <div className="request-header">
+          <img
+            src={request?.profile_picture || profImg}
+            alt="Profile"
+            className="profile_img"
+          />
+          <div className="request-details">
+            <div className="text-start fw-bold">{request?.name}</div>
+            <div className="text-start">
+              Time:{" "}
+              {request?.from && <span>{convertToLocalTime(request.from)}</span>}
+              {request?.to && <span> to {convertToLocalTime(request.to)}</span>}
+            </div>
+            <div className="text-start">{formatDate(request?.date)}</div>
+            <div className="text-start">
+              Blood units: {request?.units_required}
+            </div>
+            <div className="text-start">{request?.location}</div>
           </div>
-          <div className="text-start">{request?.location}</div>
+          <div className="blood-group">
+            {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
+            <h3 className="blood-group" style={{ color: "red" }}>
+              {request.blood_group || "Unknown"}
+            </h3>{" "}
+            {/* Show blood group text */}
+          </div>
         </div>
-        <div className="blood-group">
-          {/* <img src={bloodGroupImg} alt="Blood Group" /> */}
-          <h3 className="blood-group" style={{ color: "red" }}>
-            {request.blood_group || "Unknown"}
-          </h3>{" "}
-          {/* Show blood group text */}
-        </div>
-      </div>
-      <div className="accept-donar-button d-flex align-items-center mt-3">
-        <div className="icon-container d-flex me-3">
-          <Link to="#" className="share-link me-2">
+        <div className="accept-donar-button d-flex align-items-center mt-3">
+          <div className="icon-container d-flex me-3">
+            {/* Share Icon */}
             <img
               src={shareIcon}
               alt="Share"
               className="icon-img"
-              onClick={() => handleShareClick(request)}
+              onClick={(event) => {
+                toggleShareOptions(request?.request_id, shareMessage, shareUrl);
+                event.stopPropagation();
+                event.preventDefault();
+              }}
+              style={{ cursor: "pointer" }}
             />
-          </Link>
-          <Link
-            to={`https://www.google.com/maps?q=${request.lat},${request.lon}`}
-            className="location-link"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src={locationIcon} alt="Location" className="icon-img" />
-          </Link>
+
+            {/* Share Options */}
+            {visibleShareCard === request.request_id && (
+              <div className="share-options">
+                <WhatsappShareButton url={shareUrl} title={shareMessage}>
+                  <WhatsappIcon size={32} round={true} />
+                </WhatsappShareButton>
+                <EmailShareButton
+                  url={shareUrl}
+                  subject="Urgent Blood Donation Request"
+                  body={shareMessage}
+                >
+                  <EmailIcon size={32} round={true} />
+                </EmailShareButton>
+              </div>
+            )}
+            <Link
+              to={`https://www.google.com/maps?q=${request.lat},${request.lon}`}
+              className="location-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={locationIcon} alt="Location" className="icon-img" />
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <>
