@@ -74,13 +74,13 @@ export default function CampDetails() {
 
   const handleShareClick = (request) => {
     if (navigator.share) {
-      const shareMessage = `${request.title}  time ${request?.time} at ${request.location}. View details here: https://app.happydonors.ngo/viewcampdetails/${request?.id}.`;
+      const shareMessage = `${request.title}  time ${request?.time} at ${request.location}. View details here: https://app.happydonors.ngo/viewcampdetails/${request?.camp_id}.`;
 
       navigator
         .share({
           title: "Event Request",
           text: shareMessage, // Combine message and URL here
-          url: `https://app.happydonors.ngo/viewcampdetails/${request?.id}`,
+          url: `https://app.happydonors.ngo/viewcampdetails/${request?.camp_id}`,
         })
         .catch((error) => console.log("Error sharing", error));
     } else {
