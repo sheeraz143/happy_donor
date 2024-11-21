@@ -109,7 +109,7 @@ function App() {
     location.pathname.includes("viewbloodrequest") ||
     location.pathname.includes("vieweventdetails") ||
     location.pathname.includes("viewcampdetails") ||
-    location.pathname.includes("forgotPassword") ||
+    location.pathname.includes("forgotpassword") ||
     location.pathname.includes("resetpassword") ||
     location.pathname === "/privacypolicy";
 
