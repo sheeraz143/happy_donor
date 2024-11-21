@@ -268,7 +268,6 @@ const Profile = () => {
           <option value="A2B-ve">A2B-ve</option>
           <option value="Bombay Blood Group">Bombay Blood Group</option>
           <option value="INRA">INRA</option>
-          <option value="Any">Any</option>
         </select>
         {errors.bloodGroup && (
           <p className="error-message">Blood Group is required</p>
@@ -407,7 +406,7 @@ const Profile = () => {
           {...register("abhid", {
             required: false,
             // pattern: {
-            //   value: /^\d{14}$/,
+            //   value: /^\d{1,14}$/,
             //   message: "Abha Number must be exactly 14 digits",
             // },
           })}

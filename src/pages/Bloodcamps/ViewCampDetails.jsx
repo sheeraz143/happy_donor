@@ -1,6 +1,6 @@
 import BloodCamps from "../../assets/BloodCamps.png";
 
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import MapComponent from "../../components/map/MapComponent";
 // import { formatDate } from "../../utils/dateUtils";
 import { useEffect, useState } from "react";
@@ -80,6 +80,10 @@ export default function ViewCampDetails() {
           />
         </div>
       </div>
+      <p className="text-center mt-5">
+        Visit <Link to="https://www.happydonors.ngo">Happy Donors</Link> for
+        more details.
+      </p>
     </>
   );
 }

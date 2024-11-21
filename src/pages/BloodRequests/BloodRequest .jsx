@@ -34,6 +34,24 @@ const BloodRequest = () => {
   const [refresh, setRefresh] = useState(false);
   const [totalItems, setTotalItems] = useState(0); // Track total items for pagination
 
+  function convertToLocalTime(timeString) {
+    // Check if the input is a valid time in "HH:mm" format
+    if (!timeString || !/^\d{2}:\d{2}$/.test(timeString)) {
+      return "Invalid time"; // Return a default message for invalid time
+    }
+
+    // Parse the valid time string
+    const [hours, minutes] = timeString.split(":").map(Number);
+
+    // Create a new Date object
+    const date = new Date();
+    date.setHours(hours, minutes);
+
+    // Format the time to a user-friendly format
+    const options = { hour: "numeric", minute: "numeric", hour12: true };
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+  }
+
   const openModal = (request, event) => {
     event.stopPropagation();
     setSelectedRequest(request);
@@ -181,6 +199,11 @@ const BloodRequest = () => {
         </div>
         <div className="request-details">
           <div className="request-date text-start">{request.name}</div>
+          <div className="request-date text-start">
+            Time:{" "}
+            {request?.from && <span>{convertToLocalTime(request.from)}</span>}
+            {request?.to && <span> to {convertToLocalTime(request.to)}</span>}
+          </div>
           <div className="request-date text-start">
             {formatDate(request.date)}
           </div>

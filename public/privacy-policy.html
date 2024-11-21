@@ -37,7 +37,7 @@
 
     <!--  HEADER -->
 
-    <header class="main-header clearfix" data-sticky_header="true">
+    <header class="main-header clearfix" data-sticky_header="true" id="main-header">
 
         <div class="top-bar clearfix">
 
@@ -300,7 +300,7 @@
     </section> <!--  end .section-about-us -->
 
     <!-- START FOOTER  -->
- <footer>
+ <footer id="main-footer">
 
         <section class="footer-widget-area footer-widget-area-bg">
 
@@ -462,5 +462,23 @@
     <script src="js/venobox.min.js"></script>
     <script src="js/custom-scripts.js"></script>
 </body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const typeParam = urlParams.get('type');
+  
+      if (typeParam === 'app') {
+        const header = document.getElementById('main-header');
+        const footer = document.getElementById('main-footer');
+        if (header) {
+          header.style.display = 'none';
+        }
+        if (footer) {
+            footer.style.display = 'none';
+        }
+      }
+    });
+  </script>
 
 </html>

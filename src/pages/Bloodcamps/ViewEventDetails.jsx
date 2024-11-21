@@ -80,6 +80,10 @@ export default function ViewEventDetails() {
           {data?.description}
         </p>
       </div>
+      <p className="text-center mt-5">
+        Visit <Link to="https://www.happydonors.ngo">Happy Donors</Link> for
+        more details.
+      </p>
     </div>
   );
 }

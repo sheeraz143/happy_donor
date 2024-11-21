@@ -105,10 +105,8 @@ const RegisterOrg = () => {
         password: data?.password,
         password_confirmation: data?.password,
         user_type_id: 5,
-        collaborate_as:
-          data?.collaborate_as === "Others"
-            ? data?.specify_others
-            : data?.collaborate_as,
+        collaborate_as: data?.collaborate_as,
+        others: data?.specify_others,
       };
 
       // console.log("payload: ", payload);

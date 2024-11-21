@@ -24,6 +24,13 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { formatDate } from "../utils/dateUtils";
 
+import {
+  WhatsappShareButton,
+  EmailShareButton,
+  WhatsappIcon,
+  EmailIcon,
+} from "react-share";
+
 function Home() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -36,6 +43,24 @@ function Home() {
   const isProfileUpdate = localStorage.getItem("is_profile_update");
 
   const storedUserType = localStorage.getItem("user_type");
+
+  const [visibleShareCard, setVisibleShareCard] = useState(null); // Track visible card
+
+  const toggleShareOptions = (cardId, message, url) => {
+    setVisibleShareCard((prev) => (prev === cardId ? null : cardId));
+
+    const fullMessage = `${message}\nView details here: ${url}`; // Combine message with URL
+
+    // Copy to clipboard when the share icon is clicked
+    navigator.clipboard
+      .writeText(fullMessage)
+      .then(() => {
+        toast.success("Copied to clipboard!");
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
+  };
 
   useEffect(() => {
     dispatch(setLoader(true)); // Start loading
@@ -193,25 +218,45 @@ function Home() {
   //   }
   // };
 
-  const handleShareClick = (request) => {
-    // console.log("request: ", request);
-    if (navigator.share) {
-      const shareMessage = `${request?.username} requires ${request?.quantity_units} Units of ${request?.blood_group} blood at ${request?.my_address}. 
-  View details here: https://app.happydonors.ngo/viewbloodrequest/${request?.id}`;
+  // const handleShareClick = (request) => {
+  //   // Define the share message
+  //   const shareMessage = `${request?.username || "Someone"} requires ${
+  //     request?.quantity_units || "a certain number of"
+  //   } units of ${request?.blood_group || "blood"} at ${
+  //     request?.my_address || "an unknown location"
+  //   }.\n\nView details here: ${
+  //     request?.id
+  //       ? `https://app.happydonors.ngo/viewbloodrequest/${request?.id}`
+  //       : "Visit our platform for more details."
+  //   }`;
 
-      navigator
-        .share({
-          title: "Blood Donation Request",
-          text: shareMessage, // Combine message and URL here
-          url: `https://app.happydonors.ngo/viewbloodrequest/${request?.id}`,
-        })
-        .catch((error) => console.log("Error sharing", error));
-    } else {
-      alert("Web Share API is not supported in your browser.");
-    }
-  };
+  //   if (navigator.share) {
+  //     // Use Web Share API if supported
+  //     navigator
+  //       .share({
+  //         title: "Blood Donation Request",
+  //         text: shareMessage,
+  //         url: request?.id
+  //           ? `https://app.happydonors.ngo/viewbloodrequest/${request?.id}`
+  //           : undefined, // Include the URL only if available
+  //       })
+  //       .then(() => console.log("Shared successfully"))
+  //       .catch((error) => console.error("Error sharing:", error));
+  //   } else {
+  //     // WhatsApp fallback if Web Share API isn't supported
+  //     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
+  //       shareMessage
+  //     )}`;
+
+  //     // Open WhatsApp share link in a new tab
+  //     window.open(whatsappUrl, "_blank");
+  //   }
+  // };
 
   const renderRequestCard = (request) => {
+    // Create the share message and URL
+    const shareMessage = `${request?.username} requires ${request?.quantity_units} units of ${request?.blood_group} blood at ${request?.delivery_address}.`;
+    const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${request?.id}`;
     return (
       <div className="request-card col position-relative" key={request.id}>
         {request?.is_critical && (
@@ -282,17 +327,32 @@ function Home() {
 
         <div className="accept-donor-button d-flex justify-content-between align-items-center ">
           <div className="icon-container d-flex me-3">
-            <Link to="#" className="share-link me-2">
-              <img
-                src={shareIcon}
-                alt="Share"
-                className="icon-img"
-                onClick={() => handleShareClick(request)}
-              />
-            </Link>
-            {/* <Link to="#" className="location-link">
-              <img src={locationIcon} alt="Location" className="icon-img" />
-            </Link> */}
+            {/* Share Icon */}
+            <img
+              src={shareIcon}
+              alt="Share"
+              className="icon-img"
+              onClick={() =>
+                toggleShareOptions(request.id, shareMessage, shareUrl)
+              }
+              style={{ cursor: "pointer" }}
+            />
+
+            {/* Share Options */}
+            {visibleShareCard === request.id && (
+              <div className="share-options">
+                <WhatsappShareButton url={shareUrl} title={shareMessage}>
+                  <WhatsappIcon size={32} round={true} />
+                </WhatsappShareButton>
+                <EmailShareButton
+                  url={shareUrl}
+                  subject="Urgent Blood Donation Request"
+                  body={shareMessage}
+                >
+                  <EmailIcon size={32} round={true} />
+                </EmailShareButton>
+              </div>
+            )}
             <Link
               to={`https://www.google.com/maps?q=${request.delivery_lat},${request.delivery_lon}`}
               className="location-link"

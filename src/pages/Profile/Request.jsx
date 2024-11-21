@@ -178,7 +178,6 @@ function Request() {
           <option value="A2B-ve">A2B-ve</option>
           <option value="Bombay Blood Group">Bombay Blood Group</option>
           <option value="INRA">INRA</option>
-          <option value="Any">Any</option>
         </select>
         {errors.bloodGroup && (
           <p className="error-message">Blood Group is required</p>

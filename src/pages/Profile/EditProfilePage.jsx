@@ -448,7 +448,7 @@ const EditProfilePage = () => {
           {...register("abhid", {
             required: false,
             pattern: {
-              value: /^\d{14}$/,
+              value: /^\d{1,14}$/,
               message: "Abha Number must be exactly 14 digits",
             },
           })}
