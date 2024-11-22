@@ -988,6 +988,29 @@ export const ViewBloodRequest =
       });
     }
   };
+export const ViewBloodRequestUser =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(
+        baseUrl + `app/blood-requests/${id}/view/user`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      callback(result);
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
 
 export const ViewCampsRequest =
   (id, callback = () => {}) =>
@@ -995,6 +1018,39 @@ export const ViewCampsRequest =
     try {
       const response = await Helper.getData(
         baseUrl + `app/blood-camps/matched/${id}/view`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const ViewCampsRequestUser =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(
+        baseUrl + `app/blood-camps/${id}/view/user`
       );
 
       const result = {
@@ -1180,6 +1236,39 @@ export const ViewEventRequest =
     try {
       const response = await Helper.getData(
         baseUrl + `app/events/matched/${id}/view`
+      );
+
+      const result = {
+        ...response.data,
+        code: response.status,
+      };
+
+      // If response is 200, send the data
+      if (response.status === 200) {
+        callback(result);
+      } else {
+        // If not 200, send an error message
+        callback({
+          status: false,
+          code: response.status,
+          message: response?.data.message,
+        });
+      }
+    } catch (err) {
+      console.error("Update profile error: ", err);
+      callback({
+        status: false,
+        code: err.response?.status || 500,
+        message: err.response?.data?.message || "An unexpected error occurred.",
+      });
+    }
+  };
+export const ViewEventRequestUser =
+  (id, callback = () => {}) =>
+  async () => {
+    try {
+      const response = await Helper.getData(
+        baseUrl + `app/events/${id}/view/user`
       );
 
       const result = {

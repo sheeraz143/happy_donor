@@ -9,7 +9,7 @@ import MapComponent from "../../components/map/MapComponent";
 // import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setLoader, ViewBloodRequest } from "../../redux/product";
+import { setLoader, ViewBloodRequestUser } from "../../redux/product";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
@@ -22,7 +22,7 @@ export default function ViewrequestDetailPage() {
     dispatch(setLoader(true));
     try {
       dispatch(
-        ViewBloodRequest(id, (res) => {
+        ViewBloodRequestUser(id, (res) => {
           dispatch(setLoader(false));
 
           if (res.errors) {
@@ -96,7 +96,8 @@ export default function ViewrequestDetailPage() {
             </div>
           </div>
           <p className="text-center mt-5">
-            Visit <Link to="https://www.happydonors.ngo">Happy Donors</Link> for more details.
+            Visit <Link to="https://www.happydonors.ngo">Happy Donors</Link> for
+            more details.
           </p>
         </div>
       </div>

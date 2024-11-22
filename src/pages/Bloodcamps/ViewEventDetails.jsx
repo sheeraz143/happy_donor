@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 // import locationIcon from "../../assets/Mappoint.png";
 // import { formatDate } from "../../utils/dateUtils";
 import { useEffect, useState } from "react";
-import { setLoader, ViewEventRequest } from "../../redux/product";
+import { setLoader, ViewEventRequestUser } from "../../redux/product";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import MapComponent from "../../components/map/MapComponent";
@@ -17,7 +17,7 @@ export default function ViewEventDetails() {
     dispatch(setLoader(true));
     try {
       dispatch(
-        ViewEventRequest(eventId?.id, (res) => {
+        ViewEventRequestUser(eventId?.id, (res) => {
           if (res.code === 200) {
             // setData(res?.events[0]);
             setData(res);

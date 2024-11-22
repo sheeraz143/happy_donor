@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import MapComponent from "../../components/map/MapComponent";
 // import { formatDate } from "../../utils/dateUtils";
 import { useEffect, useState } from "react";
-import { setLoader, ViewCampsRequest } from "../../redux/product";
+import { setLoader, ViewCampsRequestUser } from "../../redux/product";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -17,7 +17,7 @@ export default function ViewCampDetails() {
     dispatch(setLoader(true));
     try {
       dispatch(
-        ViewCampsRequest(campId?.id, (res) => {
+        ViewCampsRequestUser(campId?.id, (res) => {
           if (res.code === 200) {
             setData(res);
           } else {

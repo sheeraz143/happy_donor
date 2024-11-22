@@ -147,6 +147,12 @@ function App() {
         />
         <Route path="/privacypolicy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/viewcampdetails/:id" element={<ViewCampDetails />} />
+        <Route path="/vieweventdetails/:id" element={<ViewEventDetails />} />
+        <Route
+            path="/viewbloodrequest/:id"
+            element={<ViewrequestDetailPage />}
+          />
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<Home />} />
           <Route path="/pagination" element={<PaginatedList />} />
@@ -176,18 +182,13 @@ function App() {
           <Route path="/bloodcamps" element={<BloodMedicalCamps />} />
           <Route path="/funddonation" element={<FundDonation />} />
           <Route path="/campdetails" element={<CampDetails />} />
-          <Route path="/viewcampdetails/:id" element={<ViewCampDetails />} />
           <Route path="/eventdetails" element={<EventDetails />} />
-          <Route path="/vieweventdetails/:id" element={<ViewEventDetails />} />
           <Route path="/contributefund" element={<ContributeFund />} />
           <Route
             path="/bloodrequestdetail/:id"
             element={<BloodrequestDetailPage />}
           />
-          <Route
-            path="/viewbloodrequest/:id"
-            element={<ViewrequestDetailPage />}
-          />
+          
           <Route path="/closedrequests/:id" element={<ClosedRequests />} />
           <Route path="/donarlist/:id" element={<AcceptDonorList />} />
           <Route path="/confirmdonation/:id" element={<ConfirmDonation />} />
