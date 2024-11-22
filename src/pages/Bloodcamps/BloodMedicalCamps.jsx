@@ -260,18 +260,17 @@ const BloodMedicalCamps = () => {
         className="request-card cursor-pointer"
         key={request?.id}
         onClick={() => {
-          // console.log("request?.id: ", request?.id);
-          // return;
           navigate("/eventdetails", { state: { request: request?.id } });
-          // navigate(`/eventdetails/${request?.id}`);
         }}
       >
         <div className="request-header d-flex align-items-center">
           <div className="align-content-center"></div>
           <div className="request-details ms-3">
             <div className="text-start fw-bold">{request?.title}</div>
-            {/* <div className="text-start">Blood units: {request?.units}</div> */}
             <div className="text-start">{formatDate(request?.event_date)}</div>
+            <div className="text-start">
+              Time: {formatTime(request?.start_time)} to {formatTime(request?.end_time)}
+            </div>
             <div className="text-start">{request?.location}</div>
             <div className="text-start" style={{ color: "#0d6efd" }}>
               Status: {request?.status}

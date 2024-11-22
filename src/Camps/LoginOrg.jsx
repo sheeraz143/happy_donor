@@ -125,7 +125,7 @@ const LoginOrg = ({ onRefreshNavbar }) => {
         </button>
 
         <p className="login-option text-center mt-3">
-          Dont have an account?
+          Dont have an account? { " "}
           <Link to="/register/organisation" className="login-link">
             Register here
           </Link>

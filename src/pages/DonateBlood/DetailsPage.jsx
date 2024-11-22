@@ -76,7 +76,7 @@ export default function RequestDetail() {
     navigator.clipboard
       .writeText(fullMessage)
       .then(() => {
-        // alert("Copied to clipboard!");
+        toast.success("Copied to clipboard!");
       })
       .catch((err) => {
         console.error("Failed to copy text: ", err);
@@ -86,7 +86,6 @@ export default function RequestDetail() {
   const shareMessage = `Blood Donation Request\n${data?.name} requires ${data?.units_required} units of ${data?.blood_group} blood at ${data?.location}.`;
   const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${data?.request_id}`;
   // const showAcceptButton = data?.view_donors == true;
-  
 
   const handleCardClick = (request) => {
     dispatch(setLoader(true));
@@ -213,14 +212,14 @@ export default function RequestDetail() {
                   </Link>
                 </div>
                 <button
-                    className={`accepted-donors-btn btn ${
-                      data?.is_accepted ? "btn-secondary" : "btn-primary"
-                    }`}
-                    onClick={() => handleCardClick(data)}
-                    disabled={data?.is_accepted}
-                  >
-                    {data?.is_accepted ? "Accepted" : "Accept"}
-                  </button>
+                  className={`accepted-donors-btn btn ${
+                    data?.is_accepted ? "btn-secondary" : "btn-primary"
+                  }`}
+                  onClick={() => handleCardClick(data)}
+                  disabled={data?.is_accepted}
+                >
+                  {data?.is_accepted ? "Accepted" : "Accept"}
+                </button>
               </div>
             </div>
           </div>
