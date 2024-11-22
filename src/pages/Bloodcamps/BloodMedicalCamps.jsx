@@ -148,15 +148,7 @@ const BloodMedicalCamps = () => {
           {request?.is_critical && (
             <div className="emergency-tag position-absolute">Emergency</div>
           )}
-          {/* <img
-          src={request?.camp_image || profImg}
-          alt="Profile"
-          className="profile_img"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = profImg;
-          }}
-        /> */}
+
           <div className="request-details">
             <div className="text-start fw-bold">{request?.title}</div>
             <div className="text-start">Date: {request.date}</div>
@@ -164,10 +156,6 @@ const BloodMedicalCamps = () => {
               Time: {request.time || "Not specified"}
             </div>
             <div className="text-start">{request?.location}</div>
-            {/* <div className="text-start">
-            Blood units: {request?.units_required}
-          </div> */}
-            {/* <div className="text-start">{formatDate(request?.date)}</div> */}
           </div>
           <div className="blood-group">
             <img
@@ -190,16 +178,16 @@ const BloodMedicalCamps = () => {
               src={shareIcon}
               alt="Share"
               className="icon-img"
-              onClick={(event) => {
+              onClick={() => {
                 toggleShareOptions(request?.camp_id, shareMessage, shareUrl);
-                event.stopPropagation();
-                event.preventDefault();
+                // event.stopPropagation();
+                // event.preventDefault();
               }}
               style={{ cursor: "pointer" }}
             />
 
             {/* Share Options */}
-            {visibleShareCard === request.request_id && (
+            {visibleShareCard === request.camp_id && (
               <div className="share-options">
                 <WhatsappShareButton url={shareUrl} title={shareMessage}>
                   <WhatsappIcon size={32} round={true} />
@@ -237,7 +225,35 @@ const BloodMedicalCamps = () => {
   };
 
   const renderOthersCard = (request) => {
-    const shareMessage = `New Event\nEvent title: ${request?.title} on ${request?.event_date} from ${request?.start_time} - ${request?.end_time}  at ${request?.location}.`;
+    const formatDate1 = (dateString) => {
+      if (!dateString) return "Invalid date";
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    };
+
+    const formatTime = (timeString) => {
+      if (!timeString || !/^\d{2}:\d{2}:\d{2}$/.test(timeString))
+        return "Invalid time";
+      const [hours, minutes] = timeString.split(":");
+      const date = new Date();
+      date.setHours(hours, minutes);
+      return new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      }).format(date);
+    };
+
+    // Usage in the share message:
+    const shareMessage = `New Event\nEvent title: ${
+      request?.title
+    } on ${formatDate1(request?.event_date)} from ${formatTime(
+      request?.start_time
+    )} - ${formatTime(request?.end_time)} at ${request?.location}.`;
+
     const shareUrl = `https://app.happydonors.ngo/vieweventdetails/${request?.id}`;
     return (
       <div
@@ -251,13 +267,7 @@ const BloodMedicalCamps = () => {
         }}
       >
         <div className="request-header d-flex align-items-center">
-          <div className="align-content-center">
-            {/* <img
-              src={request?.profilePic || profImg}
-              alt="Profile"
-              className="profile_img"
-            /> */}
-          </div>
+          <div className="align-content-center"></div>
           <div className="request-details ms-3">
             <div className="text-start fw-bold">{request?.title}</div>
             {/* <div className="text-start">Blood units: {request?.units}</div> */}
@@ -267,19 +277,12 @@ const BloodMedicalCamps = () => {
               Status: {request?.status}
             </div>
           </div>
-          {/* <div className="blood-group ms-auto">
-            <img
-              src={request?.bloodGroupImage || bloodGroupImage}
-              alt="Blood Group"
-              style={{ maxWidth: "130px" }}
-            />
-          </div> */}
         </div>
 
         <div className="mt-3">
           <div className="d-flex me-3 justify-content-around align-items-center">
             <div className="">
-              <div className="">
+              <div className="icon-container">
                 {/* Share Icon */}
                 <img
                   src={shareIcon}
@@ -294,7 +297,7 @@ const BloodMedicalCamps = () => {
                 />
 
                 {/* Share Options */}
-                {visibleShareCard === request.request_id && (
+                {visibleShareCard === request.id && (
                   <div className="share-options">
                     <WhatsappShareButton url={shareUrl} title={shareMessage}>
                       <WhatsappIcon size={32} round={true} />

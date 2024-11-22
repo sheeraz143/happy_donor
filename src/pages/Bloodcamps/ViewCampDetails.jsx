@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 
 export default function ViewCampDetails() {
   const campId = useParams();
-  console.log("campId: ", campId);
   const dispatch = useDispatch();
   const [data, setData] = useState({});
 
@@ -19,7 +18,6 @@ export default function ViewCampDetails() {
     try {
       dispatch(
         ViewCampsRequest(campId?.id, (res) => {
-          console.log("res: ", res);
           if (res.code === 200) {
             setData(res);
           } else {
@@ -35,7 +33,6 @@ export default function ViewCampDetails() {
   }, []);
 
   const renderRequestCard = (camp) => {
-    console.log("camp: ", camp);
     return (
       <div className="request-card mb-4" key={camp.camp_id}>
         <div className="d-flex align-items-start">

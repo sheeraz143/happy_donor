@@ -130,7 +130,7 @@ function App() {
           path="/login/organisation"
           element={<LoginOrg onRefreshNavbar={handleRefreshNavbar} />}
         />
-        <Route path="/forgotpassword" element={<Forgotpassword />} />
+        <Route path="/forgotpassword/:type" element={<Forgotpassword />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route
           path="/login/bloodbank"
@@ -222,7 +222,7 @@ function App() {
 }
 function AppWrapper() {
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <App />
     </Router>
   );

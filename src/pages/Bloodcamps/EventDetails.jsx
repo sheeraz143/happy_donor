@@ -10,6 +10,12 @@ import {
 } from "../../redux/product";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import {
+  WhatsappShareButton,
+  EmailShareButton,
+  WhatsappIcon,
+  EmailIcon,
+} from "react-share";
 
 export default function EventDetails() {
   const location = useLocation();
@@ -38,6 +44,24 @@ export default function EventDetails() {
     }
   }, []);
 
+  const [visibleShareCard, setVisibleShareCard] = useState(null); // Track visible card
+
+  const toggleShareOptions = (cardId, message, url) => {
+    setVisibleShareCard((prev) => (prev === cardId ? null : cardId));
+
+    const fullMessage = `\n${message}\nView details here: ${url}`; // Combine message with URL
+
+    // Copy to clipboard when the share icon is clicked
+    navigator.clipboard
+      .writeText(fullMessage)
+      .then(() => {
+        toast.success("Copied to clipboard!");
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
+  };
+
   const handleParticipate = () => {
     dispatch(setLoader(true));
 
@@ -60,27 +84,37 @@ export default function EventDetails() {
     }
   };
 
-  const handleShareClick = () => {
-    const shareMessage = `${data?.title}  event at ${data.location}. 
-    View details here: https://app.happydonors.ngo/ViewEventDetails/${data?.id}`;
 
-    if (navigator.share) {
-      // Use Web Share API if available
-      navigator
-        .share({
-          title: "Blood Donation Request",
-          text: shareMessage,
-        })
-        .catch((error) => console.log("Error sharing", error));
-    } else {
-      // WhatsApp fallback if Web Share API isn't available
-      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
-        shareMessage
-      )}`;
-      window.open(whatsappUrl, "_blank"); // Opens WhatsApp share URL in a new tab
-    }
+  const formatDate1 = (dateString) => {
+    if (!dateString) return "Invalid date";
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
+  const formatTime = (timeString) => {
+    if (!timeString || !/^\d{2}:\d{2}:\d{2}$/.test(timeString))
+      return "Invalid time";
+    const [hours, minutes] = timeString.split(":");
+    const date = new Date();
+    date.setHours(hours, minutes);
+    return new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    }).format(date);
+  };
+
+  // Usage in the share message:
+  const shareMessage = `New Event\nEvent title: ${
+    data?.title
+  } on ${formatDate1(data?.event_date)} from ${formatTime(
+    data?.start_time
+  )} - ${formatTime(data?.end_time)} at ${data?.location}.`;
+
+  const shareUrl = `https://app.happydonors.ngo/vieweventdetails/${data?.id}`;
   return (
     <div className="mt-4 mb-5">
       <h2 className="mb-3 text-center">Event Details</h2>
@@ -93,33 +127,44 @@ export default function EventDetails() {
             <p className="mb-0">Location: {data?.location}</p>
           </div>
           <div className="d-flex align-items-center">
-            <Link to="#" className="me-2">
+            <div className="icon-container">
+              {/* Share Icon */}
               <img
                 src={shareIcon}
                 alt="Share"
-                className="img-fluid"
-                style={{ width: "24px", height: "24px" }}
-                onClick={() => handleShareClick()}
+                className="icon-img"
+                onClick={(event) => {
+                  toggleShareOptions(data?.id, shareMessage, shareUrl);
+                  event.stopPropagation();
+                  event.preventDefault();
+                }}
+                style={{ cursor: "pointer" }}
               />
-            </Link>
-            {/* <a
-            href=
-            className="location-link"
-            target="_blank"
-            rel="noopener noreferrer"
-          > */}
-            <Link
-              to={`https://www.google.com/maps?q=${data.lat},${data.lon}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src={locationIcon}
-                alt="Location"
-                className="img-fluid"
-                style={{ width: "24px", height: "24px" }}
-              />
-            </Link>
+
+              {/* Share Options */}
+              {visibleShareCard === data.id && (
+                <div className="share-options">
+                  <WhatsappShareButton url={shareUrl} title={shareMessage}>
+                    <WhatsappIcon size={32} round={true} />
+                  </WhatsappShareButton>
+                  <EmailShareButton
+                    url={shareUrl}
+                    subject="Urgent Blood Donation Request"
+                    body={shareMessage}
+                  >
+                    <EmailIcon size={32} round={true} />
+                  </EmailShareButton>
+                </div>
+              )}
+              <Link
+                to={`https://www.google.com/maps?q=${data.lat},${data.lon}`}
+                className="location-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src={locationIcon} alt="Location" className="icon-img" />
+              </Link>
+            </div>
           </div>
         </div>
       </div>

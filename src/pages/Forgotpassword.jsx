@@ -5,11 +5,14 @@ import "../css/LoginComponent.css";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { setLoader, ForgotPassword } from "../redux/product";
+import { useParams } from "react-router";
 
 const Forgotpassword = () => {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
+  const { type } = useParams();
+  console.log("type: ", type);
 
   // useEffect(() => {
   //   const auth = localStorage.getItem("oAuth");
@@ -36,13 +39,14 @@ const Forgotpassword = () => {
     dispatch(setLoader(true));
     const orgData = {
       email,
-      user_type: 5,
+      user_type: type == "organisation" ? 5 : 4,
     };
-    console.log("orgData: ", orgData);
+    // console.log("orgData: ", orgData);
+    // return;
     try {
       dispatch(
         ForgotPassword(orgData, (res) => {
-          console.log('res: ', res);
+          console.log("res: ", res);
           if (res.code === 200) {
             // navigate("/resetpassword");
             toast.success(res.data?.message);

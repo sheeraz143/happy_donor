@@ -1,15 +1,15 @@
 import { Link, useParams } from "react-router-dom";
-import shareIcon from "../../assets/Share.png";
-import locationIcon from "../../assets/Mappoint.png";
+// import shareIcon from "../../assets/Share.png";
+// import locationIcon from "../../assets/Mappoint.png";
 // import { formatDate } from "../../utils/dateUtils";
 import { useEffect, useState } from "react";
 import { setLoader, ViewEventRequest } from "../../redux/product";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import MapComponent from "../../components/map/MapComponent";
 
 export default function ViewEventDetails() {
   const eventId = useParams();
-  console.log("eventId: ", eventId.id);
   const dispatch = useDispatch();
   const [data, setData] = useState({});
 
@@ -18,11 +18,10 @@ export default function ViewEventDetails() {
     try {
       dispatch(
         ViewEventRequest(eventId?.id, (res) => {
-          console.log("res: ", res);
           if (res.code === 200) {
             // setData(res?.events[0]);
             setData(res);
-            console.log("res?.events[0]: ", res);
+            console.log('res: ', res);
           } else {
             toast.error(res.message);
           }
@@ -46,16 +45,8 @@ export default function ViewEventDetails() {
             </h5>
             <p className="mb-0">Location: {data?.location}</p>
           </div>
-          <div className="d-flex align-items-center">
-            <Link to="#" className="me-2">
-              <img
-                src={shareIcon}
-                alt="Share"
-                className="img-fluid"
-                style={{ width: "24px", height: "24px" }}
-              />
-            </Link>
 
+          {/* <div className="d-flex align-items-center">
             <Link
               to={`https://www.google.com/maps?q=${data.lat},${data.lon}`}
               target="_blank"
@@ -68,8 +59,19 @@ export default function ViewEventDetails() {
                 style={{ width: "24px", height: "24px" }}
               />
             </Link>
-          </div>
+          </div> */}
         </div>
+      </div>
+      <div className="col-lg-8 col-md-8 col-sm-8 mx-auto mb-5">
+        {/* <MapComponent latitude={data?.latitude} longitude={data?.longitude} /> */}
+        <MapComponent
+          path={[
+            {
+              lat: parseFloat(data.lat),
+              lng: parseFloat(data.lon),
+            },
+          ]}
+        />
       </div>
       <div
         className="col-lg-8 col-md-8 col-sm-8 mx-auto  mb-4 p-3"

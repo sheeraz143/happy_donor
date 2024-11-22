@@ -116,7 +116,7 @@ const LoginOrg = ({ onRefreshNavbar }) => {
           </span>
         </div>
         <p className="login-option align-self-end mt-2">
-          <Link to="/forgotpassword" className="forgot-password-link">
+          <Link to="/forgotpassword/organisation" className="forgot-password-link">
             Forgot Password?
           </Link>
         </p>

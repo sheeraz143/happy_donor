@@ -13,6 +13,12 @@ import {
 } from "../../redux/product";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import {
+  WhatsappShareButton,
+  EmailShareButton,
+  WhatsappIcon,
+  EmailIcon,
+} from "react-share";
 
 export default function CampDetails() {
   const location = useLocation();
@@ -40,9 +46,6 @@ export default function CampDetails() {
       dispatch(setLoader(false));
     }
   }, []);
-  // useEffect(() => {
-  //   setData(campID);
-  // }, []);
 
   const handleCardClick = (request, event) => {
     event.stopPropagation();
@@ -72,23 +75,27 @@ export default function CampDetails() {
     }
   };
 
-  const handleShareClick = (request) => {
-    if (navigator.share) {
-      const shareMessage = `${request.title}  time ${request?.time} at ${request.location}. View details here: https://app.happydonors.ngo/viewcampdetails/${request?.camp_id}.`;
+  const [visibleShareCard, setVisibleShareCard] = useState(null); // Track visible card
 
-      navigator
-        .share({
-          title: "Event Request",
-          text: shareMessage, // Combine message and URL here
-          url: `https://app.happydonors.ngo/viewcampdetails/${request?.camp_id}`,
-        })
-        .catch((error) => console.log("Error sharing", error));
-    } else {
-      alert("Web Share API is not supported in your browser.");
-    }
+  const toggleShareOptions = (cardId, message, url) => {
+    setVisibleShareCard((prev) => (prev === cardId ? null : cardId));
+
+    const fullMessage = `\n${message}\nView details here: ${url}`; // Combine message with URL
+
+    // Copy to clipboard when the share icon is clicked
+    navigator.clipboard
+      .writeText(fullMessage)
+      .then(() => {
+        toast.success("Copied to clipboard!");
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
   };
 
   const renderRequestCard = () => {
+    const shareMessage = `New Blood Camp\nCamp title: ${data?.title} on ${data?.date} from ${data?.time} at ${data?.location}.`;
+    const shareUrl = `https://app.happydonors.ngo/viewcampdetails/${data?.camp_id}`;
     return (
       <div className="request-card mb-4" key={data.camp_id}>
         <div className="d-flex align-items-start">
@@ -109,9 +116,30 @@ export default function CampDetails() {
                 src={shareIcon}
                 alt="Share"
                 className="icon-img"
-                onClick={() => handleShareClick(data)}
+                // onClick={() => handleShareClick(data)}
+                onClick={(event) => {
+                  toggleShareOptions(data?.camp_id, shareMessage, shareUrl);
+                  event.stopPropagation();
+                  event.preventDefault();
+                }}
               />
             </Link>
+
+            {/* Share Options */}
+            {visibleShareCard === data.camp_id && (
+              <div className="share-options">
+                <WhatsappShareButton url={shareUrl} title={shareMessage}>
+                  <WhatsappIcon size={32} round={true} />
+                </WhatsappShareButton>
+                <EmailShareButton
+                  url={shareUrl}
+                  subject="Urgent Blood Donation Request"
+                  body={shareMessage}
+                >
+                  <EmailIcon size={32} round={true} />
+                </EmailShareButton>
+              </div>
+            )}
             <Link
               to={`https://www.google.com/maps?q=${data.latitude},${data.longitude}`}
               className="location-link"
@@ -142,8 +170,12 @@ export default function CampDetails() {
       <div className="d-flex justify-content-center ms-auto mb-4">
         <img
           src={data?.camp_image || BloodCamps}
-          alt="Camp"
+          alt="Camp image not uploaded "
           style={{ maxWidth: "100%", maxHeight: "200px" }}
+          onError={(e) => {
+            e.target.onerror = null; // Prevent infinite loop in case the fallback image also fails
+            // e.target.src = BloodCamps; // Set to default image on error
+          }}
         />
       </div>
       <div className="col-lg-6 col-md-8 col-sm-8 mx-auto">
@@ -151,14 +183,17 @@ export default function CampDetails() {
           {data ? renderRequestCard(data) : <p>No camp details available.</p>}
         </div>
         <div className="mb-5">
-          {/* <MapComponent latitude={data?.latitude} longitude={data?.longitude} /> */}
           <MapComponent
-            path={[
-              {
-                lat: parseFloat(data.latitude),
-                lng: parseFloat(data.longitude),
-              },
-            ]}
+            path={
+              data.latitude && data.longitude
+                ? [
+                    {
+                      lat: parseFloat(data.latitude) || 0,
+                      lng: parseFloat(data.longitude) || 0,
+                    },
+                  ]
+                : []
+            }
           />
         </div>
       </div>

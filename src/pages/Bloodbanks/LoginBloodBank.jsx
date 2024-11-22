@@ -115,6 +115,14 @@ const LoginBloodBank = ({ onRefreshNavbar }) => {
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </span>
         </div>
+        <p className="login-option align-self-end mt-2">
+          <Link
+            to="/forgotpassword/bloodbank"
+            className="forgot-password-link"
+          >
+            Forgot Password?
+          </Link>
+        </p>
         <button className="button" onClick={onSubmit}>
           Login
         </button>

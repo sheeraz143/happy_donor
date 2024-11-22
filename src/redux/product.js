@@ -119,8 +119,6 @@ export const ForgotPassword =
         baseUrl + "auth/forget-organization",
         data
       );
-      console.log("response: ", response);
-
       // If response is 200, send the data
       if (response.status === 200) {
         callback({
