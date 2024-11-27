@@ -54,7 +54,16 @@ function Request() {
     setValue("mobileNumber", value, { shouldValidate: true });
   };
 
+  function convertTo12HourFormat(time) {
+    const [hours, minutes] = time.split(':');
+    const period = +hours < 12 ? 'AM' : 'PM';
+    const adjustedHours = +hours % 12 || 12; // Adjust hours
+    return `${adjustedHours}:${minutes} ${period}`;
+}
+
+
   const onSubmit = (data) => {
+    // console.log("data: ", data);
     dispatch(setLoader(true));
     try {
       const payload = {
@@ -74,9 +83,11 @@ function Request() {
         mobile_number: data?.mobileNumber,
         willing_to_arrange_transport: Boolean(data?.willing),
         terms_agreed: data?.terms,
-        required_from: data?.required_from,
-        required_to: data?.required_to,
+        required_from: convertTo12HourFormat(data?.required_from),
+        required_to: convertTo12HourFormat(data?.required_to),
       };
+// console.log(payload);
+//       return;
 
       dispatch(
         requestBlood(payload, (res) => {

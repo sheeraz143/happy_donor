@@ -99,7 +99,6 @@ export default function ChangeRequests() {
                 toast.error(res.errors);
               } else {
                 setRequests(res?.users);
-                // console.log("res?.requests: ", res?.users);
                 setTotalRequests(res?.pagination?.total);
               }
             },

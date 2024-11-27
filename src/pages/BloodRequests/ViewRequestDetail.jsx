@@ -16,20 +16,21 @@ import { Link } from "react-router-dom";
 export default function ViewrequestDetailPage() {
   const dispatch = useDispatch();
   const { id } = useParams();
+  const decodedRequest = decodeURIComponent(atob(id)); // Decode the request
+
   const [data, setData] = useState({});
 
   useEffect(() => {
     dispatch(setLoader(true));
     try {
       dispatch(
-        ViewBloodRequestUser(id, (res) => {
+        ViewBloodRequestUser(decodedRequest, (res) => {
           dispatch(setLoader(false));
 
           if (res.errors) {
             toast.error(res.errors);
           } else {
             setData(res);
-            console.log("res: ", res);
           }
         })
       );

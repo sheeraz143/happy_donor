@@ -85,7 +85,6 @@ const AcceptDonorList = () => {
       dispatch(
         // MarkDonated({ request_id: requestId, donor_id: donorId }, (res) => {
         MarkDonated(dataToSend, (res) => {
-          console.log("res: ", res);
           if (res.code === 200) {
             toast.success(res.message);
             setRefresh(!refresh);

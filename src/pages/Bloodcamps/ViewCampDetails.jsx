@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 
 export default function ViewCampDetails() {
   const campId = useParams();
+  const decodedRequest = decodeURIComponent(atob(campId.id)); // Decode the request
+
   const dispatch = useDispatch();
   const [data, setData] = useState({});
 
@@ -17,7 +19,7 @@ export default function ViewCampDetails() {
     dispatch(setLoader(true));
     try {
       dispatch(
-        ViewCampsRequestUser(campId?.id, (res) => {
+        ViewCampsRequestUser(decodedRequest, (res) => {
           if (res.code === 200) {
             setData(res);
           } else {
@@ -70,8 +72,8 @@ export default function ViewCampDetails() {
           <MapComponent
             path={[
               {
-                lat: parseFloat(data.latitude),
-                lng: parseFloat(data.longitude),
+                lat: parseFloat(data?.latitude),
+                lng: parseFloat(data?.longitude),
               },
             ]}
           />

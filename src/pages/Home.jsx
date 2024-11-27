@@ -88,7 +88,6 @@ function Home() {
       dispatch(
         dashboardData((res) => {
           setData(res);
-          // console.log("res: ", res.user_profile.usertype);
           localStorage.setItem("user_type", res.user_profile.usertype);
 
           setBanners(res.banners);
@@ -274,7 +273,8 @@ function Home() {
   const renderRequestCard = (request) => {
     // Create the share message and URL
     const shareMessage = `${request?.username} requires ${request?.quantity_units} units of ${request?.blood_group} blood at ${request?.delivery_address}.`;
-    const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${request?.id}`;
+    const encodedLink = encodeURIComponent(btoa(request?.id)); // Decode the request
+    const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${encodedLink}`;
     return (
       <div className="request-card col position-relative" key={request.id}>
         {request?.is_critical && (

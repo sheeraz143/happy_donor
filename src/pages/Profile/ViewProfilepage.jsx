@@ -8,6 +8,7 @@ import Myrequest from "../../assets/myrequest.png";
 import Bell from "../../assets/Bell.png";
 // import DarkMode from "../../assets/dark_mode.png";
 import Emergency from "../../assets/emergency-contact.png";
+import Write from "../../assets/Write.png";
 import Logout from "../../assets/Logout.png";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
@@ -278,6 +279,15 @@ export default function ViewProfilepage() {
         >
           <img src={Emergency} alt="profile" />
           <label className="switch-label">Emergency Contact</label>
+        </div>
+        <div
+          className="formpf-container mb-3 cursor-pointer"
+          onClick={() => {
+            navigate("/writetoUs");
+          }}
+        >
+          <img src={Write} alt="profile" />
+          <label className="switch-label">Write To Us</label>
         </div>
         <div
           className="formpf-container mb-3"

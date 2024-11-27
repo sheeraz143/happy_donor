@@ -33,13 +33,11 @@ export default function PostGratitudeCampMesage() {
     try {
       dispatch(
         ViewBloodRequest(requestId, (res) => {
-          console.log("res: ", res);
           dispatch(setLoader(false));
           if (res.errors) {
             toast.error(res.errors);
           } else {
             // setData(res);
-            console.log("res: ", res);
           }
         })
       );

@@ -138,7 +138,8 @@ function Donate() {
   const renderRequestCard = (request, showAcceptButton) => {
     // Create the share message and URL
     const shareMessage = `${request?.name} requires ${request?.units_required} units of ${request?.blood_group} blood at ${request?.location}.`;
-    const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${request?.request_id}`;
+    const encodedLink = encodeURIComponent(btoa(request?.request_id)); // Decode the request
+    const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${encodedLink}`;
     return (
       <div
         className="request-card position-relative cursor-pointer"
@@ -236,9 +237,9 @@ function Donate() {
   const renderOthersCard = (request) => {
     // Create the share message and URL
 
-    console.log(request);
     const shareMessage = `${request?.name} requires ${request?.units_required} units of ${request?.blood_group} blood at ${request?.location}.`;
-    const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${request?.request_id}`;
+    const encodedLink = encodeURIComponent(btoa(request?.request_id)); // Decode the request
+    const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${encodedLink}`;
     return (
       <div className="request-card position-relative" key={request?.request_id}>
         {request.is_critical && (
@@ -281,12 +282,12 @@ function Donate() {
           />
           <div className="request-details">
             <div className="text-start fw-bold">{request?.name}</div>
+            <div className="text-start">{formatDate(request?.date)}</div>
             <div className="text-start">
-              Time:{" "}
+              Time:
               {request?.from && <span>{convertToLocalTime(request.from)}</span>}
               {request?.to && <span> to {convertToLocalTime(request.to)}</span>}
             </div>
-            <div className="text-start">{formatDate(request?.date)}</div>
             <div className="text-start">
               Blood units: {request?.units_required}
             </div>

@@ -60,7 +60,6 @@ export default function EmergenctContact() {
 
           // Check for response status
           if (res.code === 200) {
-            console.log("res", res?.contacts);
             if (res?.contacts?.length > 0) {
               const contact = res.contacts[0];
               setValue("name", contact.name);

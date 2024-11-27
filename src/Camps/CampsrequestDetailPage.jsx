@@ -36,7 +36,6 @@ export default function CampsrequestDetailPage() {
     try {
       dispatch(
         ViewSinglecamp(id, (res) => {
-          console.log("res: ", res);
           if (res.code == 200) {
             setData(res);
           } else {

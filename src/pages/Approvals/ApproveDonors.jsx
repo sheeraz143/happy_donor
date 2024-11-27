@@ -63,7 +63,6 @@ export default function ApproveDonors() {
     try {
       dispatch(
         ApproveAdminBloodDonor(dataToSend, (res) => {
-          // console.log("res: ", res);
           if (res.code === 200) {
             toast.success(res.message);
             setRefresh(!refresh);
@@ -101,7 +100,6 @@ export default function ApproveDonors() {
     try {
       dispatch(
         CancelBloodRequest(request.request_id, dataToSend, (res) => {
-          // console.log("res: ", res);
           if (res.code === 200) {
             toast.success(res.message);
             setRefresh(!refresh);

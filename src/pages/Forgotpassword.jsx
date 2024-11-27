@@ -46,7 +46,6 @@ const Forgotpassword = () => {
     try {
       dispatch(
         ForgotPassword(orgData, (res) => {
-          console.log("res: ", res);
           if (res.code === 200) {
             // navigate("/resetpassword");
             toast.success(res.data?.message);

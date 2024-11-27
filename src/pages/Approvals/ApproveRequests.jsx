@@ -50,7 +50,6 @@ export default function ApproveRequests() {
                 toast.error(res.errors);
               } else {
                 setRequests(res?.requests);
-                console.log("res?.requests: ", res?.requests);
                 setTotalRequests(res?.pagination?.total);
               }
             },

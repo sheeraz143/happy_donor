@@ -10,6 +10,8 @@ import MapComponent from "../../components/map/MapComponent";
 
 export default function ViewEventDetails() {
   const eventId = useParams();
+  const decodedRequest = decodeURIComponent(atob(eventId?.id)); // Decode the request
+
   const dispatch = useDispatch();
   const [data, setData] = useState({});
 
@@ -17,11 +19,10 @@ export default function ViewEventDetails() {
     dispatch(setLoader(true));
     try {
       dispatch(
-        ViewEventRequestUser(eventId?.id, (res) => {
+        ViewEventRequestUser(decodedRequest, (res) => {
           if (res.code === 200) {
             // setData(res?.events[0]);
             setData(res);
-            console.log('res: ', res);
           } else {
             toast.error(res.message);
           }

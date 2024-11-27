@@ -123,7 +123,6 @@ const Profile = () => {
 
       dispatch(
         updateProfile(payload, (res) => {
-          console.log("res: ", res);
           if (res.code === 200) {
             // Handle success
             toast.success(res.message);

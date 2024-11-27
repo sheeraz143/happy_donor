@@ -23,6 +23,7 @@ export default function RequestDetail() {
   const [data, setData] = useState({});
   const [refresh, setRefresh] = useState(false);
   const [visibleShareCard, setVisibleShareCard] = useState(null); // Track visible card
+  console.log("fdsfs");
 
   function convertToLocalTime(timeString) {
     // Check if the input is a valid time in "HH:mm" format
@@ -53,7 +54,6 @@ export default function RequestDetail() {
             toast.error(res.errors);
           } else {
             setData(res);
-            console.log("res: ", res);
           }
         })
       );
@@ -84,9 +84,8 @@ export default function RequestDetail() {
   };
 
   const shareMessage = `Blood Donation Request\n${data?.name} requires ${data?.units_required} units of ${data?.blood_group} blood at ${data?.location}.`;
-  const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${data?.request_id}`;
-  // const showAcceptButton = data?.view_donors == true;
-
+  const encodedLink = encodeURIComponent(btoa(data?.request_id)); // Decode the request
+  const shareUrl = `https://app.happydonors.ngo/viewbloodrequest/${encodedLink}`;
   const handleCardClick = (request) => {
     dispatch(setLoader(true));
 

@@ -95,7 +95,8 @@ export default function CampDetails() {
 
   const renderRequestCard = () => {
     const shareMessage = `New Blood Camp\nCamp title: ${data?.title} on ${data?.date} from ${data?.time} at ${data?.location}.`;
-    const shareUrl = `https://app.happydonors.ngo/viewcampdetails/${data?.camp_id}`;
+    const encodedLink = encodeURIComponent(btoa(data.camp_id)); // Decode the request
+    const shareUrl = `https://app.happydonors.ngo/viewcampdetails/${encodedLink}`;
     return (
       <div className="request-card mb-4" key={data.camp_id}>
         <div className="d-flex align-items-start">

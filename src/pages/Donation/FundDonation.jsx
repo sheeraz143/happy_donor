@@ -343,12 +343,13 @@ export default function FundDonation() {
       {/*pan*/}
       <div className="form-group">
         <label>
-          PAN[For 80G] <span className="required-asterisk">*</span>
+          Required 80G Certificate? Please fill PAN
+          {/* <span className="required-asterisk">*</span> */}
         </label>
         <input
           className="form-input"
           type="text"
-          {...register("pan", { required: true })}
+          {...register("pan", { required: false })}
         />
         {errors.pan && <p className="error-message">PAN is required</p>}
       </div>

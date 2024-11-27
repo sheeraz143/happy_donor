@@ -56,7 +56,6 @@ const BloodMedicalCamps = () => {
     window.scrollTo(0, 0);
     const fetchCampsAndEvents = async () => {
       const handleResponse = (result, type) => {
-        // console.log("result: ", result);
         if (result.code === 200) {
           if (type === "matched") {
             setCamps(result.camps || []);
@@ -136,7 +135,8 @@ const BloodMedicalCamps = () => {
 
   const renderRequestCard = (request) => {
     const shareMessage = `New Blood Camp\nCamp title: ${request?.title} on ${request?.date} from ${request?.time} at ${request?.location}.`;
-    const shareUrl = `https://app.happydonors.ngo/viewcampdetails/${request?.camp_id}`;
+    const encodedLink = encodeURIComponent(btoa(request.camp_id)); // Decode the request
+    const shareUrl = `https://app.happydonors.ngo/viewcampdetails/${encodedLink}`;
     return (
       <div className="request-card position-relative" key={request?.camp_id}>
         <div
@@ -253,8 +253,8 @@ const BloodMedicalCamps = () => {
     } on ${formatDate1(request?.event_date)} from ${formatTime(
       request?.start_time
     )} - ${formatTime(request?.end_time)} at ${request?.location}.`;
-
-    const shareUrl = `https://app.happydonors.ngo/vieweventdetails/${request?.id}`;
+    const encodedLink = encodeURIComponent(btoa(request.id)); // Decode the request
+    const shareUrl = `https://app.happydonors.ngo/vieweventdetails/${encodedLink}`;
     return (
       <div
         className="request-card cursor-pointer"
@@ -269,7 +269,8 @@ const BloodMedicalCamps = () => {
             <div className="text-start fw-bold">{request?.title}</div>
             <div className="text-start">{formatDate(request?.event_date)}</div>
             <div className="text-start">
-              Time: {formatTime(request?.start_time)} to {formatTime(request?.end_time)}
+              Time: {formatTime(request?.start_time)} to{" "}
+              {formatTime(request?.end_time)}
             </div>
             <div className="text-start">{request?.location}</div>
             <div className="text-start" style={{ color: "#0d6efd" }}>

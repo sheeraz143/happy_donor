@@ -78,7 +78,6 @@ export default function WriteToUs() {
 
   // Function to handle form submission
   const onSubmit = (data) => {
-    console.log(data);
     dispatch(setLoader(true));
     try {
       dispatch(
@@ -88,7 +87,7 @@ export default function WriteToUs() {
           // Check for response status
           if (res.code === 201) {
             toast.success(res.message);
-            navigate("/home");
+            navigate("/viewprofile");
           } else {
             const errorMessages = res.message || "An error occurred.";
             toast.error(errorMessages);
@@ -212,9 +211,11 @@ export default function WriteToUs() {
         <textarea
           className="form-input"
           type="text"
-          {...register("comments", { required: false })}
+          {...register("comments", { required: true })}
         />
-        {/* {errors.address && <p className="error-message">Address is required</p>} */}
+        {errors.comments && (
+          <p className="error-message">Comments is required</p>
+        )}
       </div>
 
       {/* Submit Button */}

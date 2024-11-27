@@ -97,7 +97,6 @@ export default function CampsEvents() {
                 toast.error(res.errors);
               } else {
                 setRequests(res?.camps);
-                console.log("res?.requests: ", res);
                 setTotalRequests(res?.pagination?.total);
               }
             },

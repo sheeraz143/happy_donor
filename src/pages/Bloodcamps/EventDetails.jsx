@@ -84,7 +84,6 @@ export default function EventDetails() {
     }
   };
 
-
   const formatDate1 = (dateString) => {
     if (!dateString) return "Invalid date";
     const date = new Date(dateString);
@@ -108,13 +107,13 @@ export default function EventDetails() {
   };
 
   // Usage in the share message:
-  const shareMessage = `New Event\nEvent title: ${
-    data?.title
-  } on ${formatDate1(data?.event_date)} from ${formatTime(
-    data?.start_time
-  )} - ${formatTime(data?.end_time)} at ${data?.location}.`;
-
-  const shareUrl = `https://app.happydonors.ngo/vieweventdetails/${data?.id}`;
+  const shareMessage = `New Event\nEvent title: ${data?.title} on ${formatDate1(
+    data?.event_date
+  )} from ${formatTime(data?.start_time)} - ${formatTime(data?.end_time)} at ${
+    data?.location
+  }.`;
+  const encodedLink = encodeURIComponent(btoa(data?.id)); // Decode the request
+  const shareUrl = `https://app.happydonors.ngo/vieweventdetails/${encodedLink}`;
   return (
     <div className="mt-4 mb-5">
       <h2 className="mb-3 text-center">Event Details</h2>
