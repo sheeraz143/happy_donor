@@ -5,14 +5,8 @@ const helper = {
     return import.meta.env.VITE_BASE_URL;
   },
   razorPayKey: function () {
-<<<<<<< HEAD
-    const key = "rzp_test_xMw7fbS5jks9Ye";
-   // const key = "rzp_live_koTSgNVBozLvcc";
 
-    return key;
-=======
     return import.meta.env.VITE_RAZORPAY_KEY_LIVE;
->>>>>>> bc05944b80153db5caba8d53751adeac8b87b2b6
   },
   googleMapsApiKey: function () {
     return import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
