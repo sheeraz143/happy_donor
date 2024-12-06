@@ -2,24 +2,31 @@ import axios from "axios";
 
 const helper = {
   baseUrl: function () {
-    const URL = "https://happydonorsdev.devdemo.tech/api/";
-
-    return URL;
+    return import.meta.env.VITE_BASE_URL;
   },
   razorPayKey: function () {
-    // const key = "rzp_test_xMw7fbS5jks9Ye";
-    const key = "rzp_live_koTSgNVBozLvcc";
-
-    return key;
+    return import.meta.env.VITE_RAZORPAY_KEY_LIVE;
   },
   googleMapsApiKey: function () {
-    const apiKey = "AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0";
-
-    return apiKey;
+    return import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
   },
+  // baseUrl: function () {
+  //   const URL = "https://happydonorsdev.devdemo.tech/api/";
 
-  // token:
-  //   "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNDQyNmFmOWNiOWVlZmEwOGNlOTA1YzdhZWM5NTA2NDE1ZmQyZTdhYjRmNzVmODc3Y2MxMTRmMzc2MWQ4MGVmZmNlMzYzNDQ4NjlmOTQyOGEiLCJpYXQiOjE3MjU4ODc5MzMuNTI2NDY1LCJuYmYiOjE3MjU4ODc5MzMuNTI2NDY4LCJleHAiOjE3NTc0MjM5MzMuNTI0OTg1LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.ZTeodqjB6OYrLvEtuEo0XKUZ41mp6ANMWFJ1B1UBvLxQ0rSwTtgShZSOJKZ4NODIO-PZdQkXeS4eCsWXCqDpotQdZHzvXiSEUV1N6WtMThezbqsy4iRSk6cRr8drBVRyiN2aMx_9W-XjIOvFKglnbLCTj-2uuN7x8zn-jc4a8yoy35Ye06DScoe0GW6gLLhugs-xafq74jw5CTjclDSxnZcHVk9RwlAZNRaBx83qi1LG04rE3e_xEy4G3m_DrVkekWe4QfAGOvtKIOgLbsrVvCRzRFN6wmTPqZbGQOMtdwTJK3NVIy6Z9HOHypDVc75nrWPqyTyWtfe7ZcMp3YGa2O6ulZqxUGqpNr-oWKgpRSgywkzKtkkeGaRflafIC0nmqnGOpAqil0K3D4F2lLgt6Ro9YWFR6lKSxTTr9AGYzGskbC8fOlRe2-13VHVv3HxFzC4cMcpHcdmzOjjtWB3L89CQ39XmEcP4QHNpZvfNIpkMmfv6AsMQ0VQuQvBwrO6S61bSe9pV0wggmDqpL1KdXIWXQbW5SKWewi_DfQxIR3p-7BLRxYOW-b2eQZt5RF9083RzOsEauDGIlp_ql2YOn818679jsa5QFLxvT07Ak_L5gGHgcnShl1HBrc8jke9vTR3_4rIzyPdaJX9uObhZD4xih0BNpNU7v3Hgge75dcg",
+  //   return URL;
+  // },
+  // razorPayKey: function () {
+  //   // const key = "rzp_test_xMw7fbS5jks9Ye";
+  //   const key = "rzp_live_koTSgNVBozLvcc";
+
+  //   return key;
+  // },
+  // googleMapsApiKey: function () {
+  //   const apiKey = "AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0";
+
+  //   return apiKey;
+  // },
+
   postData: async function (url, data) {
     let axiosConfig = {
       headers: {

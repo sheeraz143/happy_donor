@@ -414,11 +414,11 @@ const Registerbloodbank = () => {
               className="form-checkbox"
             />
             <label>
-              I have read and agree to the
+              I have read and agree to the{" "}
               <Link to="/terms-and-conditions.html" target="_blank">
-                terms of service
+                terms of service{" "}
               </Link>
-              and
+              and{" "}
               <Link to="/privacy-policy.html" target="_blank">
                 privacy policy
               </Link>
@@ -433,7 +433,7 @@ const Registerbloodbank = () => {
             Save
           </button>
           <p className="login-option text-center">
-            Already have an account?
+            Already have an account?{" "}
             <Link to="/login/bloodbank" className="login-link">
               Login here
             </Link>
