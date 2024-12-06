@@ -472,9 +472,9 @@ const RegisterOrg = () => {
             <label>
               I have read and agree to the{" "}
               <Link to="/terms-and-conditions.html" target="_blank">
-                terms of service
+                terms of service {" "}
               </Link>
-              and{" "}
+              and {" "}
               <Link to="/privacy-policy.html" target="_blank">
                 privacy policy
               </Link>
@@ -489,7 +489,7 @@ const RegisterOrg = () => {
             Save
           </button>
           <p className="login-option text-center">
-            Already have an account?
+            Already have an account?{" "}
             <Link to="/login/organisation" className="login-link">
               Login here
             </Link>

@@ -29,13 +29,11 @@ function DonationHistory() {
     setSelectedDonor(null);
   };
 
-  // Fetch donation history data based on the current page
   const fetchDonationHistory = (page = 1) => {
     dispatch(setLoader(true));
     try {
       dispatch(
         DonateHistory(page, (res) => {
-          // Provide page directly
           if (res.code === 200 && res.donors && res.donors.length > 0) {
             setDonors(res.donors);
             setTotalRequests(res.pagination.total);
@@ -62,74 +60,161 @@ function DonationHistory() {
   };
 
   const renderRequestCard = (request) => (
-    <div className="request-card" key={request?.request_id || request?.camp_id}>
-      <div className="request-header d-flex align-items-center">
-        <div className="align-content-center">
-          <img
-            src={request?.profile_picture || profPicImg}
-            alt="Profile"
-            style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = profPicImg;
-            }}
-          />
-        </div>
-        <div className="request-details ms-3">
-          <div className="request-date text-start">
-            {request?.patient_name ?? request?.donor_name}
+    <>
+      {request?.type === "BloodRequestDonor" ? (
+        <div
+          className="request-card"
+          key={request?.request_id || request?.camp_id}
+        >
+          <div className="request-header d-flex align-items-center">
+            <div className="align-content-center">
+              <img
+                src={request?.profile_picture || profPicImg}
+                alt="Profile"
+                style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = profPicImg;
+                }}
+              />
+            </div>
+            <div className="request-details ms-3">
+              <div className="request-date text-start">
+                {request?.patient_name ?? request?.donor_name}
+              </div>
+              <div className="request-date text-start">
+                Donated on: {formatDate(request?.date)}
+              </div>
+              {/* <div className="request-date text-start">
+                Status: {request?.status}
+              </div> */}
+              <div className="request-date text-start">{request?.location}</div>
+              <div
+                className="request-date text-start"
+                style={{ color: "blue" }}
+              >
+                {request?.donation_status ??
+                  `Contributed amount: ${request?.contributed_amount ?? 0}`}
+              </div>
+            </div>
+            <div className="blood-group ms-auto">
+              <h3 className="blood-group" style={{ color: "red" }}>
+                {request.blood_group || ""}
+              </h3>
+            </div>
           </div>
-          <div className="request-date text-start">
-            Donated on: {formatDate(request?.donated_date)}
-          </div>
-          <div className="request-date text-start">
-            Status: {request?.status}
-          </div>
-          <div className="request-date text-start">{request?.location}</div>
-          <div className="request-date text-start" style={{ color: "blue" }}>
-            {request?.donation_status ??
-              `Contributed amount: ${request?.contributed_amount ?? 0}`}
-          </div>
-        </div>
-        <div className="blood-group ms-auto">
-          <h3 className="blood-group" style={{ color: "red" }}>
-            {request.blood_group || ""}
-          </h3>
-        </div>
-      </div>
 
-      <div className="accept-donar-button d-flex align-items-center mt-3 justify-content-end">
-        <div className="accept-donar-button d-flex justify-content-end gap-3 mt-2">
-          {(request.donation_status === "Completed" ||
-            request.donation_status === "Donated" ||
-            request.status === "completed") && (
-            <>
-              <button className="accepted-donors-btn btn-secondary" disabled>
-                Donated
-              </button>
-
-              {request?.type === "BloodRequestDonor" &&
-                request?.gratitude_msg && (
+          <div className="accept-donar-button d-flex align-items-center mt-3 justify-content-end">
+            <div className="accept-donar-button d-flex justify-content-end gap-3 mt-2">
+              {(request.donation_status === "Completed" ||
+                request.donation_status === "Donated" ||
+                request.status === "completed") && (
+                <>
                   <button
-                    className="accepted-donors-btn"
-                    onClick={() => openModal(request)}
+                    className="accepted-donors-btn btn-secondary"
+                    disabled
                   >
-                    View Gratitude Message
+                    Donated
                   </button>
-                )}
-              {request?.type === "CampDonor" && request?.gratitude_msg && (
-                <button
-                  className="accepted-donors-btn"
-                  onClick={() => openModal(request)}
-                >
-                  View TTI Report
-                </button>
+
+                  {request?.type === "BloodRequestDonor" &&
+                    request?.gratitude_msg && (
+                      <button
+                        className="accepted-donors-btn"
+                        onClick={() => openModal(request)}
+                      >
+                        View Gratitude Message
+                      </button>
+                    )}
+                  {request?.type === "CampDonor" && request?.message && (
+                    <button
+                      className="accepted-donors-btn"
+                      onClick={() => openModal(request)}
+                    >
+                      View TTI Report
+                    </button>
+                  )}
+                </>
               )}
-            </>
-          )}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      ) : (
+        <div
+          className="request-card"
+          key={request?.request_id || request?.camp_id}
+        >
+          <div className="request-header d-flex align-items-center">
+            <div className="align-content-center">
+              <img
+                src={request?.camp_image || profPicImg}
+                alt="Profile"
+                style={{ width: "80px", height: "50px" }}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = profPicImg;
+                }}
+              />
+            </div>
+            <div className="request-details ms-3">
+              <div className="request-date text-start">{request?.title}</div>
+
+              <div className="request-date text-start">
+                Status: {request?.status}
+              </div>
+              <div className="request-date text-start">{request?.location}</div>
+              <div
+                className="request-date text-start"
+                style={{ color: "blue" }}
+              >
+                {request?.donation_status ??
+                  `Contributed amount: ${request?.contributed_amount ?? 0}`}
+              </div>
+            </div>
+            <div className="blood-group ms-auto">
+              <h3 className="blood-group" style={{ color: "red" }}>
+                {request.blood_group || ""}
+              </h3>
+            </div>
+          </div>
+
+          <div className="accept-donar-button d-flex align-items-center mt-3 justify-content-end">
+            <div className="accept-donar-button d-flex justify-content-end gap-3 mt-2">
+              {(request.donation_status === "Completed" ||
+                request.donation_status === "Donated" ||
+                request.status === "completed") && (
+                <>
+                  <button
+                    className="accepted-donors-btn btn-secondary"
+                    disabled
+                  >
+                    Donated
+                  </button>
+
+                  {request?.type === "BloodRequestDonor" &&
+                    request?.gratitude_msg && (
+                      <button
+                        className="accepted-donors-btn"
+                        onClick={() => openModal(request)}
+                      >
+                        View Gratitude Message
+                      </button>
+                    )}
+                  {request?.type === "CampDonor" && request?.message && (
+                    <button
+                      className="accepted-donors-btn"
+                      onClick={() => openModal(request)}
+                    >
+                      View TTI Report
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 
   return (
