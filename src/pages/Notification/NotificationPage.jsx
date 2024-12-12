@@ -123,7 +123,7 @@ export default function NotificationPage({ onRefreshNavbar }) {
         navigate(`/editprofile`);
         break;
       case "Donation":
-        navigate(`/viewbloodrequest/${link}`);
+        navigate(`/bloodrequestdetail/${link}`);
         break;
       default:
         console.log("Unknown screen type:", screen);
