@@ -51,7 +51,7 @@ export default function NotificationPage({ onRefreshNavbar }) {
 
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage, fetchData]);
+  }, [currentPage, fetchData,refresh]);
 
   // Handler to mark all notifications as read
   const handleMarkAllAsRead = () => {
@@ -99,6 +99,7 @@ export default function NotificationPage({ onRefreshNavbar }) {
   };
 
   const handleNotificationClick = (notification) => {
+    // console.log('notification: ', notification);
     const { screen, link } = notification;
 
     switch (screen) {

@@ -143,29 +143,31 @@ const BloodRequest = () => {
       style={{ cursor: "pointer", position: "relative" }}
       onClick={() => handleCardClick(request)}
     >
-      <button
-        className="close-button"
-        onClick={(event) => openModal(request, event)}
-        style={{
-          position: "absolute",
-          top: "10px",
-          right: "10px",
-          background: "white",
-          border: "1px solid lightgray",
-          borderRadius: "50%",
-          color: "gray",
-          cursor: "pointer",
-          fontSize: "16px",
-          width: "24px",
-          height: "24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-        }}
-      >
-        <FaTimes />
-      </button>
+      {isOpen && (
+        <button
+          className="close-button"
+          onClick={(event) => openModal(request, event)}
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+            background: "white",
+            border: "1px solid lightgray",
+            borderRadius: "50%",
+            color: "gray",
+            cursor: "pointer",
+            fontSize: "16px",
+            width: "24px",
+            height: "24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
+          }}
+        >
+          <FaTimes />
+        </button>
+      )}
 
       <div className="request-header">
         <div className="align-content-center">

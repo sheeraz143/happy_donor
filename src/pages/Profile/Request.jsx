@@ -63,7 +63,6 @@ function Request() {
 
 
   const onSubmit = (data) => {
-    // console.log("data: ", data);
     dispatch(setLoader(true));
     try {
       const payload = {
@@ -86,9 +85,6 @@ function Request() {
         required_from: convertTo12HourFormat(data?.required_from),
         required_to: convertTo12HourFormat(data?.required_to),
       };
-// console.log(payload);
-//       return;
-
       dispatch(
         requestBlood(payload, (res) => {
           if (res.errors) {
@@ -342,7 +338,6 @@ function Request() {
         <Autocomplete
           apiKey="AIzaSyBVLHSGMpSu2gd260wXr4rCI1qGmThLE_0"
           onPlaceSelected={(place) => {
-            console.log(place);
             if (place.geometry) {
               setValue("address", place.formatted_address, {
                 shouldValidate: true,

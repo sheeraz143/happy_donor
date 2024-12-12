@@ -168,6 +168,9 @@ function Donate() {
             <div className="text-start">
               Blood units: {request?.units_required}
             </div>
+            <div className="text-start">
+              Phone Number: {request?.attender_mobile_number}
+            </div>
             <div className="text-start">{request?.location}</div>
           </div>
           <div className="blood-group">
