@@ -25,13 +25,25 @@ const OTPVerificationComponent = () => {
     }
   };
 
+  // const handleBackspace = (e, index) => {
+  //   if (e.key === "Backspace" && !otp[index] && index > 0) {
+  //     // Move focus to the previous input if it's empty
+  //     document.getElementById(`otp-input-${index - 1}`).focus();
+  //   }
+  // };
+
   const handleBackspace = (e, index) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       // Move focus to the previous input if it's empty
       document.getElementById(`otp-input-${index - 1}`).focus();
+    } else if (e.key === "Delete") {
+      // Clear the current input field on Delete key press
+      let newOtp = [...otp];
+      newOtp[index] = "";
+      setOtp(newOtp);
     }
   };
-
+  
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       handleVerify();

@@ -172,7 +172,15 @@ const BloodRequest = () => {
       <div className="request-header">
         <div className="align-content-center">
           <img
-            src={request.profile_picture || profPicImg}
+            // src={request.profile_picture || profPicImg}
+            src={
+              (request.profile_picture &&
+                request.profile_picture.replace(
+                  "/public/profile_pictures/public/profile_pictures/",
+                  "/public/profile_pictures/"
+                )) ||
+              profPicImg
+            }
             alt="Profile"
             style={{ height: "70px", width: "70px", borderRadius: "50%" }}
             onError={(e) => {
@@ -186,6 +194,15 @@ const BloodRequest = () => {
           <div className="request-date text-start">
             {formatDate(request.date)}
           </div>
+          <div className="request-date text-start">
+            Patient Name: {request.patient_name}
+          </div>
+          {request.hospital_or_bank_name && (
+            <div className="request-date text-start">
+              Hospital / Blood Bank Name: {request.hospital_or_bank_name}
+            </div>
+          )}
+
           <div className="request-date text-start">
             Time: {request?.from && <span>{request.from}</span>}
             {request?.to && <span> to {request.to}</span>}

@@ -236,7 +236,7 @@ const BloodMedicalCamps = () => {
 
     const formatTime = (timeString) => {
       if (!timeString || !/^\d{2}:\d{2}:\d{2}$/.test(timeString))
-        return "Invalid time";
+        return "";
       const [hours, minutes] = timeString.split(":");
       const date = new Date();
       date.setHours(hours, minutes);

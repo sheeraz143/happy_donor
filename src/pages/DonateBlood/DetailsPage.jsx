@@ -28,7 +28,7 @@ export default function RequestDetail() {
   function convertToLocalTime(timeString) {
     // Check if the input is a valid time in "HH:mm" format
     if (!timeString || !/^\d{2}:\d{2}$/.test(timeString)) {
-      return "Invalid time"; // Return a default message for invalid time
+      return ""; // Return a default message for invalid time
     }
 
     // Parse the valid time string
@@ -151,6 +151,15 @@ export default function RequestDetail() {
                     {data?.to && <span> to {convertToLocalTime(data.to)}</span>}
                   </div>
                   <div className="text-start">{formatDate(data?.date)}</div>
+                  <div className="text-start">
+                    Patient Name: {data.patient_name}
+                  </div>
+                  {data.hospital_or_bank_name && (
+                    <div className="text-start">
+                      Hospital / Blood Bank Name:{" "}
+                      {data.hospital_or_bank_name}
+                    </div>
+                  )}
                   <div className="text-start">
                     Blood units: {data?.units_required}
                   </div>

@@ -190,6 +190,14 @@ export default function BloodrequestDetailPage() {
                     Time: {data?.from && <span>{data.from}</span>}
                     {data?.to && <span> to {data.to}</span>}
                   </div>
+                  <div className="text-start">
+                    Patient Name: {data.patient_name}
+                  </div>
+                  {data.hospital_or_bank_name && (
+                    <div className="text-start">
+                      Hospital / Blood Bank Name: {data.hospital_or_bank_name}
+                    </div>
+                  )}
                   <div className="text-start">Units: {data.units_required}</div>
                   <div className="text-start">{data.location}</div>
                 </div>

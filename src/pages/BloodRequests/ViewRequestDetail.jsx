@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setLoader, ViewBloodRequestUser } from "../../redux/product";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 export default function ViewrequestDetailPage() {
   const dispatch = useDispatch();
@@ -51,14 +51,6 @@ export default function ViewrequestDetailPage() {
         style={{ maxWidth: "1280px", margin: "0 auto" }}
       >
         <div
-          className="flex-shrink-0"
-          style={{ flex: "0 0 40%", paddingRight: "20px" }}
-        >
-          <MapComponent
-            path={[{ lat: parseFloat(data.lat), lng: parseFloat(data.lon) }]}
-          />
-        </div>
-        <div
           className="col-lg-7 col-md-8 col-sm-10 d-flex flex-column"
           style={{ flex: "0 0 60%" }}
         >
@@ -88,7 +80,7 @@ export default function ViewrequestDetailPage() {
                   <div className="text-start">Units: {data.units_required}</div>
                   <div className="text-start">Address: {data.address}</div>
                 </div>
-                <div className="blood-group ms-auto">
+                <div className="blood-group">
                   <h3 className="blood-group" style={{ color: "red" }}>
                     {data.blood_group || "Unknown"}
                   </h3>
@@ -96,10 +88,30 @@ export default function ViewrequestDetailPage() {
               </div>
             </div>
           </div>
-          <p className="text-center mt-5">
-            Visit <Link to="https://www.happydonors.ngo">Happy Donors</Link> for
+          {/* <p className="text-center mt-5">
+            Visit{" "}
+            <Link to="https://app.happydonors.ngo/login">Happy Donors</Link> for
             more details.
+          </p> */}
+          <p className="text-center mt-5">
+            Visit
+            <a
+              href="https://app.happydonors.ngo/login"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Happy Donors
+            </a>
+            for more details.
           </p>
+        </div>
+        <div
+          className="flex-shrink-0"
+          style={{ flex: "0 0 40%", paddingRight: "20px" }}
+        >
+          <MapComponent
+            path={[{ lat: parseFloat(data.lat), lng: parseFloat(data.lon) }]}
+          />
         </div>
       </div>
     </>

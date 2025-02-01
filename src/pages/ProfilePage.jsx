@@ -36,7 +36,9 @@ const Profile = () => {
     setValue,
     trigger,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: { availability: true },
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -44,6 +46,7 @@ const Profile = () => {
     try {
       dispatch(
         getProfile((res) => {
+          console.log("res: ", res);
           // const user = res?.user;
           setValue("title", res?.user?.title);
           setValue("firstName", res?.user?.first_name);
@@ -58,7 +61,8 @@ const Profile = () => {
           setValue("address", res?.user?.location);
           setLocation(res?.user?.address);
           setValue("lastDonationDate", res?.user?.last_blood_donation_date);
-          setValue("availability", res?.user?.availability);
+          // setValue("availability", res?.user?.availability);
+          setValue("availability", res?.user?.availability ?? true);
           setValue("terms", res?.user?.terms_accepted);
           // setOriginalData(user);
           // setData(res?.user);
@@ -95,7 +99,6 @@ const Profile = () => {
   // Function to handle form submission
   const onSubmit = (data) => {
     // console.log("data: ", data);
-    // return;
     dispatch(setLoader(true)); // Start loading
     try {
       const payload = {
@@ -115,11 +118,15 @@ const Profile = () => {
         lat: data?.lat,
         lon: data?.lon,
         // availability: data?.availability !== null ? data.availability : false,
-        availability: true,
+        availability: data?.availability == true ? 1 : 0,
+        // availability: true,
         terms_accepted: data?.terms,
-        aadhar_id: data?.aadhar_id,
-        abhid: data?.abhid,
+        // aadhar_id: data?.aadhar_id,
+        // abhid: data?.abhid,
       };
+
+      // console.log("payload: ", payload);
+      // return;
 
       dispatch(
         updateProfile(payload, (res) => {
@@ -367,15 +374,34 @@ const Profile = () => {
           onFocus={(e) => {
             e.target.showPicker();
           }}
-          {...register("lastDonationDate", { required: true })}
+          {...register("lastDonationDate", { required: false })}
         />
         {errors.lastDonationDate && (
           <p className="error-message">Last Donation Date is required</p>
         )}
       </div>
 
-      {/* Aadhar Number */}
+      {/* Interested to donate blood ? */}
       <div className="form-group">
+        {/* <label>Interested to donate blood ?</label> */}
+        <div className=" switch-container justify-content-none gap-3">
+          <label className="switch-label">Interested to donate blood ?</label>
+          <label className="switch">
+            <input
+              type="checkbox"
+              {...register("availability", { required: false })}
+              className="switch-input"
+            />
+            <span className="slider round"></span>
+          </label>
+          {errors.availability && (
+            <p className="error-message">{errors.availability.message}</p>
+          )}
+        </div>
+      </div>
+
+      {/* Aadhar Number */}
+      {/* <div className="form-group">
         <label>Aadhar ID </label>
         <input
           className="form-input"
@@ -393,9 +419,9 @@ const Profile = () => {
         {errors.aadhar_id && (
           <p className="error-message">{errors.aadhar_id.message}</p>
         )}
-      </div>
+      </div> */}
       {/* Aadhar Number */}
-      <div className="form-group">
+      {/* <div className="form-group">
         <label>Abha ID </label>
         <input
           className="form-input"
@@ -413,19 +439,6 @@ const Profile = () => {
         {errors.abhid && (
           <p className="error-message">{errors.abhid.message}</p>
         )}
-      </div>
-
-      {/* Availability Toggle Switch */}
-      {/* <div className=" switch-container">
-        <label className="switch-label">Availability</label>
-        <label className="switch">
-          <input
-            type="checkbox"
-            {...register("availability")}
-            className="switch-input"
-          />
-          <span className="slider round"></span>
-        </label>
       </div> */}
 
       {/* Terms and Conditions */}

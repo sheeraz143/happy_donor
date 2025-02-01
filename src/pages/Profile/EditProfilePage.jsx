@@ -64,8 +64,8 @@ const EditProfilePage = () => {
           setValue("address", user?.location);
           setLocation(user?.address);
           setValue("last_blood_donation_date", user?.last_blood_donation_date);
-          setValue("aadhar_id", user?.aadhar_id);
-          setValue("abhid", user?.abhid);
+          // setValue("aadhar_id", user?.aadhar_id);
+          // setValue("abhid", user?.abhid);
 
           // Fetch latitude and longitude if they exist
           if (user?.lat && user?.lon) {
@@ -418,7 +418,7 @@ const EditProfilePage = () => {
       </div>
 
       {/* Aadhar Number */}
-      <div className="form-group">
+      {/* <div className="form-group">
         <label>Aadhar ID </label>
         <input
           className="form-input"
@@ -436,9 +436,9 @@ const EditProfilePage = () => {
         {errors.aadhar_id && (
           <p className="error-message">{errors.aadhar_id.message}</p>
         )}
-      </div>
+      </div> */}
       {/* Aadhar Number */}
-      <div className="form-group">
+      {/* <div className="form-group">
         <label>Abha ID </label>
         <input
           className="form-input"
@@ -456,7 +456,7 @@ const EditProfilePage = () => {
         {errors.abhid && (
           <p className="error-message">{errors.abhid.message}</p>
         )}
-      </div>
+      </div> */}
 
       {/* Submit Button */}
       <button type="submit" className="submit-button">

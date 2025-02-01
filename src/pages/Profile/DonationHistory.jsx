@@ -225,7 +225,7 @@ function DonationHistory() {
           {donors.length > 0 ? (
             donors.map(renderRequestCard)
           ) : (
-            <h4 className="mx-auto mb-5 text-center">No Data available.</h4>
+            <h4 className="mx-auto mb-5 text-center">No History Found.</h4>
           )}
         </div>
       </div>

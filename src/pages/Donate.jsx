@@ -34,23 +34,23 @@ function Donate() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  function convertToLocalTime(timeString) {
-    // Check if the input is a valid time in "HH:mm" format
-    if (!timeString || !/^\d{2}:\d{2}$/.test(timeString)) {
-      return "Invalid time"; // Return a default message for invalid time
-    }
+  // function convertToLocalTime(timeString) {
+  //   // Check if the input is a valid time in "HH:mm" format
+  //   if (!timeString || !/^\d{2}:\d{2}$/.test(timeString)) {
+  //     return ""; // Return a default message for invalid time
+  //   }
 
-    // Parse the valid time string
-    const [hours, minutes] = timeString.split(":").map(Number);
+  //   // Parse the valid time string
+  //   const [hours, minutes] = timeString.split(":").map(Number);
 
-    // Create a new Date object
-    const date = new Date();
-    date.setHours(hours, minutes);
+  //   // Create a new Date object
+  //   const date = new Date();
+  //   date.setHours(hours, minutes);
 
-    // Format the time to a user-friendly format
-    const options = { hour: "numeric", minute: "numeric", hour12: true };
-    return new Intl.DateTimeFormat("en-US", options).format(date);
-  }
+  //   // Format the time to a user-friendly format
+  //   const options = { hour: "numeric", minute: "numeric", hour12: true };
+  //   return new Intl.DateTimeFormat("en-US", options).format(date);
+  // }
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -161,10 +161,17 @@ function Donate() {
             <div className="text-start fw-bold">{request?.name}</div>
             <div className="text-start">{formatDate(request?.date)}</div>
             <div className="text-start">
-              Time:{" "}
-              {request?.from && <span>{convertToLocalTime(request.from)}</span>}
-              {request?.to && <span> to {convertToLocalTime(request.to)}</span>}
+              Time: {request?.from && <span>{request.from}</span>}
+              {request?.to && <span> to {request.to}</span>}
             </div>
+            <div className="text-start">
+              Patient Name: {request.patient_name}
+            </div>
+            {request.hospital_or_bank_name && (
+              <div className="text-start">
+                Hospital / Blood Bank Name: {request.hospital_or_bank_name}
+              </div>
+            )}
             <div className="text-start">
               Blood units: {request?.units_required}
             </div>
@@ -288,9 +295,17 @@ function Donate() {
             <div className="text-start">{formatDate(request?.date)}</div>
             <div className="text-start">
               Time:
-              {request?.from && <span>{convertToLocalTime(request.from)}</span>}
-              {request?.to && <span> to {convertToLocalTime(request.to)}</span>}
+              {request?.from && <span>{request.from}</span>}
+              {request?.to && <span> to {request.to}</span>}
             </div>
+            <div className="text-start">
+              Patient Name: {request.patient_name}
+            </div>
+            {request.hospital_or_bank_name && (
+              <div className="text-start">
+                Hospital / Blood Bank Name: {request.hospital_or_bank_name}
+              </div>
+            )}
             <div className="text-start">
               Blood units: {request?.units_required}
             </div>

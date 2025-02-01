@@ -55,12 +55,11 @@ function Request() {
   };
 
   function convertTo12HourFormat(time) {
-    const [hours, minutes] = time.split(':');
-    const period = +hours < 12 ? 'AM' : 'PM';
+    const [hours, minutes] = time.split(":");
+    const period = +hours < 12 ? "AM" : "PM";
     const adjustedHours = +hours % 12 || 12; // Adjust hours
     return `${adjustedHours}:${minutes} ${period}`;
-}
-
+  }
 
   const onSubmit = (data) => {
     dispatch(setLoader(true));
@@ -82,6 +81,8 @@ function Request() {
         mobile_number: data?.mobileNumber,
         willing_to_arrange_transport: Boolean(data?.willing),
         terms_agreed: data?.terms,
+        hospital_or_bank_name: data?.hospital_or_bank_name,
+        medical_condition: data?.medical_condition,
         required_from: convertTo12HourFormat(data?.required_from),
         required_to: convertTo12HourFormat(data?.required_to),
       };
@@ -185,6 +186,7 @@ function Request() {
           <option value="A2B-ve">A2B-ve</option>
           <option value="Bombay Blood Group">Bombay Blood Group</option>
           <option value="INRA">INRA</option>
+          <option value="Any Group">Any Group</option>
         </select>
         {errors.bloodGroup && (
           <p className="error-message">Blood Group is required</p>
@@ -202,10 +204,12 @@ function Request() {
         >
           <option value="">Select</option>
           <option value="WholeBlood">Whole Blood</option>
-          <option value="Red Blood Cells">Red Blood Cells</option>
-          <option value="Plasma">Plasma</option>
           <option value="Platelets">Platelets</option>
           <option value="Cryoprecipitate">Cryoprecipitate</option>
+          <option value="Plasma">Plasma</option>
+          <option value="RBC">RBC</option>
+          <option value="WBC">WBC</option>
+          <option value="Fresh frozen plasma">Fresh frozen plasma</option>
         </select>
         {errors.bloodComponent && (
           <p className="error-message">Blood Component is required</p>
@@ -308,6 +312,10 @@ function Request() {
             <input
               className="form-input"
               type="time"
+              onFocus={(e) => {
+                e.target.showPicker();
+              }}
+              style={{ cursor: "pointer" }}
               {...register("required_from", { required: true })}
             />
             {errors.required_from && (
@@ -321,6 +329,10 @@ function Request() {
             <input
               className="form-input"
               type="time"
+              onFocus={(e) => {
+                e.target.showPicker();
+              }}
+              style={{ cursor: "pointer" }}
               {...register("required_to", { required: true })}
             />
             {errors.required_to && (
@@ -469,6 +481,39 @@ function Request() {
           <option value="no">No</option>
         </select>
         {errors.willing && <p className="error-message">Field is required </p>}
+      </div>
+
+      {/* Hospital / Blood Bank Name */}
+      <div className="form-group">
+        <label>
+          Hospital / Blood Bank Name
+          <span className="required-asterisk">*</span>
+        </label>
+        <input
+          className="form-input"
+          type="text"
+          {...register("hospital_or_bank_name", { required: true })}
+        />
+        {errors.hospital_or_bank_name && (
+          <p className="error-message">
+            Hospital / Blood Bank Name is required
+          </p>
+        )}
+      </div>
+
+      {/*Medical condition*/}
+      <div className="form-group">
+        <label>
+          Medical condition <span className="required-asterisk">*</span>
+        </label>
+        <input
+          className="form-input"
+          type="text"
+          {...register("medical_condition", { required: true })}
+        />
+        {errors.medical_condition && (
+          <p className="error-message">Medical condition is required</p>
+        )}
       </div>
 
       {/* Terms and Conditions */}

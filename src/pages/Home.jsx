@@ -65,7 +65,7 @@ function Home() {
   function convertToLocalTime(timeString) {
     // Check if the input is a valid time in "HH:mm" format
     if (!timeString || !/^\d{2}:\d{2}$/.test(timeString)) {
-      return "Invalid time"; // Return a default message for invalid time
+      return ""; // Return a default message for invalid time
     }
 
     // Parse the valid time string
@@ -319,6 +319,14 @@ function Home() {
                 <span> to {convertToLocalTime(request.to)}</span>
               )}{" "}
             </div>
+            <div className="text-start">
+              Patient Name: {request.patient_name}
+            </div>
+            {request.hospital_or_bank_name && (
+              <div className="text-start">
+                Hospital / Blood Bank Name: {request.hospital_or_bank_name}
+              </div>
+            )}
             <div
               className="request-address text-start"
               style={{ color: "#000" }}
@@ -477,7 +485,7 @@ function Home() {
         ) : (
           <div className="card cursor-pointer" onClick={() => handleSubmit()}>
             <img src={sos} alt="Emergency SOS" />
-            <p style={{ color: "green" }}>Emergency SOS</p>
+            <p style={{ color: "green" }}>Emergency Reach</p>
           </div>
         )}
       </div>
