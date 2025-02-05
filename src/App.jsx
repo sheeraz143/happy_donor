@@ -72,6 +72,7 @@ import ChangeRequests from "./pages/Approvals/ChangeRequests";
 import CampsEvents from "./pages/Approvals/CampsEvents";
 import ResetPassword from "./pages/ResetPassword";
 import Forgotpassword from "./pages/Forgotpassword";
+import FundDonationMobile from "./pages/Donation/FundDonationMobile";
 // import FirebaseComponent from "./pushnotification/FirebaseComponent";
 
 function App() {
@@ -126,6 +127,8 @@ function App() {
       {!hideNavbarAndFooter && <Navbar refreshNavbar={refreshNavbar} />}
       <Routes>
         <Route path="/login" element={<LoginComponent />} />
+        <Route path="/fundDonationMobile" element={<FundDonationMobile />} />
+
         <Route
           path="/login/organisation"
           element={<LoginOrg onRefreshNavbar={handleRefreshNavbar} />}
