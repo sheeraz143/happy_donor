@@ -28,13 +28,14 @@ export default function FundDonationMobile() {
     // Extract token from URL
     const params = new URLSearchParams(window.location.search);
     const tokenFromUrl = params.get("token");
+    console.log('tokenFromUrl: ', tokenFromUrl);
     const userTypeFromUrl = params.get("user_type");
     const profileUpdateFromUrl = params.get("is_profile_update");
   
     if (tokenFromUrl) {
-      const encodedToken = encodeURIComponent(btoa(tokenFromUrl)); // Encode the token
+      // const encodedToken = encodeURIComponent(btoa(tokenFromUrl)); // Encode the token
   
-      localStorage.setItem("oAuth", encodedToken); // Store encoded token
+      localStorage.setItem("oAuth", tokenFromUrl); // Store encoded token
       localStorage.setItem("user_type", userTypeFromUrl);
       localStorage.setItem("is_profile_update", profileUpdateFromUrl);
   
@@ -43,6 +44,8 @@ export default function FundDonationMobile() {
       // const newUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
       // window.history.replaceState(null, "", newUrl);
     }
+
+    
   
     window.scrollTo(0, 0);
   }, []);
