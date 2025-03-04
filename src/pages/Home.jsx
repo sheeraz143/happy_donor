@@ -7,7 +7,7 @@ import requestblood from "../assets/requestblood.png";
 import donateblood from "../assets/donateblood.png";
 import medicalcamps from "../assets/medicalcamps.png";
 import funddonation from "../assets/funddonation.png";
-import sos from "../assets/sos.png";
+import sos from "../assets/star_sos.webp";
 // import bloodGroupImg from "../assets/bloodimage.png";
 import profPicImg from "../assets/prof_img.png";
 import shareIcon from "../assets/Share.png";
@@ -146,6 +146,9 @@ function Home() {
           if (res.code === 200) {
             toast.success(res.message);
             // navigate("#");
+          }
+          if (res.status === 404) {
+            toast.error(res?.data?.error);
           } else {
             const errorMessages = res.message || "An error occurred.";
             toast.error(errorMessages);
@@ -484,7 +487,7 @@ function Home() {
           ""
         ) : (
           <div className="card cursor-pointer" onClick={() => handleSubmit()}>
-            <img src={sos} alt="Emergency SOS" />
+            <img src={sos} alt="Emergency SOS" style={{ height: "61px" }} />
             <p style={{ color: "green" }}>Emergency Reach</p>
           </div>
         )}

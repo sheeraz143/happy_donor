@@ -1556,11 +1556,14 @@ export const sendSOS =
       // If response is 200, send the data
       if (response.status === 200) {
         callback(result);
+      }
+      if (response.status === 404) {
+        callback(response?.response);
       } else {
         // If not 200, send an error message
         callback({
           status: false,
-          code: response.status,
+          code: response?.response?.data?.error,
           message: response?.data.message,
         });
       }

@@ -54,7 +54,7 @@ export default function WriteToUs() {
       dispatch(
         getProfile((res) => {
           const user = res?.user;
-          setValue("title", user?.title);
+          // setValue("title", user?.title);
           setValue("first_name", user?.first_name);
           setValue("last_name", user?.last_name);
           setValue("mobile", user?.phone_number);
@@ -109,7 +109,7 @@ export default function WriteToUs() {
       <div className="d-flex align-items-center justify-content-around">
         <h3>Write to us</h3>
       </div>
-      <div className="form-group">
+      {/* <div className="form-group">
         <label>Title</label>
         <select
           className="form-input"
@@ -122,7 +122,7 @@ export default function WriteToUs() {
           <option value="Dr">Dr</option>
         </select>
         {errors.title && <p className="error-message">Title is required</p>}
-      </div>
+      </div> */}
 
       {/* First Name */}
       <div className="form-group">

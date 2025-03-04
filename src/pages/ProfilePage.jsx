@@ -48,7 +48,7 @@ const Profile = () => {
         getProfile((res) => {
           console.log("res: ", res);
           // const user = res?.user;
-          setValue("title", res?.user?.title);
+          // setValue("title", res?.user?.title);
           setValue("firstName", res?.user?.first_name);
           setValue("lastName", res?.user?.last_name);
           setValue("phoneNumber", res?.user?.phone_number);
@@ -102,7 +102,7 @@ const Profile = () => {
     dispatch(setLoader(true)); // Start loading
     try {
       const payload = {
-        title: data?.title,
+        // title: data?.title,
         first_name: data?.firstName,
         last_name: data?.lastName,
         phone_number: data?.phoneNumber,
@@ -158,7 +158,7 @@ const Profile = () => {
         </Link>
       </div>
       {/* Title */}
-      <div className="form-group">
+      {/* <div className="form-group">
         <label>
           Title <span className="required-asterisk">*</span>
         </label>
@@ -174,7 +174,7 @@ const Profile = () => {
           <option value="Dr">Dr</option>
         </select>
         {errors.title && <p className="error-message">Title is required</p>}
-      </div>
+      </div> */}
 
       {/* First Name */}
       <div className="form-group">
