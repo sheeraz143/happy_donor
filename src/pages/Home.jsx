@@ -146,8 +146,7 @@ function Home() {
           if (res.code === 200) {
             toast.success(res.message);
             // navigate("#");
-          }
-          if (res.status === 404) {
+          } else if (res.status === 404) {
             toast.error(res?.data?.error);
           } else {
             const errorMessages = res.message || "An error occurred.";
