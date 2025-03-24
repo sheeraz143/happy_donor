@@ -59,6 +59,7 @@ const EditProfilePage = () => {
           setValue("email", user?.email);
           setValue("blood_group", user?.blood_group);
           setValue("date_of_birth", user?.date_of_birth);
+          setValue("regularDonor", user?.regularDonor);
           setValue("gender", user?.gender);
           // setValue("address", user?.address);
           setValue("address", user?.location);
@@ -152,15 +153,20 @@ const EditProfilePage = () => {
           // Handle boolean values separately
           if (key === "availability" || key === "termsAccepted") {
             formData.append(key, Boolean(data[key]).toString());
+      
+
+          } 
+          if (key === "regularDonor") {
+            formData.append("regularDonor", data[key]==true?1:0);
           } else {
             formData.append(key, data[key]);
           }
 
           // Add to changed data
-          changedData[key] = data[key];
+          // changedData[key] = data[key];
+          // changedData["regularDonor"]==false?0:1
         }
       });
-      // console.log("changedData: ", changedData);
 
       // Log formData for verification
       // for (let [key, value] of formData.entries()) {
@@ -216,7 +222,7 @@ const EditProfilePage = () => {
         />
       </div>
       {/* Title */}
-      <div className="form-group">
+      {/* <div className="form-group">
         <label>
           Title <span className="required-asterisk">*</span>
         </label>
@@ -232,7 +238,7 @@ const EditProfilePage = () => {
           <option value="Dr">Dr</option>
         </select>
         {errors.title && <p className="error-message">Title is required</p>}
-      </div>
+      </div> */}
 
       {/* First Name */}
       <div className="form-group">
@@ -417,6 +423,23 @@ const EditProfilePage = () => {
         )}
       </div>
 
+      <div className="form-group">
+        {/* <label>Interested to donate blood ?</label> */}
+        <div className=" switch-container justify-content-none gap-3">
+          <label className="switch-label">Are you willing to be a regular donor?</label>
+          <label className="switch">
+            <input
+              type="checkbox"
+              {...register("regularDonor", { required: false })}
+              className="switch-input"
+            />
+            <span className="slider round"></span>
+          </label>
+          {errors.regularDonor && (
+            <p className="error-message">{errors.regularDonor.message}</p>
+          )}
+        </div>
+      </div>
       {/* Aadhar Number */}
       {/* <div className="form-group">
         <label>Aadhar ID </label>

@@ -119,6 +119,7 @@ const Profile = () => {
         lon: data?.lon,
         // availability: data?.availability !== null ? data.availability : false,
         availability: data?.availability == true ? 1 : 0,
+        regularDonor: data?.regularDonor == true ? 1 : 0,
         // availability: true,
         terms_accepted: data?.terms,
         // aadhar_id: data?.aadhar_id,
@@ -400,6 +401,23 @@ const Profile = () => {
         </div>
       </div>
 
+      <div className="form-group">
+        {/* <label>Interested to donate blood ?</label> */}
+        <div className=" switch-container justify-content-none gap-3">
+          <label className="switch-label">Are you willing to be a regular donor?</label>
+          <label className="switch">
+            <input
+              type="checkbox"
+              {...register("regularDonor", { required: false })}
+              className="switch-input"
+            />
+            <span className="slider round"></span>
+          </label>
+          {errors.regularDonor && (
+            <p className="error-message">{errors.regularDonor.message}</p>
+          )}
+        </div>
+      </div>
       {/* Aadhar Number */}
       {/* <div className="form-group">
         <label>Aadhar ID </label>
